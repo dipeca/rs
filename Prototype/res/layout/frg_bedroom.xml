@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/add_page_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Page" />
+
+    <com.matthieu.ViewPagerParallax
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <ImageView
+            android:id="@+id/imageViewClick1"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:alpha="0.5"
+            android:scaleType="fitXY"
+            android:src="@raw/bedroom"
+            android:visibility="visible" />
+    </com.matthieu.ViewPagerParallax>
+
+</LinearLayout>

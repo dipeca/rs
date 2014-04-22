@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="2"
+    android:columnWidth="300dp"
+    android:orientation="vertical"
+    android:rowCount="2"
+    android:stretchMode="columnWidth" >
+
+    <ImageView
+        android:id="@+id/topleft"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="fitXY" />
+
+    <ImageView
+        android:id="@+id/clickable"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="fitXY"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/porta"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="fitXY"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/talisma"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+		android:layout_centerVertical="true"/>
+
+    <TextView
+        android:id="@+id/textPag1"
+        style="@style/StoryBlock"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/container_dropshadow"
+        android:padding="16dp"
+        android:text="@string/pagFindPortal" />
+
+</RelativeLayout>

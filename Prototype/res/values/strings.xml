@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Prototype</string>
+    <string name="menu">Menu</string>
+     <string name="path">Percurso</string>
+    <string name="action_settings">Settings</string>
+    <string name="next">Próxima pág.</string>
+    <string name="submitSolution">Resolver</string>
+    <string name="findHelp">Procurar ajuda</string>
+    <string name="theAmulet">Giz tinha algo para Gui.</string>
+    <string name="theAmuletWarning">Clica no amuleto para guarda-lo nos teus objetos.</string>
+    <string name="findRocks">Procurar pedras</string>
+    <string name="pagFindPortal">Usa o talismã para encontrar o portal que levará Gui ao Reino.</string>
+    <string name="soundIntheDark">Gui dormia quando, de repente, foi acordado por um barulho.</string>
+    <string name="pag1"> Uma criatura, que estava muito assustada, dirigiu-se para ele. </string>
+    <string name="pag1_2">- Olá, o meu nome é Giz. Todo o povo da Terra de Lá precisa da tua ajuda! Ajuda-nos, caso contrário todo o meu povo irá 
+desaparecer! </string>
+    <string name="forestPath">Caminho da floresta</string>
+    <string name="ravenPath">"Caminho dos corvos"</string>
+    <string name="removeLines">Ainda tens linhas a mais...</string>
+    <string name="youHaveDoneIt">Conseguiste!</string>
+    <string name="pagVillage">O líder da Terra de Lá explicou a Gui a importância desta missão.</string>
+    <string name="pagVillageChallengeDone">Resolveste o enigma!</string>
+    <string name="pagVillageChallengeDoneDialog">- Parabéns! Não era nada fácil. Neste livro, que te falei, estão contidos os maiores segredos do nosso mundo. O livro foi-nos roubado. Pensamos que está na Terra dos Ladrões. Terás de partir em direção ao porto e depois embarcar para a a Terra dos Ladrões. Por favor, sê o mais discreto possível pois ninguém pode saber que o livro desapareceu.</string>
+    <string name="useTheAmulet"> - Toma este amuleto, ajudar-te-á quando precisares. 
+- A passagem para Lá está algures neste quarto. Utiliza o amuleto para a encontrar.</string>
+    <string name="title_activity_pag2">Pag2</string>
+    <string name="on_the_road">Gui começou a sua aventura. Muitos desafios surgirão.</string>
+    <string name="on_the_roadWithFriend">Uma nova companheira juntou-se à aventura.</string>
+    <string name="on_the_roadWithFriend2">Fim da história...para já. Continua a ler e responde a umas perguntas. Aquilo que responderes ajudará a escolher o destino dos nosso heróis.</string>
+    <string name="on_the_road2">A aventura apenas começou e o nosso herói já está a ser observado.</string>
+    <string name="on_the_roadFriendDialog">Como será que te chamas? Bilou?! Xoni?</string>
+    <string name="on_the_roadThought">Indo eu, indo eu a caminho de Viseu. Tenho de encontrar o Livro da Filosofia.. euh Livro da Ciência!</string>
+    <string name="success">Conseguiste!</string>
+    <string name="welcome">- Bem-vindo Gui. Estamos muito felizes e aliviados por estares aqui. Giz pediu-te para vires até nós para nos ajudar a recuperar o «Manual da Ciência de Semgi». Semgi é o nosso reino. Antes de mais, tenho um desafio para ti. Se o resolveres provarás ser capaz de levar esta aventura a cabo.</string>
+    <string name="pag2_1">Gui conseguiu chegar à terra de Lá.</string>
+    <string name="pagFoundFriend">Gui entrou pela mata. E encontrou um animal a precisar de ajuda.</string>
+    <string name="pagRobotAttack">O robot não está para conversas e ataca Gui! Tens de encontrar o ponto fraco do robot, usa o amuleto.</string>
+<!--     <string name="pag1_3">Tão rápido como apareceu, a criatura desapareceu.  -->
+<!-- Gui beliscou-se e, definitivamente, estava bem acordado. -->
+<!-- Gui tentou imaginar o que poderia ser a chave que abriria a passagem para esse mundo misterioso. Curioso como é, tinha de encontra-la!</string> -->
+    <string name="enigma_missao">Resolve este enigma. \nTens de desenhar 2 quadrados que separem todas as cruzes, \nsem tocar nelas.</string>
+    <string name="pag2_2">-Conseguiste chegar! Por favor ajuda-nos a encontrar o “Grande Livro da Ciência de Lá”.
+Todos os segredos do nosso mundo estão nesse livro. Ele foi-nos roubado, está em Aquém-Lá, terra dos ladrões. Nós não temos força para conseguir. Por isso te chamamos. Precisamos de ti para salvar o nosso Reino! O nosso ancião tem uma prova para ti afim de mostrares o teu valor.</string>
+    <string name="pag2_3">Gui sentia uma sensação estranha. Como se alguém o observava.</string>
+    <string name="pag3_1"> Que caminho escolher?</string>
+    <string name="pag4_1">O cadeado tem uma espécie de código matemático.</string>
+    <string name="cannot">Cannot</string>
+    <string name="album_name">CameraSample</string>
+    <string name="pagRobotInFront">Um robot assustador surge no caminho de Gui!</string>
+    <string name="pagRobotImGui">- Olá sou o Gui! Estou aqui para tentar encontrar o caminho para o porto.</string>
+    <string name="pagRobotDestroyed">Destruíste o robot, mas um pequeno ser aparece no seu lugar.</string>
+    <string name="pagRobotDestroyedDialog">- Euh.. olá.. sou o Lopo, guarda da aldeia de Grimstaad. \n\t- Olá! Como estava a dizer anteriormente, sou Gui e estou à procura do porto, tenho de chegar à "Terra dos ladrões". \n- Terra dos Ladrões!? Mas, essa cidade está cheia de ladrões! \n\t- Hum, o nome está bem atribuído, portanto. Podes ajudar-me?</string>
+</resources>
