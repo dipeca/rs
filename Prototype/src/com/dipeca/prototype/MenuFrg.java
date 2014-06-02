@@ -59,9 +59,9 @@ public class MenuFrg extends Fragment {
 		setBtnListenerOrDisable(picSBtn, mTakePicSOnClickListener,
 				MediaStore.ACTION_IMAGE_CAPTURE);
 
-		final ImageButton stop = (ImageButton) view.findViewById(R.id.stopSound);
-		stop.setImageResource(R.drawable.ic_action_stop);
-		stop.setOnClickListener(new View.OnClickListener() {
+		BookActivity.stopButton = (ImageButton) view.findViewById(R.id.stopSound);
+		BookActivity.stopButton.setImageResource(R.drawable.ic_action_stop);
+		BookActivity.stopButton.setOnClickListener(new View.OnClickListener() {
 		boolean isPlaying = true;
 			@Override
 			public void onClick(View v) {
@@ -71,7 +71,7 @@ public class MenuFrg extends Fragment {
 				}else{
 					isPlaying = true;
 				}
-				stop.setImageResource(BookActivity.playIcon);
+				BookActivity.stopButton.setImageResource(BookActivity.playIcon);
 			}
 		});
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {

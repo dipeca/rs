@@ -1,7 +1,5 @@
 package com.dipeca.prototype;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -11,9 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -23,8 +23,8 @@ import android.widget.TextView;
 public class PagKingDomfrg extends Fragment {
 	View view = null;
 	private IMainActivity onChoice;
-	public static String NAME = "KingDom";
-	private static String icon = "kingdom_icon";
+	public static String NAME = "Reino de Semgi";
+	private static String iconNextPage = "village_icon";
 	private TextView tv1 = null;
 	private TextView tv3 = null;
 	private boolean isTextHide = false;
@@ -45,7 +45,7 @@ public class PagKingDomfrg extends Fragment {
 
 	private ImageView image1;
 	private ImageView image2;
-
+ 
 	private void loadImages() {
 		Log.d("KingDom ", "loadImages()");
 		image1 = (ImageView) view.findViewById(R.id.pag1ImageView);
@@ -56,21 +56,29 @@ public class PagKingDomfrg extends Fragment {
 		image1.setImageBitmap(bitmap1);
 
 		image2.setImageResource(R.anim.crow);
-
+		
 		int density = (int) getResources().getDisplayMetrics().density;
-		Animation animation = new TranslateAnimation(1200 * density, -200
-				* density, density * 200, density * 400);
-		animation.setDuration(25000);
+		Animation animation = new TranslateAnimation(1000 * density, -400
+				* density, density * 200, density * 64); 
+		animation.setDuration(8000); 
 		animation.setRepeatCount(Animation.INFINITE);
 
-		Animation scaleAnimation = AnimationUtils.loadAnimation(getActivity()
-				.getApplicationContext(), R.anim.scale);
-
+		Animation scaleAnimation = new ScaleAnimation(0.3f, 0.0f, 0.3f, 0.0f, 0.5f, 0.5f);
+		scaleAnimation.setDuration(6000);
+		//scaleAnimation.setStartOffset(1000);
+		animation.setRepeatCount(Animation.INFINITE);
+		
+		Animation alphaAnim = new AlphaAnimation(1f, 0f);
+		alphaAnim.setDuration(200);
+		alphaAnim.setStartOffset(5000);
+		animation.setRepeatCount(Animation.INFINITE);
+		
 		AnimationSet set = new AnimationSet(false);
-		set.addAnimation(animation);
 		set.addAnimation(scaleAnimation);
-
-		image2.setAnimation(set);
+		set.addAnimation(animation);
+		set.addAnimation(alphaAnim);
+		
+		image2.setAnimation(set); 
 
 		image2.getAnimation().setAnimationListener(
 				new Animation.AnimationListener() {
@@ -101,6 +109,7 @@ public class PagKingDomfrg extends Fragment {
 	}
 
 	ImageButton button = null;
+	ImageButton buttonPrev = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -155,8 +164,19 @@ public class PagKingDomfrg extends Fragment {
 
 				PagVillageFrg fb = new PagVillageFrg();
 
-				onChoice.onChoiceMade(fb, PagVillageFrg.NAME, icon);
+				onChoice.onChoiceMade(fb, PagVillageFrg.NAME, iconNextPage);
 				onChoice.onChoiceMadeCommit(NAME, true);
+			}
+		});
+		
+		buttonPrev = (ImageButton) view.findViewById(R.id.goToPrevPage);
+		buttonPrev.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+
+				PagFindPortalFrg fb = new PagFindPortalFrg();
+
+				onChoice.onChoiceMade(fb, PagFindPortalFrg.NAME, iconNextPage);
+				onChoice.onChoiceMadeCommit(NAME, false);
 			}
 		});
 

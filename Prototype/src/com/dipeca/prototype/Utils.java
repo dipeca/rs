@@ -4,38 +4,49 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 public class Utils {
+
+	public static void removeRule(RelativeLayout.LayoutParams params, int rule) {
+		// if (android.os.Build.VERSION.SDK_INT >=
+		// Build.VERSION_CODES.JELLY_BEAN_MR1) { // API 17
+		// params.removeRule(rule);
+		// } else {
+		params.addRule(rule, 0);
+		// }
+	}
 
 	public static int getHotspotColor(int hotspotId, int x, int y, View view) {
 		ImageView img = (ImageView) view.findViewById(hotspotId);
 		img.setDrawingCacheEnabled(true);
-		Bitmap hotspots =  Bitmap.createBitmap(img.getDrawingCache());
+		Bitmap hotspots = Bitmap.createBitmap(img.getDrawingCache());
 		img.setDrawingCacheEnabled(false);
 		Log.d("Point:", "x: " + x + ", y: " + y);
-		Log.d("Bitmap Dim:", "w: " + hotspots.getWidth() + ", h: " + hotspots.getHeight());
-		
-//		Matrix inverse = new Matrix();
-//		((ImageView) view).getImageMatrix().invert(inverse);
-//		float[] touchPoint = new float[] { x, y };
-//		inverse.mapPoints(touchPoint);
-//		int xCoord = Integer.valueOf((int) touchPoint[0]);
-//		int yCoord = Integer.valueOf((int) touchPoint[1]);
-		
+		Log.d("Bitmap Dim:",
+				"w: " + hotspots.getWidth() + ", h: " + hotspots.getHeight());
+
+		// Matrix inverse = new Matrix();
+		// ((ImageView) view).getImageMatrix().invert(inverse);
+		// float[] touchPoint = new float[] { x, y };
+		// inverse.mapPoints(touchPoint);
+		// int xCoord = Integer.valueOf((int) touchPoint[0]);
+		// int yCoord = Integer.valueOf((int) touchPoint[1]);
+
 		if (x >= hotspots.getWidth()) {
 			x = hotspots.getWidth() - 1;
 		}
-		
+
 		if (y >= hotspots.getHeight()) {
-			y = hotspots.getHeight() -1;
+			y = hotspots.getHeight() - 1;
 		}
-		
-		if(x >= 0 && x < hotspots.getWidth() && y >= 0 && y < hotspots.getHeight()){
+
+		if (x >= 0 && x < hotspots.getWidth() && y >= 0
+				&& y < hotspots.getHeight()) {
 			return hotspots.getPixel(x, y);
 		}
 
@@ -51,12 +62,12 @@ public class Utils {
 			return false;
 		return true;
 	} // end match
-	
+
 	public static Bitmap decodeSampledBitmapFromResource(Resources res,
 			int resId, int reqWidth, int reqHeight) {
 
-		reqWidth = (int)Math.ceil(0.9*reqWidth);
-		reqHeight = (int)Math.ceil(0.9*reqHeight);
+		reqWidth = (int) Math.ceil(0.9 * reqWidth);
+		reqHeight = (int) Math.ceil(0.9 * reqHeight);
 		// First decode with inJustDecodeBounds=true to check dimensions
 		final BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inJustDecodeBounds = true;
@@ -71,7 +82,6 @@ public class Utils {
 		options.inJustDecodeBounds = false;
 		return BitmapFactory.decodeResource(res, resId, options);
 	}
-	
 
 	public static int calculateInSampleSize(BitmapFactory.Options options,
 			int reqWidth, int reqHeight) {

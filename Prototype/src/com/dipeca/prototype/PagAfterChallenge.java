@@ -20,7 +20,8 @@ import android.widget.TextView;
 
 public class PagAfterChallenge extends Fragment {
 	private IMainActivity onChoice;
-	public static String NAME = "Pag Desafio anciao completo";
+	public static String NAME = "Aventura começa";
+	private static String iconNextPage = "choice_icon";
 
 	AnimationDrawable backGroundChangeAnimJake;
 	AnimationDrawable backGroundChangeAnimGui;
@@ -82,8 +83,21 @@ public class PagAfterChallenge extends Fragment {
 
 				PagPathChoiceFrg fb = new PagPathChoiceFrg();
 
-				onChoice.onChoiceMade(fb, PagPathChoiceFrg.NAME, null);
+				onChoice.onChoiceMade(fb, PagPathChoiceFrg.NAME, iconNextPage);
 				onChoice.onChoiceMadeCommit(NAME, true);
+			}
+		});
+		
+		final ImageButton buttonPrev = (ImageButton) view
+				.findViewById(R.id.goToPrevPage);
+		
+		buttonPrev.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+
+				PagVillageAfterEnigmaFrg fb = new PagVillageAfterEnigmaFrg();
+
+				onChoice.onChoiceMade(fb, PagVillageAfterEnigmaFrg.NAME, iconNextPage);
+				onChoice.onChoiceMadeCommit(NAME, false);
 			}
 		});
 
@@ -93,7 +107,7 @@ public class PagAfterChallenge extends Fragment {
 		return view;
 	}
 
-	private void loadImages() {
+	private void loadImages() { 
 		Log.d(NAME, "loadImages()");
 
 		int density = (int) getResources().getDisplayMetrics().density;
@@ -101,47 +115,23 @@ public class PagAfterChallenge extends Fragment {
 		iv3.setVisibility(View.INVISIBLE);
 
 		iv1.setLayoutParams(new RelativeLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, 400 * density));
+				LayoutParams.MATCH_PARENT, 350 * density));
 
-		Bitmap mountain = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.caminho_somebody, iv1.getLayoutParams().width, iv1.getLayoutParams().height );
-		iv1.setImageBitmap(mountain);
+		Bitmap caminhoSomebodyBm = Utils.decodeSampledBitmapFromResource(getResources(),
+				R.drawable.caminho_somebody, 600, 300 );
+		iv1.setImageBitmap(caminhoSomebodyBm);
 
 		RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, 250 * density);
+				LayoutParams.MATCH_PARENT, 300 * density);
 		rlp.addRule(RelativeLayout.BELOW, iv1.getId()); 
-		rlp.setMargins(0, 16 * density, 0, 0);
+		rlp.setMargins(0, 16 * density, 0, 0); 
 		iv2.setLayoutParams(rlp);
-		Bitmap mountainDial = Utils.decodeSampledBitmapFromResource(
-				getResources(), R.drawable.caminho, iv2.getLayoutParams().width, iv2.getLayoutParams().height);
-		iv2.setImageBitmap(mountainDial);
-
-		Animation animation1 = new TranslateAnimation(0.0f, 1000.0f, 0.0f,
-				20.0f);
-		animation1.setDuration(100000);
-		animation1.setRepeatMode(Animation.RESTART);
-		animation1.setRepeatCount(Animation.INFINITE);
-		animation1.setInterpolator(new AnticipateOvershootInterpolator());
-
-		//ImageView cloudImage = new ImageView(getActivity());
-		//cloudImage.setBackgroundResource(R.anim.fog);
-		// setting image position
-		//RelativeLayout.LayoutParams lp =  new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-		//		300*density);
 		
-		//cloudImage.setLayoutParams(lp);
+		Bitmap caminhoBm = Utils.decodeSampledBitmapFromResource(
+				getResources(), R.drawable.caminho, 600, 300);
+		iv2.setImageBitmap(caminhoBm);
 
-		// Create a simple layout and add our image view to it.
-		//RelativeLayout layout = (RelativeLayout) view
-		//		.findViewById(R.id.baseLayout);
-		// adding view to layout
-		//layout.addView(cloudImage);
 
-		// make visible to program
-		//backGroundChangeAnim = (AnimationDrawable) cloudImage.getBackground();
-		//backGroundChangeAnim.start();
-
-		//cloudImage.startAnimation(animation1);
 	}
 	AnimationDrawable backGroundChangeAnim;
 

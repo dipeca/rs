@@ -40,7 +40,8 @@ public class PagFindPortalFrg extends Fragment {
 		BookActivity.bitmapTalisma = null;
 	}
 
-	public static String NAME = "Find portal";
+	public static String NAME = "Encontrar o portal";
+	private static String iconNextPage = "kingdom_icon";
 
 	// Create a string for the ImageView label
 	View view;
@@ -138,8 +139,8 @@ public class PagFindPortalFrg extends Fragment {
 		if (BookActivity.bitmapTalisma == null) {
 
 			BookActivity.bitmapTalisma = Utils.decodeSampledBitmapFromResource(
-					getResources(), R.drawable.talisma, 162,
-					162);
+					getResources(), R.drawable.talisma, 178,
+					178);
 		}
 
 		ivRoom.setImageBitmap(BookActivity.bitmapInitial);
@@ -162,7 +163,7 @@ public class PagFindPortalFrg extends Fragment {
 		float toXPos = 0;
 		float toYPos = 0;
 		
-		TranslateAnimation ta = new TranslateAnimation(-800*density, toXPos, 200*density, toYPos);
+		TranslateAnimation ta = new TranslateAnimation(-480*density, toXPos, 100*density, toYPos);
 		ta.setDuration(2000);
 		ivTalisman.setAnimation(ta);
 		ivTalisman.getAnimation().start();
@@ -224,7 +225,7 @@ public class PagFindPortalFrg extends Fragment {
 							Toast.LENGTH_LONG).show();
 					PagKingDomfrg fb = new PagKingDomfrg();
 
-					onChoice.onChoiceMade(fb, PagVillageFrg.NAME);
+					onChoice.onChoiceMade(fb, PagKingDomfrg.NAME, iconNextPage);
 					onChoice.onChoiceMadeCommit(NAME, true);
 
 					long endTime = System.currentTimeMillis();

@@ -59,8 +59,11 @@ public class PagQuizz extends Fragment {
 				onChoice.handleQuizzSubmit();
 				onChoice.restartLoaderQuizz();
 				
-				// onChoice.onChoiceMade(fb, PagBedRoomfAmuletfrg.NAME);
-				// onChoice.onChoiceMadeCommit(NAME, true);
+				PagTheEnd fb = new PagTheEnd();
+
+				onChoice.onChoiceMade(fb, PagTheEnd.NAME, null);
+				onChoice.onChoiceMadeCommit(NAME, true);
+				
 			}
 		});
 

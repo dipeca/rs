@@ -35,6 +35,8 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 
 	private IMainActivity onChoice;
 	public static String NAME = "Enigma";
+	private static String iconNextPage = "village_icon";
+	private static Toast toastObject = null;
 
 	ImageView imageView = null;
 	RelativeLayout layout = null;
@@ -55,7 +57,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 	private int width = 400;
 	private int height = 400;
 
-	private int density = 1;;
+	private float density = 1;
 
 	private float converterX = 1.66f;
 	private float converterY = 5;
@@ -81,7 +83,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		density = (int) getResources().getDisplayMetrics().density;
+		density = (float) getResources().getDisplayMetrics().density;
 
 		// Converts 400 dip into its equivalent px
 		Resources r = getResources();
@@ -111,7 +113,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 		paintFill = new Paint();
 
 		paintStroke.setColor(0x55d2c38f);
-		paintStroke.setStrokeWidth(2 * density);
+		paintStroke.setStrokeWidth(3 * density);
 		paintStroke.setStyle(Paint.Style.STROKE);
 		paintFill.setColor(0xFFb0a16e);
 
@@ -175,30 +177,32 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 		LayoutParams lpTxt = new LayoutParams(Math.round(240 * density),
 				LayoutParams.WRAP_CONTENT);
 		layout.addView(txt, lpTxt);
-	} 
- 
+	}
+
 	private void handleButtons() {
 		btn = new ImageButton(this.getActivity());
 		btn.setImageResource(R.drawable.ic_action_play);
-		btn.setBackgroundResource(R.drawable.button_black);
+		btn.setBackgroundResource(R.drawable.button_back);
 
 		RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		params1.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		params1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		params1.setMargins(0, 0, 12 * density, 12 * density);
+		params1.setMargins(0, 0, (int) Math.ceil(12 * density),
+				(int) Math.ceil(12 * density));
 
 		layout.addView(btn, params1);
 
 		btnHelp = new Button(getActivity());
 		btnHelp.setText(getString(R.string.findHelp));
-		btn.setBackgroundResource(R.drawable.button_black);
+		btn.setBackgroundResource(R.drawable.button_back);
 
 		RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		params2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		params2.setMargins(0, 0, 12 * density, 12 * density);
+		params2.setMargins(0, 0, (int) Math.ceil(12 * density),
+				(int) Math.ceil(12 * density));
 
 		layout.addView(btnHelp, params2);
 	}
@@ -212,13 +216,16 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 				if (isMazeSolved) {
 					PagVillageAfterEnigmaFrg fb = new PagVillageAfterEnigmaFrg();
 
-					onChoice.onChoiceMade(fb, PagVillageAfterEnigmaFrg.NAME, null);
+					onChoice.onChoiceMade(fb, PagVillageAfterEnigmaFrg.NAME,
+							iconNextPage);
 					onChoice.onChoiceMadeCommit(NAME, true);
 
 				} else {
-					Toast.makeText(getActivity(),
-							"Resolve o enigma primeiro antes de avançar.",
-							Toast.LENGTH_SHORT).show();
+					cancelToast();
+					toastObject = Toast.makeText(getActivity(),
+							getString(R.string.solveEnigmaFirst),
+							Toast.LENGTH_SHORT);
+					toastObject.show();
 				}
 			}
 		});
@@ -234,7 +241,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 						try {
 							pixelColor = bitmap.getPixel(lg.getX3(), lg.getY3());
 						} catch (IllegalArgumentException e) {
-							System.out.println("Damm");
+							Log.d(NAME, "Error on: " + e);
 						}
 						// If the line is not draw already then we draw it, once
 						if (!(Color.rgb(Color.red(Color.BLACK),
@@ -474,16 +481,15 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 
 			x = x + (width / converterX);
 			y = y + (height / converterY);
-			
-			//Bad, bad move but I have to do this because when we user the drawer layout we have to 
-			// account for the 240dp = 320 px from the menu hided
-			if ((getResources().getConfiguration().screenLayout & 
-				    Configuration.SCREENLAYOUT_SIZE_MASK) <= 
-				        Configuration.SCREENLAYOUT_SIZE_LARGE) {
-					x = x - 320;
 
-				} 
-			
+			// Bad, bad move but I have to do this because when we user the
+			// drawer layout we have to
+			// account for the 240dp = 320 px from the menu hided
+			if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) <= Configuration.SCREENLAYOUT_SIZE_LARGE) {
+				x = x - (240 * density);
+
+			}
+
 			Point p = new Point((int) x, (int) y);
 			LineSegment lg2 = getClosestLine(p);
 			if (lg2 != null) {
@@ -553,9 +559,12 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 
 			for (LineSegment lgW : lines) {
 				if (lgW.isDrawn()) {
-					Toast.makeText(this.getActivity(),
-							getString(R.string.removeLines), Toast.LENGTH_SHORT)
-							.show();
+					cancelToast();
+					toastObject = Toast
+							.makeText(this.getActivity(),
+									getString(R.string.removeLines),
+									Toast.LENGTH_SHORT);
+					toastObject.show();
 					isMazeSolved = false;
 					return false;
 				}
@@ -567,10 +576,20 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 			isMazeSolved = true;
 			BookActivity.stopOrPlayMusic();
 		}
-		
-		Toast.makeText(this.getActivity(), getString(R.string.youHaveDoneIt),
-				Toast.LENGTH_SHORT).show();
+
+		cancelToast();
+		toastObject = Toast.makeText(this.getActivity(),
+				getString(R.string.youHaveDoneIt), Toast.LENGTH_SHORT);
+		toastObject.show();
+
 		return true;
+	}
+
+	private void cancelToast() {
+		if (toastObject != null) {
+			toastObject.cancel();
+
+		}
 	}
 
 	/*

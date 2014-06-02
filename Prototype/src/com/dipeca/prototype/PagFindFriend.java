@@ -79,9 +79,10 @@ public class PagFindFriend extends Fragment implements OnTouchListener {
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
 		tv1.setText(R.string.pagFoundFriend);
 
+		BookActivity.stopMusic();
 		// loadImages()
 		loadImages();
-
+		
 		view.setOnTouchListener(this);
 
 		return view;

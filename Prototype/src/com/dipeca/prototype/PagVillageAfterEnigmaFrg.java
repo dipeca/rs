@@ -16,8 +16,8 @@ import android.widget.TextView;
 
 public class PagVillageAfterEnigmaFrg extends Fragment {
 	private IMainActivity onChoice;
-	public static String NAME = "Preparar viagem";
-	private static String icon = "village_icon";
+	public static String NAME = "Enigma resolvido";
+	private static String iconNextPage = "caminho_somebody_icon";
 
 	private TextView tv1 = null;
 	private TextView tv2 = null;
@@ -81,11 +81,24 @@ public class PagVillageAfterEnigmaFrg extends Fragment {
 
 				PagAfterChallenge fb = new PagAfterChallenge();
 
-				onChoice.onChoiceMade(fb, PagAfterChallenge.NAME, icon);
+				onChoice.onChoiceMade(fb, PagAfterChallenge.NAME, iconNextPage);
 				onChoice.onChoiceMadeCommit(NAME, true);
 			}
 		});
 
+		final ImageButton buttonPrev = (ImageButton) view
+				.findViewById(R.id.goToPrevPage);
+		
+		buttonPrev.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+
+				PagVillageFrg fb = new PagVillageFrg();
+
+				onChoice.onChoiceMade(fb, PagVillageFrg.NAME, iconNextPage);
+				onChoice.onChoiceMadeCommit(NAME, false);
+			}
+		});
+		
 		loadImages();
 
 		return view;

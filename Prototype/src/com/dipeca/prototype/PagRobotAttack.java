@@ -24,7 +24,8 @@ import android.widget.Toast;
 public class PagRobotAttack extends Fragment {
 	View view = null;
 	private IMainActivity onChoice;
-	public static String NAME = "Robot attack";
+	public static String NAME = "Robot ataca";
+	public static String iconNextPage = "robot_destroyed_icon";
 
 	private TextView tv1 = null;
 
@@ -218,7 +219,7 @@ public class PagRobotAttack extends Fragment {
 							Toast.LENGTH_LONG).show();
 					PagRobotDestroyedfrg fb = new PagRobotDestroyedfrg();
 
-					onChoice.onChoiceMade(fb, PagRobotDestroyedfrg.NAME);
+					onChoice.onChoiceMade(fb, PagRobotDestroyedfrg.NAME, iconNextPage);
 					onChoice.onChoiceMadeCommit(NAME, true);
 
 					long endTime = System.currentTimeMillis();

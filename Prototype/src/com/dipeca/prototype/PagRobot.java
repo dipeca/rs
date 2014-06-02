@@ -23,6 +23,7 @@ public class PagRobot extends Fragment {
 	View view = null;
 	private IMainActivity onChoice;
 	public static String NAME = "Robot";
+	public static String iconNextPage = "robot_attack_icon";
 	private TextView tv1 = null;
 	private TextView tv3 = null;
 	private DialogBox dialogBox = null;
@@ -32,22 +33,22 @@ public class PagRobot extends Fragment {
 	private static Bitmap bitmap2;
 
 	private int density = 1;
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		try {
 			Log.d(NAME, "On attach started");
-			onChoice = (IMainActivity) activity;   
+			onChoice = (IMainActivity) activity;
 		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString() 
+			throw new ClassCastException(activity.toString()
 					+ " must implement OnChoiceMade");
 		}
 	}
 
 	private ImageView image1;
 	private ImageView image2;
- 
+
 	private void loadImages() {
 		Log.d(NAME, "loadImages()");
 		image1 = (ImageView) view.findViewById(R.id.pag1ImageView);
@@ -63,7 +64,7 @@ public class PagRobot extends Fragment {
 
 	private void loadText() {
 		Log.d(NAME, "loadText()");
-		
+
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
 		tv1.setText(R.string.pagRobotInFront);
 
@@ -73,35 +74,40 @@ public class PagRobot extends Fragment {
 		dialogBox = (DialogBox) view.findViewById(R.id.dialog);
 		dialogBox.setImg1Id(getResources().getDrawable(R.anim.gui_anim));
 		dialogBox.setImg2Id(null);
-		
+
 		dialogBox.setTextDialog(getString(R.string.pagRobotImGui));
-		
-		RelativeLayout.LayoutParams rl = (LayoutParams) dialogBox.getLayoutParams();
+
+		RelativeLayout.LayoutParams rl = (LayoutParams) dialogBox
+				.getLayoutParams();
 		rl.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
 		rl.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-		rl.setMargins(16*density, 16*density, 16*density, 16*density);
-		rl.removeRule(RelativeLayout.ALIGN_LEFT);
-		rl.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		rl.setMargins(16 * density, 16 * density, 16 * density, 16 * density);
+		// rl.removeRule(RelativeLayout.ALIGN_LEFT);
+		// rl.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		Utils.removeRule(rl, RelativeLayout.ALIGN_LEFT);
+		Utils.removeRule(rl, RelativeLayout.ALIGN_PARENT_BOTTOM);
+
 	}
-	
-	
-	
+
 	private Runnable mUpdateTimeTask = new Runnable() {
 		public void run() {
 			long startTime = System.currentTimeMillis();
+			if (isAdded()) {
+				// This is to load the image of the next screen, the attack from
+				// the robot
+				BookActivity.bitmap1 = Utils.decodeSampledBitmapFromResource(
+						getResources(), R.drawable.robot3, 600, 300);
+				BookActivity.bitmap2 = Utils.decodeSampledBitmapFromResource(
+						getResources(), R.drawable.robot_click_scal, 50, 25);
+				
+				// if the talisman was cleaned after portal page
+				if (BookActivity.bitmapTalisma == null) {
 
-			// This is to load the image of the next screen, the attack from the robot
-			BookActivity.bitmap1 = Utils.decodeSampledBitmapFromResource(
-					getResources(), R.drawable.robot3, 600, 300);
-			BookActivity.bitmap2 = Utils.decodeSampledBitmapFromResource(
-					getResources(), R.drawable.robot_click_scal, 50, 25);
-			//if the talisman was cleaned after portal page
-			if (BookActivity.bitmapTalisma == null) {
-
-				BookActivity.bitmapTalisma = Utils.decodeSampledBitmapFromResource(
-						getResources(), R.drawable.talisma, 162, 162);
+					BookActivity.bitmapTalisma = Utils
+							.decodeSampledBitmapFromResource(getResources(),
+									R.drawable.talisma, 162, 162);
+				}
 			}
-			
 			long endTime = System.currentTimeMillis();
 			long totalTime = endTime - startTime;
 			Log.d(NAME + " Total time", "mUpdateTimeTask time =" + totalTime);
@@ -115,16 +121,17 @@ public class PagRobot extends Fragment {
 			Bundle savedInstanceState) {
 
 		long startTime = System.currentTimeMillis();
-		view = inflater.inflate(R.layout.pag_one_image_dialog, container, false);
+		view = inflater
+				.inflate(R.layout.pag_one_image_dialog, container, false);
 		long endTime = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
 		Log.d("Total time kingdom", "onCreateView after inflate time ="
 				+ totalTime);
 
 		BookActivity.playMusic(R.raw.robot_page);
-		
+
 		density = (int) getResources().getDisplayMetrics().density;
-		
+
 		// loadImages()
 		loadImages();
 		loadText();
@@ -162,14 +169,27 @@ public class PagRobot extends Fragment {
 
 				PagRobotAttack fb = new PagRobotAttack();
 
-				onChoice.onChoiceMade(fb, PagRobotAttack.NAME);
+				onChoice.onChoiceMade(fb, PagRobotAttack.NAME, iconNextPage);
 				onChoice.onChoiceMadeCommit(NAME, true);
 			}
 		});
 
+		final ImageButton buttonPrev = (ImageButton) view
+				.findViewById(R.id.goToPrevPage);
+
+		buttonPrev.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+
+				PagPathChoiceFrg fb = new PagPathChoiceFrg();
+
+				onChoice.onChoiceMade(fb, PagPathChoiceFrg.NAME, null);
+				onChoice.onChoiceMadeCommit(NAME, false);
+			}
+		});
+
 		// run the start() method later on the UI thread
-        view.postDelayed(mUpdateTimeTask, 1000);
-        
+		view.postDelayed(mUpdateTimeTask, 1000);
+
 		return view;
 	}
 

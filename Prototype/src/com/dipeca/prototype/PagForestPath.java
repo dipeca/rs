@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 public class PagForestPath extends Fragment {
 	private IMainActivity onChoice;
-	public static String NAME = "Caminho da floresta";
+	public static String NAME = "Fim da hist—ria";
 
 	AnimationDrawable backGroundChangeAnimJake;
 	AnimationDrawable backGroundChangeAnimGui;
@@ -30,10 +30,10 @@ public class PagForestPath extends Fragment {
 	private ImageView iv3;
 
 	private TextView tv1 = null;
-	private TextView tv2 = null;
+	private TextView tv2 = null; 
 	private DialogBox dialogBox;
 
-	@Override
+	@Override 
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		try {
@@ -54,13 +54,15 @@ public class PagForestPath extends Fragment {
 
 		final ImageButton button = (ImageButton) view
 				.findViewById(R.id.goToNextPage);
-
+ 
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
 		tv1.setText(R.string.on_the_roadWithFriend);
-
-		tv2 = (TextView) view.findViewById(R.id.textPag2);
+		tv1.setVisibility(View.GONE);
+		 
+		tv2 = (TextView) view.findViewById(R.id.textPag2); 
 		tv2.setText(R.string.on_the_roadWithFriend2);
-		
+		tv2.setVisibility(View.GONE); 
+		  
 		dialogBox = (DialogBox) view.findViewById(R.id.dialog);
 		dialogBox.setTextDialog(getString(R.string.on_the_roadFriendDialog));
 		dialogBox.setImg1Id(getResources().getDrawable(R.drawable.gui2));
@@ -72,6 +74,7 @@ public class PagForestPath extends Fragment {
 		params1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		params1.addRule(RelativeLayout.ALIGN_TOP, R.id.textPag1);
 		dialogBox.setLayoutParams(params1);
+		dialogBox.setVisibility(View.GONE);
 
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -89,7 +92,7 @@ public class PagForestPath extends Fragment {
 	}
 
 	private void loadImages() {
-		Log.d(NAME, "loadImages()");
+		Log.d(NAME, "loadImages()"); 
 
 		int density = (int) getResources().getDisplayMetrics().density;
 
@@ -98,24 +101,15 @@ public class PagForestPath extends Fragment {
 		iv3 = (ImageView) view.findViewById(R.id.page2Image3);
 		
 		iv3.setVisibility(View.INVISIBLE);
-
-		iv1.setLayoutParams(new RelativeLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, 400 * density));
-
-		Bitmap mountain = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.caminho_somebody_companheira, iv1.getLayoutParams().width
-						* density, iv1.getLayoutParams().height * density);
-		iv1.setImageBitmap(mountain);
-
+		iv1.setVisibility(View.GONE);
+		
 		RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, 250 * density);
+				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 		rlp.addRule(RelativeLayout.BELOW, iv1.getId());
-		rlp.setMargins(0, 16 * density, 0, 0);
 		iv2.setLayoutParams(rlp);
+		
 		Bitmap mountainDial = Utils.decodeSampledBitmapFromResource(
-				getResources(), R.drawable.theend, iv2.getLayoutParams().width
-						/ 2 * density, iv2.getLayoutParams().height / 2
-						* density);
+				getResources(), R.drawable.theend, 1024, 600);
 		iv2.setImageBitmap(mountainDial);
 
 

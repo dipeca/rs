@@ -1,12 +1,8 @@
 package com.dipeca.prototype;
 
-import java.net.URL;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
-import android.graphics.drawable.AnimationDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,8 +15,9 @@ import android.widget.TextView;
 public class PagBedRoomDarkfrg extends Fragment {
 	View view = null;
 	private IMainActivity onChoice;
-	public static String NAME = "Pag bedroom dark";
-	private static String icon = "quarto_vazio_escuro_icon";
+	public static String NAME = "Um barulho no quarto";
+	public static String iconCurrentPage = "quarto_vazio_escuro_icon";
+	public static String iconNextPage = "quarto_vazio_icon";
 	private TextView tv1 = null;
 	private DialogBox tv2 = null;
 	private TextView tv3 = null;
@@ -28,7 +25,7 @@ public class PagBedRoomDarkfrg extends Fragment {
 	private static Bitmap bitmap1;
 
 	@Override
-	public void onAttach(Activity activity) {
+	public void onAttach(Activity activity) { 
 		super.onAttach(activity);
 		try {
 			onChoice = (IMainActivity) activity;
@@ -135,6 +132,7 @@ public class PagBedRoomDarkfrg extends Fragment {
 	};
 
 	ImageButton button = null;
+	ImageButton buttonPrev = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -166,7 +164,7 @@ public class PagBedRoomDarkfrg extends Fragment {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
+  
 				try {
 					fb = (Fragment) c.newInstance();
 				} catch (java.lang.InstantiationException e) {
@@ -177,10 +175,18 @@ public class PagBedRoomDarkfrg extends Fragment {
 					e.printStackTrace();
 				}
 
-				onChoice.onChoiceMade(fb, PagBedRoomfrg.NAME, icon);
+				onChoice.onChoiceMade(PagBedRoomDarkfrg.this, PagBedRoomDarkfrg.NAME,
+						PagBedRoomDarkfrg.iconCurrentPage);
+				// Commit the page to database
+				onChoice.onChoiceMadeCommitFirstPage(PagBedRoomDarkfrg.NAME, true);
+				
+				onChoice.onChoiceMade(fb, PagBedRoomfrg.NAME, iconNextPage);
 				onChoice.onChoiceMadeCommit(NAME, true);
 			}
 		});
+		
+		buttonPrev = (ImageButton) view.findViewById(R.id.goToPrevPage);
+		buttonPrev.setVisibility(View.INVISIBLE);
 
 		// run the start() method later on the UI thread
 		view.postDelayed(mUpdateTimeTask, 1000);

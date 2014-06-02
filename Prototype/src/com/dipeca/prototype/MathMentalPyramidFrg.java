@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,8 +46,6 @@ public class MathMentalPyramidFrg extends Fragment {
         }
 	}
 	
-	public Button button;
-	
 	@Override
 	  public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	      Bundle savedInstanceState) {
@@ -58,35 +54,37 @@ public class MathMentalPyramidFrg extends Fragment {
 	    
 	    
 	    generatePyramid();
-        button = (Button) view.findViewById(R.id.submitSolution);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	if(checkAllFieldsFilled()){
-            		top 	= Integer.parseInt(topET.getText().toString());
-            		medium1 = Integer.parseInt(medium1ET.getText().toString());
-            		medium2 = Integer.parseInt(medium2ET.getText().toString()) ;
-            		base1 	= Integer.parseInt(base1ET.getText().toString());
-            		base2 	= Integer.parseInt(base2ET.getText().toString());
-            		base3 	= Integer.parseInt(base3ET.getText().toString());
-            		if((top == medium1 + medium2) && (medium1 + medium2 == base1+ base2 +base3)){
-            			
-            			Toast.makeText(getActivity(), "Destrancaste o cadeado!", Toast.LENGTH_SHORT).show();
-            			
-            			InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
-            				      Context.INPUT_METHOD_SERVICE);
-            				imm.hideSoftInputFromWindow(base3ET.getWindowToken(), 0);
-            			
-            				onChoice.onChoiceMadeCommit("Cadeado", true);
-            		}else{
-            			Toast.makeText(getActivity(), "O cadeado n‹o abriu, ser‡ que te enganaste?", Toast.LENGTH_SHORT).show();
-            		}
-            	}else{
-            		Toast.makeText(getActivity(), "Resolve o enigma antes de submeter", Toast.LENGTH_SHORT).show();
-            	}
-            }
-        });
+     
 	    return view;
 	  }
+	
+	public boolean isLockUnlocked(){
+    	if(checkAllFieldsFilled()){
+    		top 	= Integer.parseInt(topET.getText().toString());
+    		medium1 = Integer.parseInt(medium1ET.getText().toString());
+    		medium2 = Integer.parseInt(medium2ET.getText().toString()) ;
+    		base1 	= Integer.parseInt(base1ET.getText().toString());
+    		base2 	= Integer.parseInt(base2ET.getText().toString());
+    		base3 	= Integer.parseInt(base3ET.getText().toString());
+    		if((top == medium1 + medium2) && (medium1 == base1+ base2) && (medium2 == base2 +base3)){
+    			
+    			Toast.makeText(getActivity(), getString(R.string.youHaveDoneIt), Toast.LENGTH_SHORT).show();
+    			
+    			InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
+    				      Context.INPUT_METHOD_SERVICE);
+    				imm.hideSoftInputFromWindow(base3ET.getWindowToken(), 0);
+    			
+    				onChoice.onChoiceMadeCommit("Cadeado", true);
+    				return true; 
+    		}else{
+    			Toast.makeText(getActivity(), getString(R.string.didnotopen), Toast.LENGTH_SHORT).show();
+    			return false;
+    		}
+    	}else{
+    		Toast.makeText(getActivity(), getString(R.string.solveEnigmaFirst), Toast.LENGTH_SHORT).show();
+    		return false;
+    	}
+	}
 
 	/**
 	 * Generates the pyramid so that the enigma can be solved by the user
@@ -95,21 +93,29 @@ public class MathMentalPyramidFrg extends Fragment {
 	 */
 	public void generatePyramid() {
 		// Random value to see if we show the top of pyramid
-		int isTopShown = (int) Math.ceil(Math.random() * 10);
+		int isTopShown = (int) Math.ceil(Math.random() * 10); 
 
 		top = (int) Math.ceil(Math.random() * 100);
 		// number of top can never be smaller than 20
-		if (top < 5) {
-			top = (top * 4) + (int) Math.ceil(Math.random() * 10);
+		if (top < 10) {
+			if(top < 4){
+				top += 4;
+				top *= 3; 
+			} 
+			top = (top * 4) + (int) Math.ceil(Math.random() * 10); 
+			
+		} 
+		
+		if(top < 20){
+			top = 25;
 		}
-
-		medium1 = (int) ((int) Math.ceil(top / 2) + Math.ceil(top / 4) - Math
+		
+		medium1 = (int) ((int) Math.ceil(top / 3) + Math.ceil(top / 4) - Math
 				.ceil(Math.random() * 10));
-		medium2 = top - medium1;
-		base1 = (int) ((int) Math.ceil(medium1 / 3) + Math.ceil(medium1 / 4));
 
-		// if the number is pair then we show the top of the pyramid
-		// if(isTopShown % 2 == 0){
+		medium2 = top - medium1; 
+		base1 = (int) ((int) Math.ceil(medium2 / 3) + Math.ceil(medium2 / 4) - 2);
+
 		topET = (TextView) view.findViewById(R.id.top);
 		medium1ET = (TextView) view.findViewById(R.id.middle1); 
 		medium2ET = (EditText) view.findViewById(R.id.middle2);

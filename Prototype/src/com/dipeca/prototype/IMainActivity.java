@@ -10,6 +10,10 @@ public interface IMainActivity {
 	
 	void onChoiceMadeCommit(String namePreviousPage, Boolean isToPersist);
 	
+	void onChoiceMadeCommitFirstPage(String namePreviousPage, Boolean isToPersist);
+	
+	void onChoiceMadeCommit(String namePreviousPage, Boolean isToPersist, Boolean isToStopMusic);
+	
 	Fragment getFragmentFromJourneyItem(JourneyItem ji);
 	
 	String getNameFromFragment(Fragment frg);
@@ -23,4 +27,6 @@ public interface IMainActivity {
 	void restartLoaderQuizz();
 	
 	void handleQuizzSubmit();
+	
+	void restartApp();
 }

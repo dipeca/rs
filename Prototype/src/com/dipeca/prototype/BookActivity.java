@@ -1,5 +1,5 @@
 package com.dipeca.prototype;
-
+ 
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,8 +32,9 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -47,12 +48,34 @@ public class BookActivity extends Activity implements IMainActivity,
 		LoaderManager.LoaderCallbacks<Cursor> {
 
 	@Override
-	protected void onPause() {
-		super.onPause();
+	public void restartApp() {
+		
+		ContentResolver cr = getContentResolver();
 
-		stopMusic();
+		// Delete all rows
+		points = 80;
+		cr.delete(PrototypeProvider.CONTENT_URI_CHAPTERS, null, null);
+		
+		if(journeyItemList == null){
+			journeyItemList = new ArrayList<JourneyItem>();
+		}else{
+			journeyItemList.clear();
+		}
+		journeyArrayAdapter.notifyDataSetChanged();
+		
+		cr.delete(PrototypeProvider.CONTENT_URI_OBJECTS, null, null);
+		restartLoaderObjects();
 	}
 
+	// mediaPlayer-object will not we cleaned away since someone holds a
+	// reference to it!
+	private static MediaPlayer mediaPlayer;
+	private static Context context;
+	private static int idToPlay = -1;
+	public static int playIcon;
+	private static boolean isStopped = false;
+	public static ImageButton stopButton;
+	private static InputMethodManager imm = null;
 	private ArrayList<JourneyItem> journeyItemList;
 	private JourneyListAdapter journeyArrayAdapter;
 
@@ -81,16 +104,24 @@ public class BookActivity extends Activity implements IMainActivity,
 	public static int points = 100;
 	private TextView pointsText = null;
 
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		stopMusic();
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_book);
 
+		imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
 		display = getWindowManager().getDefaultDisplay();
 		display.getSize(sizeofDisplay);
 		Log.d("SIZE: ", " " + sizeofDisplay.x + "x" + sizeofDisplay.y);
-		// Handle database
-		// handleDataBaseCreation();
 
 		// Check that the activity is using the layout version with
 		// the detailFragment FrameLayout
@@ -106,8 +137,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			// Create a new Fragment to be placed in the activity layout
 			// PagBedRoomfrg firstFragment = new PagBedRoomfrg();
 			PagBedRoomDarkfrg firstFragment = new PagBedRoomDarkfrg();
-			// Pag4Frg firstFragment = new Pag4Frg(); -> maths pyramid
-			// PagScareCrow firstFragment = new PagScareCrow();
+
 			// In case this activity was started with special instructions from
 			// an Intent, pass the Intent's extras to the fragment as arguments
 			firstFragment.setArguments(getIntent().getExtras());
@@ -127,7 +157,8 @@ public class BookActivity extends Activity implements IMainActivity,
 
 		// Create the array adapter to bind the array to the listview
 		int resID = R.layout.journey_so_far;
-		journeyArrayAdapter = new JourneyListAdapter(this, resID, journeyItemList);
+		journeyArrayAdapter = new JourneyListAdapter(this, resID,
+				journeyItemList);
 		// Bind the array adapter to the listview.
 		journeySoFar.setListAdapter(journeyArrayAdapter);
 
@@ -142,43 +173,42 @@ public class BookActivity extends Activity implements IMainActivity,
 		// configure the toggle menu
 		configureDrawerMenu();
 
-		context = getApplicationContext(); 
+		context = getApplicationContext();
 
+		loadDataBase();
+	}
+	
+	private void loadDataBase(){
 		String[] projection = new String[] { User.ID, User.NAME, User.AGE };
 		makeProviderBundle(projection, null, null, null,
 				PrototypeProvider.CONTENT_URI_USERS.toString());
-		tableLoaded = PrototypeProvider.USER_ALLROWS; 
-		getLoaderManager().initLoader(0, myBundle, BookActivity.this);
-	} 
-
-	// mediaPlayer-object will not we cleaned away since someone holds a
-	// reference to it!
-	private static MediaPlayer mediaPlayer;
-	private static Context context;
-	private static int idToPlay = -1;
-	public static int playIcon;
-	private static boolean isStopped = false;
+		tableLoaded = PrototypeProvider.USER_ALLROWS;
+		getLoaderManager().initLoader(0, myBundle, BookActivity.this);		
+		
+	}
 
 	public static void playMusic(int id) {
 
 		createMP(id);
-		mediaPlayer.setLooping(true);
-		play();
+
+		if (mediaPlayer != null) {
+			mediaPlayer.setLooping(true);
+			play();
+		}
 	}
 
 	public static void playMusicOnce(int id) {
 		createMP(id);
 		mediaPlayer.setLooping(false);
-		if (!isStopped) {
-			play();
-		}
+		play();
 	}
 
 	private static void createMP(int id) {
-
-		stopMusic();
-		idToPlay = id;
-		mediaPlayer = MediaPlayer.create(context, id);
+		if (id > -1) {
+			stopMusic();
+			idToPlay = id;
+			mediaPlayer = MediaPlayer.create(context, id);
+		}
 	}
 
 	private static void play() {
@@ -186,15 +216,22 @@ public class BookActivity extends Activity implements IMainActivity,
 		mediaPlayer.start();
 		// Set the icon as stop because the music is now playing
 		playIcon = R.drawable.ic_action_stop;
-
+		setStopIcon();
 	}
 
-	private static void stopMusic() {
+	private static void setStopIcon() {
+		if (stopButton != null) {
+			stopButton.setImageResource(playIcon);
+		}
+	}
+
+	public static void stopMusic() {
 		if (mediaPlayer != null) {
 			mediaPlayer.release();
 			mediaPlayer = null;
 			// Set the icon as play because the music is now stopped
 			playIcon = R.drawable.ic_action_play;
+			setStopIcon();
 		}
 	}
 
@@ -218,7 +255,7 @@ public class BookActivity extends Activity implements IMainActivity,
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
 		// If we are in a screen that need to have the toggle menu
-		if (mDrawerLayout != null) { 
+		if (mDrawerLayout != null) {
 			Log.d("BookActivity", "mDrawerLayout not null, so we configure it");
 
 			mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
@@ -242,14 +279,14 @@ public class BookActivity extends Activity implements IMainActivity,
 					super.onDrawerOpened(drawerView);
 					getActionBar().setTitle(getString(R.string.menu));
 				}
-			}; 
+			};
 
 			// Set the drawer toggle as the DrawerListener
 			mDrawerLayout.setDrawerListener(mDrawerToggle);
 
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 			getActionBar().setHomeButtonEnabled(true);
- 
+
 		}
 	}
 
@@ -292,7 +329,6 @@ public class BookActivity extends Activity implements IMainActivity,
 		/*
 		 * this is a convenience method to pass it arguments to pass into
 		 * myBundle which in turn is passed into the Cursor loader to query the
-		 * smartcal.db
 		 */
 		myBundle = new Bundle();
 		myBundle.putStringArray("projection", projection);
@@ -304,76 +340,7 @@ public class BookActivity extends Activity implements IMainActivity,
 		myBundle.putString("uri", uri);
 	}
 
-	private void handleDataBaseCreation() {
-
-		// ContentResolver cr = getContentResolver();
-		// ContentValues contentValue = new ContentValues();
-		// contentValue.put(User.NAME, "Jason Wei");
-		// contentValue.put(User.AGE, 12);
-		// cr.insert(PrototypeProvider.CONTENT_URI, contentValue);
-		//
-		// contentValue = new ContentValues();
-		// contentValue.put(User.NAME, "James Lee");
-		// contentValue.put(User.AGE, 10);
-		//
-		// cr.insert(PrototypeProvider.CONTENT_URI, contentValue);
-		// contentValue = new ContentValues();
-		// contentValue.put(User.NAME, "Daniel Lee");
-		// contentValue.put(User.AGE, 11);
-		// cr.insert(PrototypeProvider.CONTENT_URI, contentValue);
-
-		// Get the Content Resolver.
-		ContentResolver cr = getContentResolver();
-		// Specify the result column projection. Return the minimum set
-		// of columns required to satisfy your requirements.
-		String[] result_columns = new String[] { User.ID, User.NAME, User.AGE };
-		// Specify the where clause that will limit your results.
-		String where = null; // User.ID + "=" + 1;
-		// Replace these with valid SQL statements as necessary.
-		String whereArgs[] = null;
-		String order = null;
-		// Return the specified rows.
-		Cursor resultCursor = cr.query(PrototypeProvider.CONTENT_URI_USERS,
-				result_columns, where, whereArgs, order);
-
-		int name = resultCursor.getColumnIndex(User.NAME);
-		int age = resultCursor.getColumnIndex(User.AGE);
-		int id = resultCursor.getColumnIndex(User.ID);
-
-		while (resultCursor.moveToNext()) {
-			System.out.println("Name: " + resultCursor.getString(name) + " is "
-					+ resultCursor.getString(age) + " old. Id => "
-					+ resultCursor.getString(id));
-		}
-
-		//
-		// Ou como atalho
-		//
-		where = null;
-		whereArgs = null;
-		order = null;
-
-		Uri rowAddress = ContentUris.withAppendedId(
-				PrototypeProvider.CONTENT_URI_USERS, 4);
-		// Return the specified rows.
-		Cursor resultCursor2 = cr.query(rowAddress, result_columns, where,
-				whereArgs, order);
-
-		name = resultCursor2.getColumnIndex(User.NAME);
-		age = resultCursor2.getColumnIndex(User.AGE);
-		id = resultCursor2.getColumnIndex(User.ID);
-
-		while (resultCursor2.moveToNext()) {
-			System.out.println("Name: " + resultCursor2.getString(name)
-					+ " is " + resultCursor2.getString(age) + " old. Id => "
-					+ resultCursor2.getString(id));
-		}
-
-		// Close the Cursor
-		resultCursor.close();
-		resultCursor2.close();
-	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -391,12 +358,12 @@ public class BookActivity extends Activity implements IMainActivity,
 		nextPage = frg;
 		nextPageName = currentPage;
 		nextPageClass = frg.getClass().getName();
-		if(iconPath != null){
+		if (iconPath != null) {
 			this.iconPath = iconPath;
-		}else{
+		} else {
 			this.iconPath = "quarto_olhar_talisma_icon";
 		}
-	} 
+	}
 
 	@Override
 	public void onChoiceMade(Fragment frg, String currentPage) {
@@ -406,7 +373,6 @@ public class BookActivity extends Activity implements IMainActivity,
 		this.iconPath = "quarto_olhar_talisma_icon";
 	}
 
-	
 	@Override
 	protected void onStop() {
 		super.onStop();
@@ -430,13 +396,30 @@ public class BookActivity extends Activity implements IMainActivity,
 	}
 
 	@Override
+	public void onChoiceMadeCommitFirstPage(String namePreviousPage, Boolean isToPersist) {
+		if (nextPage != null) {
+
+			imm.hideSoftInputFromWindow(pointsText.getWindowToken(), 0);
+
+			if (isToPersist) {
+				addItemToJourney(nextPageName);
+			}
+		}
+	}
+	
+	@Override
 	public void onChoiceMadeCommit(String namePreviousPage, Boolean isToPersist) {
 		if (nextPage != null) {
 
+			// stopMusic();
+
+			imm.hideSoftInputFromWindow(pointsText.getWindowToken(), 0);
+
 			// Load the next Page of the story
 			loadNextPage();
-
-			addItemToJourney(nextPageName);
+			if (isToPersist) {
+				addItemToJourney(nextPageName);
+			}
 		}
 	}
 
@@ -495,6 +478,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			// R.anim.right_to_left);
 			// ft.setBreadCrumbShortTitle(nextPageName);
 			ft.replace(R.id.detailFragment, nextPage);
+
 			// I'm wondering if i should remove the backstack option to force
 			// the fragment destroy method to be called
 			// ft.addToBackStack("previousPag");
@@ -511,8 +495,9 @@ public class BookActivity extends Activity implements IMainActivity,
 		JourneyItem ji = new JourneyItem();
 		ji.setId(null);
 		ji.setCurrent(chapterName);
-		ji.setCurrentClass(nextPageClass); 
-		int iconId = getResources().getIdentifier(iconPath,"drawable", getPackageName());
+		ji.setCurrentClass(nextPageClass);
+		int iconId = getResources().getIdentifier(iconPath, "drawable",
+				getPackageName());
 		ji.setIcon(getResources().getDrawable(iconId));
 
 		if (journeyItemList == null) {
@@ -672,14 +657,16 @@ public class BookActivity extends Activity implements IMainActivity,
 			} catch (ParseException e) {
 				dateDt = null;
 			}
-			
+
 			String iconName = data.getString(icon);
-			int iconID = getResources().getIdentifier(iconName, "drawable", getPackageName());
-			
+			int iconID = getResources().getIdentifier(iconName, "drawable",
+					getPackageName());
+
 			Drawable iconDr = getResources().getDrawable(iconID);
 
 			ji = new JourneyItem(data.getLong(id), data.getString(cur),
-					data.getString(currClass), dateDt, data.getString(pre), iconDr, iconName);
+					data.getString(currClass), dateDt, data.getString(pre),
+					iconDr, iconName);
 
 			journeyItemList.add(ji);
 
@@ -859,7 +846,7 @@ public class BookActivity extends Activity implements IMainActivity,
 	// --------------------------
 	// ------ Quizz handler
 	// --------------------------
-	ContentValues newValues = new ContentValues();;
+	ContentValues newValuesQuizz = new ContentValues();
 
 	/**
 	 * Handle the drawing radio button question
@@ -875,7 +862,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValues.put(QuestionAnswer.DRAW, "Gosto muito");
+				newValuesQuizz.put(QuestionAnswer.DRAW, "Gosto muito");
 
 			}
 			break;
@@ -883,7 +870,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValues.put(QuestionAnswer.DRAW, "Gosto");
+				newValuesQuizz.put(QuestionAnswer.DRAW, "Gosto");
 			}
 			break;
 		case R.id.rb_desenhos_adultos:
@@ -891,7 +878,7 @@ public class BookActivity extends Activity implements IMainActivity,
 				if (checked) {
 
 					// Assign values for each row.
-					newValues.put(QuestionAnswer.DRAW, "Mto sérios");
+					newValuesQuizz.put(QuestionAnswer.DRAW, "Mto sérios");
 				}
 			break;
 		case R.id.rb_desenhos_crianca:
@@ -899,7 +886,7 @@ public class BookActivity extends Activity implements IMainActivity,
 				if (checked) {
 
 					// Assign values for each row.
-					newValues.put(QuestionAnswer.DRAW, "Mto infantis");
+					newValuesQuizz.put(QuestionAnswer.DRAW, "Mto infantis");
 				}
 			break;
 
@@ -921,7 +908,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValues.put(QuestionAnswer.TEXT, "Texto OK");
+				newValuesQuizz.put(QuestionAnswer.TEXT, "Texto OK");
 
 			}
 			break;
@@ -929,7 +916,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValues.put(QuestionAnswer.TEXT, "Tem pouco");
+				newValuesQuizz.put(QuestionAnswer.TEXT, "Tem pouco");
 
 			}
 			break;
@@ -937,7 +924,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValues.put(QuestionAnswer.TEXT, "Tem mto");
+				newValuesQuizz.put(QuestionAnswer.TEXT, "Tem mto");
 
 			}
 			break;
@@ -959,20 +946,20 @@ public class BookActivity extends Activity implements IMainActivity,
 		case R.id.rb_gosto_mais_ou_menos:
 			if (checked) {
 
-				newValues.put(QuestionAnswer.LIKEIT,
+				newValuesQuizz.put(QuestionAnswer.LIKEIT,
 						QuestionAnswer.LIKE_IT_SOSO);
 			}
 			break;
 		case R.id.rb_gosto_no:
 			if (checked) {
 
-				newValues.put(QuestionAnswer.LIKEIT, QuestionAnswer.LIKE_IT_NO);
+				newValuesQuizz.put(QuestionAnswer.LIKEIT, QuestionAnswer.LIKE_IT_NO);
 
 			}
 			break;
 		case R.id.rb_gosto_sim_mto:
 			if (checked) {
-				newValues.put(QuestionAnswer.LIKEIT,
+				newValuesQuizz.put(QuestionAnswer.LIKEIT,
 						QuestionAnswer.LIKE_IT_VERY);
 
 			}
@@ -996,7 +983,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValues.put(QuestionAnswer.ENIGMA_LIKE,
+				newValuesQuizz.put(QuestionAnswer.ENIGMA_LIKE,
 						"Enigma: gosto linhas");
 
 			}
@@ -1005,7 +992,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValues
+				newValuesQuizz
 						.put(QuestionAnswer.ENIGMA_LIKE, "Enigma: gosto maths");
 
 			}
@@ -1014,7 +1001,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValues
+				newValuesQuizz
 						.put(QuestionAnswer.ENIGMA_LIKE, "Enigma: gosto ecran");
 
 			}
@@ -1023,7 +1010,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValues
+				newValuesQuizz
 						.put(QuestionAnswer.ENIGMA_LIKE, "Enigma: gosto todos");
 
 			}
@@ -1046,7 +1033,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValues
+				newValuesQuizz
 						.put(QuestionAnswer.ENIGMA_DISLIKE, "Não gosto linhas");
 
 			}
@@ -1055,7 +1042,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValues.put(QuestionAnswer.ENIGMA_DISLIKE, "Não gosto maths");
+				newValuesQuizz.put(QuestionAnswer.ENIGMA_DISLIKE, "Não gosto maths");
 
 			}
 			break;
@@ -1063,7 +1050,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValues.put(QuestionAnswer.ENIGMA_DISLIKE, "Não gosto ecran");
+				newValuesQuizz.put(QuestionAnswer.ENIGMA_DISLIKE, "Não gosto ecran");
 
 			}
 			break;
@@ -1085,7 +1072,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValues.put(QuestionAnswer.POINTS, "Pontos: não gosto");
+				newValuesQuizz.put(QuestionAnswer.POINTS, "Pontos: não gosto");
 
 			}
 			break;
@@ -1093,7 +1080,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValues.put(QuestionAnswer.POINTS, "Pontos: motiva");
+				newValuesQuizz.put(QuestionAnswer.POINTS, "Pontos: motiva");
 
 			}
 			break;
@@ -1101,7 +1088,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValues.put(QuestionAnswer.POINTS,
+				newValuesQuizz.put(QuestionAnswer.POINTS,
 						"Pontos: nem aquece nem arrefece");
 
 			}
@@ -1122,33 +1109,33 @@ public class BookActivity extends Activity implements IMainActivity,
 		switch (v.getId()) {
 		case R.id.rb_mistery:
 			if (checked) {
-				newValues.put(QuestionAnswer.TYPE, QuestionAnswer.TYPE_MISTERY);
+				newValuesQuizz.put(QuestionAnswer.TYPE, QuestionAnswer.TYPE_MISTERY);
 
 			}
 			break;
 		case R.id.rb_aventura:
 			if (checked) {
-				newValues.put(QuestionAnswer.TYPE,
+				newValuesQuizz.put(QuestionAnswer.TYPE,
 						QuestionAnswer.TYPE_ADVENTURE);
 
 			}
 			break;
 		case R.id.rb_fantasia:
 			if (checked) {
-				newValues
+				newValuesQuizz
 						.put(QuestionAnswer.TYPE, QuestionAnswer.TYPE_FANTASIA);
 
 			}
 			break;
 		case R.id.rb_rir:
 			if (checked) {
-				newValues.put(QuestionAnswer.TYPE, QuestionAnswer.TYPE_RIR);
+				newValuesQuizz.put(QuestionAnswer.TYPE, QuestionAnswer.TYPE_RIR);
 
 			}
 			break;
 		case R.id.rb_all:
 			if (checked) {
-				newValues.put(QuestionAnswer.TYPE, QuestionAnswer.TYPE_ALL);
+				newValuesQuizz.put(QuestionAnswer.TYPE, QuestionAnswer.TYPE_ALL);
 
 			}
 			break;
@@ -1170,7 +1157,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValues.put(QuestionAnswer.PATH,
+				newValuesQuizz.put(QuestionAnswer.PATH,
 						"Escolha caminhos: não gosto");
 
 			}
@@ -1179,7 +1166,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValues.put(QuestionAnswer.PATH,
+				newValuesQuizz.put(QuestionAnswer.PATH,
 						"Escolha caminhos: nem aquece nem arrefece");
 
 			}
@@ -1188,7 +1175,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValues.put(QuestionAnswer.PATH,
+				newValuesQuizz.put(QuestionAnswer.PATH,
 						"Escolha caminhos: é porreiro");
 
 			}
@@ -1209,19 +1196,19 @@ public class BookActivity extends Activity implements IMainActivity,
 		switch (v.getId()) {
 		case R.id.rb_leio_mto:
 			if (checked) {
-				newValues.put(QuestionAnswer.READS,
+				newValuesQuizz.put(QuestionAnswer.READS,
 						QuestionAnswer.READ_STRONG_READER);
 			}
 			break;
 		case R.id.rb_leio_as_vezes:
 			if (checked) {
-				newValues
+				newValuesQuizz
 						.put(QuestionAnswer.READS, QuestionAnswer.READ_OCASION);
 			}
 			break;
 		case R.id.rb_leio_pouco:
 			if (checked) {
-				newValues.put(QuestionAnswer.READS, QuestionAnswer.READ_NOT);
+				newValuesQuizz.put(QuestionAnswer.READS, QuestionAnswer.READ_NOT);
 			}
 			break;
 		}
@@ -1240,12 +1227,12 @@ public class BookActivity extends Activity implements IMainActivity,
 		switch (v.getId()) {
 		case R.id.rb_sim:
 			if (checked) {
-				newValues.put(QuestionAnswer.OWN_TABLET, "yes");
+				newValuesQuizz.put(QuestionAnswer.OWN_TABLET, "yes");
 			}
 			break;
 		case R.id.rb_nao:
 			if (checked) {
-				newValues.put(QuestionAnswer.OWN_TABLET, "no");
+				newValuesQuizz.put(QuestionAnswer.OWN_TABLET, "no");
 			}
 			break;
 		}
@@ -1255,7 +1242,19 @@ public class BookActivity extends Activity implements IMainActivity,
 		ContentResolver cr = getContentResolver();
 
 		// Insert the row
-		cr.insert(QuestionAnswer.CONTENT_URI, newValues);
+		cr.insert(QuestionAnswer.CONTENT_URI, newValuesQuizz);
+
+	}
+
+	@Override
+	public void onChoiceMadeCommit(String namePreviousPage,
+			Boolean isToPersist, Boolean isToStopMusic) {
+
+		if (isToStopMusic) {
+			stopMusic();
+		}
+
+		onChoiceMadeCommit(namePreviousPage, isToPersist);
 
 	}
 

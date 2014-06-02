@@ -29,8 +29,8 @@ import android.widget.Toast;
 public class PagBedRoomfrg extends Fragment {
 	View view = null;
 	private IMainActivity onChoice;
-	public static String NAME = "Pag bedRoom";
-	private static String icon = "quarto_vazio_icon";
+	public static String NAME = "Quarto";
+	private static String iconNextPage = "quarto_olhar_talisma_icon";
 	private TextView tv1 = null;
 	private DialogBox tv2 = null;
 	private TextView tv3 = null;
@@ -151,6 +151,7 @@ public class PagBedRoomfrg extends Fragment {
 	};
 
 	ImageButton button = null;
+	ImageButton buttonPrev = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -210,8 +211,19 @@ public class PagBedRoomfrg extends Fragment {
 					e.printStackTrace();
 				}
 
-				onChoice.onChoiceMade(fb, PagBedRoomfAmuletfrg.NAME, icon);
+				onChoice.onChoiceMade(fb, PagBedRoomfAmuletfrg.NAME, iconNextPage);
 				onChoice.onChoiceMadeCommit(NAME, true);
+			}
+		});
+		
+		buttonPrev = (ImageButton) view.findViewById(R.id.goToPrevPage);
+		buttonPrev.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+
+				PagBedRoomDarkfrg fb = new PagBedRoomDarkfrg();
+
+				onChoice.onChoiceMade(fb, PagBedRoomDarkfrg.NAME, iconNextPage);
+				onChoice.onChoiceMadeCommit(NAME, false);
 			}
 		});
 

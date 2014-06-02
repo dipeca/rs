@@ -16,8 +16,8 @@ import android.widget.TextView;
 
 public class PagVillageFrg extends Fragment {
 	private IMainActivity onChoice;
-	public static String NAME = "Village";
-	private static String icon = "village_icon";
+	public static String NAME = "Terra de L‡";
+	private static String iconNextPage = "enigma_icon";
 
 	private TextView tv1 = null;
 	private TextView tv2 = null;
@@ -64,7 +64,20 @@ public class PagVillageFrg extends Fragment {
 
 				PagEnigmaFrg fb = new PagEnigmaFrg();
 
-				onChoice.onChoiceMade(fb, PagEnigmaFrg.NAME, icon);
+				onChoice.onChoiceMade(fb, PagEnigmaFrg.NAME, iconNextPage);
+				onChoice.onChoiceMadeCommit(NAME, true);
+			}
+		});
+		
+		final ImageButton buttonPrev = (ImageButton) view
+				.findViewById(R.id.goToPrevPage);
+		
+		buttonPrev.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+
+				PagKingDomfrg fb = new PagKingDomfrg();
+
+				onChoice.onChoiceMade(fb, PagKingDomfrg.NAME, iconNextPage);
 				onChoice.onChoiceMadeCommit(NAME, true);
 			}
 		});

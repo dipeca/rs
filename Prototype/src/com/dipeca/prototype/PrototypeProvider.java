@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteException;
@@ -155,6 +156,140 @@ public class PrototypeProvider extends ContentProvider {
 		// Execute the query.
 		Cursor cursor = queryBuilder.query(db, projection, selection,
 				selectionArgs, groupBy, having, sortOrder);
+
+		if (uriMatcher.match(uri) == QUIZZ_ALLROWS) {
+			// Desenhos
+			selection = QuestionAnswer.DRAW + " = 'Gosto muito'";
+			Long drawingsVeryGood = DatabaseUtils.queryNumEntries(db,
+					tableName, selection, selectionArgs);
+			selection = QuestionAnswer.DRAW + " = 'Gosto'";
+			Long drawingsGood = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+			selection = QuestionAnswer.DRAW + " = 'Mto sérios'";
+			Long drawingsTooSerious = DatabaseUtils.queryNumEntries(db,
+					tableName, selection, selectionArgs);
+			selection = QuestionAnswer.DRAW + " = 'Mto infantis'";
+			Long drawingsTooChildish = DatabaseUtils.queryNumEntries(db,
+					tableName, selection, selectionArgs);
+
+			// Draws
+			Log.d("Quizz: Draws", "Gosto muito: " + drawingsVeryGood
+					+ ";\n Gosto: " + drawingsGood + ";\n Mto sérios: "
+					+ drawingsTooSerious + "; \n Mto infantis: "
+					+ drawingsTooChildish);
+
+			// QuestionAnswer.TEXT, ""
+			selection = QuestionAnswer.TEXT + " = 'Texto OK'";
+			Long textVeryGood = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+			selection = QuestionAnswer.TEXT + " = 'Tem pouco'";
+			Long textVeryLittle = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+			selection = QuestionAnswer.TEXT + " = 'Tem mto'";
+			Long textTooMuch = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+
+			// Text
+			Log.d("Quizz: Text", "Texto OK: " + textVeryGood
+					+ ";\n Tem pouco: "	+ textVeryLittle + "; \n Tem mto: "
+					+ textTooMuch);
+			
+			
+			// Enigma likes ""
+			selection = QuestionAnswer.ENIGMA_LIKE
+					+ " = 'Enigma: gosto linhas'";
+			Long enigmaLines = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+			selection = QuestionAnswer.ENIGMA_LIKE + " = 'Enigma: gosto maths'";
+			Long enigmaMaths = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+			selection = QuestionAnswer.ENIGMA_LIKE + " = 'Enigma: gosto ecran'";
+			Long enigmaScreen = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+			selection = QuestionAnswer.ENIGMA_LIKE + " = 'Enigma: gosto todos'";
+			Long enigmaAll = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+
+			// Enigma likes
+			Log.d("Quizz: enigmas likes", "Enigma: gosto linhas: " + enigmaLines
+					+ ";\n Enigma: gosto maths: " + enigmaMaths + ";\n	Enigma: gosto ecran: "
+					+ enigmaScreen + "; \n Enigma: gosto todos: "
+					+ enigmaAll);
+			
+			// Enigmas donts
+			selection = QuestionAnswer.ENIGMA_DISLIKE + " = 'Não gosto linhas'";
+			Long enigmaNotLines = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+			selection = QuestionAnswer.ENIGMA_DISLIKE + " = 'Não gosto maths'";
+			Long enigmaNotMaths = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+			selection = QuestionAnswer.ENIGMA_DISLIKE + " = 'Não gosto ecran'";
+			Long enigmaNotScreen = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+
+			// Enigma dont likes
+			Log.d("Quizz: enigmas dont likes", "Não gosto linhas: " + enigmaNotLines
+					+ ";\n Não gosto maths: " + enigmaNotMaths + ";\n Não gosto ecran: "
+					+ enigmaNotScreen + ";");
+			
+			// Points
+			selection = QuestionAnswer.POINTS + " = 'Pontos: não gosto'";
+			Long pointsDontLike = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+			selection = QuestionAnswer.POINTS + " = 'Pontos: motiva'";
+			Long pointsLike = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+			selection = QuestionAnswer.POINTS
+					+ " = 'Pontos: nem aquece nem arrefece'";
+			Long pointsNoOpinion = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+			
+			// Points
+			Log.d("Quizz: pontos", "Pontos: não gosto: " + pointsDontLike
+					+ ";\n Pontos: motiva: " + pointsLike + ";\n Pontos: nem aquece nem arrefece "
+					+ pointsNoOpinion + ";");
+			
+			// TYPE reading
+			selection = QuestionAnswer.TYPE + " = '"
+					+ QuestionAnswer.TYPE_MISTERY + "'";
+			Long readingMistery = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+			selection = QuestionAnswer.TYPE + " = '"
+					+ QuestionAnswer.TYPE_ADVENTURE + "'";
+			Long readingAdventure = DatabaseUtils.queryNumEntries(db,
+					tableName, selection, selectionArgs);
+			selection = QuestionAnswer.TYPE + " = '"
+					+ QuestionAnswer.TYPE_FANTASIA + "'";
+			Long readingFantasy = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+			selection = QuestionAnswer.TYPE + " = '" + QuestionAnswer.TYPE_RIR + "'";
+			Long readingRir = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+			selection = QuestionAnswer.TYPE + " = '" + QuestionAnswer.TYPE_ALL + "'";
+			Long readingAll = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+						
+			// Path choosing
+			selection = QuestionAnswer.PATH
+					+ " = 'Escolha caminhos: não gosto'";
+			Long pathDontLike = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+			selection = QuestionAnswer.PATH
+					+ " = 'Escolha caminhos: nem aquece nem arrefece'";
+			Long pathNotImportant = DatabaseUtils.queryNumEntries(db,
+					tableName, selection, selectionArgs);
+			selection = QuestionAnswer.PATH
+					+ " = 'Escolha caminhos: é porreiro'";
+			Long pathLike = DatabaseUtils.queryNumEntries(db, tableName,
+					selection, selectionArgs);
+
+			// Enigma dont likes
+			Log.d("Quizz: path choosing", "Escolha caminhos: não gosto: " + pathDontLike
+					+ ";\n Escolha caminhos: nem aquece nem arrefece: " + pathNotImportant + ";\n	Escolha caminhos: é porreiro: "
+					+ pathLike + ";");
+			
+		}
+
 		// Return the result Cursor.
 		return cursor;
 	}
@@ -243,6 +378,14 @@ public class PrototypeProvider extends ContentProvider {
 			}
 			count = db.delete(User.TABLE_NAME, finalWhere, whereArgs);
 			break;
+		case CHAPTER_ALLROWS:
+			// PERFORM REGULAR DELETE
+			count = db.delete(Chapter.TABLE_NAME, where, whereArgs);
+			break;
+		case OBJECT_ALLROWS:
+			// PERFORM REGULAR DELETE
+			count = db.delete(Objects.TABLE_NAME, where, whereArgs);
+			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
@@ -260,7 +403,7 @@ public class PrototypeProvider extends ContentProvider {
 	private static class SchemaHelper extends SQLiteOpenHelper {
 
 		public static final String DATABASE_NAME = "reading_project.db";
-		public static final int DATABASE_VERSION = 17;
+		public static final int DATABASE_VERSION = 1;
 
 		public SchemaHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -268,7 +411,7 @@ public class PrototypeProvider extends ContentProvider {
 
 		public SchemaHelper(Context context, String name,
 				CursorFactory factory, int version) {
-			super(context, name, factory, version); 
+			super(context, name, factory, version);
 		}
 
 		@Override

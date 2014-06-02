@@ -27,7 +27,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Costumas ler muito em casa?" />
+                    android:text="Gostas de ler em casa?" />
 
                 <RadioGroup
                     android:id="@+id/leitura"
@@ -223,7 +223,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Qual o enigma que mais gostaste?" />
+                    android:text="Qual o enigma que MAIS gostaste?" />
 
                 <RadioGroup
                     android:id="@+id/enigmas"
@@ -236,28 +236,28 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="onRadioButtonRiddleLikeClicked"
-                        android:text="O enigma das contas matemáticas (abrir cadeado)" />
+                        android:text="O enigma de abrir o cadeado." />
 
                     <RadioButton
                         android:id="@+id/rb_enigma_screen"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="onRadioButtonRiddleLikeClicked"
-                        android:text="O enigma de encontrar coisas nos ecrans (entrada secreta no quarto)" />
+                        android:text="O enigma de encontrar a entrada secreta no quarto." />
 
                     <RadioButton
                         android:id="@+id/rb_enigma_linhas"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="onRadioButtonRiddleLikeClicked"
-                        android:text="O enigma de desenhar linhas" />
+                        android:text="O enigma de desenhar os quadrados." />
 
                     <RadioButton
                         android:id="@+id/rb_enigma_todos"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="onRadioButtonRiddleLikeClicked"
-                        android:text="Gosto de todos os enigmas" />
+                        android:text="Gosto de todos os enigmas." />
                 </RadioGroup>
             </LinearLayout>
 
@@ -269,7 +269,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Qual o enigma que menos gostaste?" />
+                    android:text="Qual o enigma que MENOS gostaste?" />
 
                 <RadioGroup
                     android:id="@+id/not_enigmas"
@@ -282,21 +282,21 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="onRadioButtonRiddleDislikeClicked"
-                        android:text="O enigma das contas matemáticas (abrir cadeado)" />
+                        android:text="O enigma de abrir o  cadeado" />
 
                     <RadioButton
                         android:id="@+id/rb_not_enigma_screen"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="onRadioButtonRiddleDislikeClicked"
-                        android:text="O enigma de encontrar coisas nos ecrans (entrada secreta no quarto)" />
+                        android:text="O enigma de encontrar a entrada secreta no quarto." />
 
                     <RadioButton
                         android:id="@+id/rb_not_enigma_linhas"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="onRadioButtonRiddleDislikeClicked"
-                        android:text="O enigma de desenhar linhas" />
+                        android:text="O enigma de desenhar os quadrados" />
                 </RadioGroup>
             </LinearLayout>
         </LinearLayout>
@@ -317,7 +317,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="O que achas do sistema de pontos?" />
+                    android:text="O que achas dos pontos?" />
 
                 <RadioGroup
                     android:id="@+id/points"
@@ -330,21 +330,21 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="onRadioButtonPointsClicked"
-                        android:text="Os pontos não me chateia nem me interessa" />
+                        android:text="Os pontos não me chateiam nem me interessam." />
 
                     <RadioButton
                         android:id="@+id/rb_points_compare"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="onRadioButtonPointsClicked"
-                        android:text="Os pontos é porreiro para motivar e comparar com os amigos" />
+                        android:text="Ter os pontos é fixe." />
 
                     <RadioButton
                         android:id="@+id/rb_points_bad"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="onRadioButtonPointsClicked"
-                        android:text="Os pontos não servem para nada" />
+                        android:text="Os pontos não servem para nada." />
                 </RadioGroup>
             </LinearLayout>
 
@@ -356,7 +356,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="O que achas de escolher os caminhos do Gui?" />
+                    android:text="O que achas de ter que escolher os caminhos do Gui?" />
 
                 <RadioGroup
                     android:id="@+id/text"
@@ -369,21 +369,21 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="onRadioButtonPathClicked"
-                        android:text="É interessante ter de escolher" />
+                        android:text="É fixe ter de escolher os caminhos." />
 
                     <RadioButton
                         android:id="@+id/rb_path_not_important"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="onRadioButtonPathClicked"
-                        android:text="Não interessa muito escolher os caminhos" />
+                        android:text="Escolher os caminhos é-me indiferente." />
 
                     <RadioButton
                         android:id="@+id/rb_path_bah"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="onRadioButtonPathClicked"
-                        android:text="Não gosto de ter de escolher" />
+                        android:text="Não gosto de ter de escolher os caminhos." />
                 </RadioGroup>
             </LinearLayout>
         </LinearLayout>
@@ -476,7 +476,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="64dp"
             android:layout_marginLeft="12dp"
-            android:background="@drawable/button_black"
+            android:background="@drawable/button_back"
             android:src="@drawable/ic_action_play"
             android:text="@string/next" />
     </LinearLayout>

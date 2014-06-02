@@ -18,11 +18,12 @@ import android.widget.RelativeLayout.LayoutParams;
 public class PagRobotDestroyedfrg extends Fragment {
 	View view = null;
 	private IMainActivity onChoice;
-	public static String NAME = "Robot destroyed";
+	public static String NAME = "Robot foi destru’do";
 	private TextView tv1 = null;
 	private TextView tv3 = null;
 	private DialogBox dialog = null;
 	private boolean isTextHide = false;
+	public static String iconNextPage = "theend_icon";
 
 	private static Bitmap bitmap1;
 
@@ -38,8 +39,8 @@ public class PagRobotDestroyedfrg extends Fragment {
 	}
 
 	private ImageView image1;
-	private ImageView image2;
-
+	private ImageView image2;   
+ 
 	private void loadImages() {
 		Log.d(NAME, "loadImages()");
 		image1 = (ImageView) view.findViewById(R.id.pag1ImageView);
@@ -49,7 +50,7 @@ public class PagRobotDestroyedfrg extends Fragment {
 		AnimationDrawable animation = (AnimationDrawable) image1.getDrawable();
 		animation.setOneShot(true);
 		animation.start();
-	}
+	} 
  
 	private void loadText() {
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
@@ -67,8 +68,10 @@ public class PagRobotDestroyedfrg extends Fragment {
 		RelativeLayout.LayoutParams rl = (LayoutParams) dialog.getLayoutParams();
 		rl.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
 		rl.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-		rl.removeRule(RelativeLayout.ALIGN_LEFT);
-		rl.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		//rl.removeRule(RelativeLayout.ALIGN_LEFT);
+		//rl.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		Utils.removeRule(rl, RelativeLayout.ALIGN_LEFT);
+		Utils.removeRule(rl, RelativeLayout.ALIGN_PARENT_BOTTOM);
 	}
 	
 	
@@ -123,10 +126,24 @@ public class PagRobotDestroyedfrg extends Fragment {
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				PagVillageFrg fb = new PagVillageFrg();
+				// Do the action associated with the RED region
+				PagForestPath frg = new PagForestPath();
 
-				onChoice.onChoiceMade(fb, PagVillageFrg.NAME);
+				onChoice.onChoiceMade(frg, PagForestPath.NAME, iconNextPage);
 				onChoice.onChoiceMadeCommit(NAME, true);
+			}
+		});
+		
+		final ImageButton buttonPrev = (ImageButton) view
+				.findViewById(R.id.goToPrevPage);
+		
+		buttonPrev.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+
+				PagRobot fb = new PagRobot();
+
+				onChoice.onChoiceMade(fb, PagRobot.NAME, null);
+				onChoice.onChoiceMadeCommit(NAME, false);
 			}
 		});
 

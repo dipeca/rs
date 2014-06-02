@@ -47,7 +47,7 @@ public class JourneyListAdapter extends ArrayAdapter<JourneyItem> {
 		TextView chapterName = (TextView) todoView.findViewById(R.id.chapter);
 		//dateView.setText(dateString);
 		chapterName.setText(chapterString);
-		icon.setBackground(iconDrawable);
+		icon.setBackgroundDrawable(iconDrawable);
 
 		return todoView;
 	}

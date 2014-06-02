@@ -35,6 +35,7 @@ public class PagPathChoiceFrg extends Fragment implements OnTouchListener {
 			Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.pag_one_image_clickable, container, false);
 
+		BookActivity.stopMusic();
 		loadImages();
 
 		view.setOnTouchListener(this);
@@ -44,12 +45,15 @@ public class PagPathChoiceFrg extends Fragment implements OnTouchListener {
 
 	private void transitionFragment(boolean isShadowPath) {
 		// record the choice on main activity
+		String iconNextPage;
 		if (isShadowPath) {
+			iconNextPage = "companheira_presa_icon";
 			PagFindFriend frg = new PagFindFriend();
-			onChoice.onChoiceMade(frg, PagFindFriend.NAME);
+			onChoice.onChoiceMade(frg, PagFindFriend.NAME, iconNextPage);
 		} else {
+			iconNextPage = "robot_icon";
 			PagRobot frg = new PagRobot();
-			onChoice.onChoiceMade(frg, PagRobot.NAME);
+			onChoice.onChoiceMade(frg, PagRobot.NAME, iconNextPage);
 		}
 
 		onChoice.onChoiceMadeCommit(NAME, true);

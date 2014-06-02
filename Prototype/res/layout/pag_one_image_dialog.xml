@@ -87,6 +87,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/textPag1"
         android:layout_alignParentBottom="true"
+        android:layout_marginLeft="48dp"
         android:layout_marginBottom="12dp" />
 
     <TextView
@@ -108,10 +109,22 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="12dp"
-        android:background="@drawable/button_black"
+        android:background="@drawable/button_back"
         android:src="@drawable/ic_action_play"
         android:text="@string/next" />
 
+    <ImageButton
+        android:id="@+id/goToPrevPage"
+        style="@style/ButtonText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="12dp"
+        android:background="@drawable/button_back"
+        android:src="@drawable/ic_action_prev"
+        android:text="@string/next" />
+    
     <!-- <Button -->
     <!-- android:id="@+id/finn" -->
     <!-- android:layout_width="wrap_content" -->
