@@ -29,8 +29,8 @@ import android.widget.Toast;
 public class PagBedRoomfrg extends Fragment {
 	View view = null;
 	private IMainActivity onChoice;
-	public static String NAME = "Quarto";
-	private static String iconNextPage = "quarto_olhar_talisma_icon";
+	public static int NAME = R.string.bedroom;
+	public static int icon = R.drawable.quarto_vazio_icon;
 	private TextView tv1 = null;
 	private DialogBox tv2 = null;
 	private TextView tv3 = null;
@@ -118,7 +118,7 @@ public class PagBedRoomfrg extends Fragment {
 		iv2 = (ImageView) view.findViewById(R.id.pag1ImageViewAmuleto);
 
 		density = (int) getResources().getDisplayMetrics().density;
-		Log.d(NAME, "Density: " + density);
+		Log.d(getString(NAME), "Density: " + density);
 		bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
 				R.drawable.quarto, 600, 300);
 		iv1.setImageBitmap(bitmap1);
@@ -126,8 +126,6 @@ public class PagBedRoomfrg extends Fragment {
 		tv2.setImg1Id(getResources().getDrawable(R.anim.rocket));
 		tv2.setImg2Id(getResources().getDrawable(R.anim.gui_quarto_anim));
 	}
-
-	private Handler mHandler = new Handler();
 
 	private Runnable mUpdateTimeTask = new Runnable() {
 		public void run() {
@@ -211,7 +209,7 @@ public class PagBedRoomfrg extends Fragment {
 					e.printStackTrace();
 				}
 
-				onChoice.onChoiceMade(fb, PagBedRoomfAmuletfrg.NAME, iconNextPage);
+				onChoice.onChoiceMade(fb, PagBedRoomfAmuletfrg.NAME, PagBedRoomfAmuletfrg.icon);
 				onChoice.onChoiceMadeCommit(NAME, true);
 			}
 		});
@@ -222,7 +220,7 @@ public class PagBedRoomfrg extends Fragment {
 
 				PagBedRoomDarkfrg fb = new PagBedRoomDarkfrg();
 
-				onChoice.onChoiceMade(fb, PagBedRoomDarkfrg.NAME, iconNextPage);
+				onChoice.onChoiceMade(fb, PagBedRoomDarkfrg.NAME, PagBedRoomfAmuletfrg.icon);
 				onChoice.onChoiceMadeCommit(NAME, false);
 			}
 		});

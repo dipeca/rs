@@ -21,7 +21,8 @@ import android.widget.Toast;
 public class PagFindFriend extends Fragment implements OnTouchListener {
 	View view = null;
 	private IMainActivity onChoice;
-	public static String NAME = "Encontrou uma amiga";
+	public static int NAME = R.string.foundFriend;
+	public static int icon = R.drawable.companheira_presa_icon;
 	private TextView tv1 = null;
 	private boolean isTextHide = false;
 
@@ -45,7 +46,7 @@ public class PagFindFriend extends Fragment implements OnTouchListener {
 	private int density;
 
 	private void loadImages() {
-		Log.d(NAME, "loadImages()");
+		Log.d(getString(NAME), "loadImages()");
 		iv1 = (ImageView) view.findViewById(R.id.page3Image);
 		iv2 = (ImageView) view.findViewById(R.id.page3ImageClick);
 
@@ -74,7 +75,7 @@ public class PagFindFriend extends Fragment implements OnTouchListener {
 		view = inflater.inflate(R.layout.pag_one_image_clickable, container, false);
 		long endTime = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
-		Log.d(NAME, "onCreateView after inflate time =" + totalTime);
+		Log.d(getString(NAME), "onCreateView after inflate time =" + totalTime);
 
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
 		tv1.setText(R.string.pagFoundFriend);
@@ -90,7 +91,7 @@ public class PagFindFriend extends Fragment implements OnTouchListener {
 
 	@Override
 	public void onDetach() {
-		Log.d(NAME, " onDetach()");
+		Log.d(getString(NAME), " onDetach()");
 		super.onDetach();
 
 		if (bitmap1 != null) {
@@ -120,20 +121,24 @@ public class PagFindFriend extends Fragment implements OnTouchListener {
 			int tolerance = 25;
 			if (Utils.closeMatch(Color.RED, touchColor, tolerance)) {
 				// Do the action associated with the RED region
-				PagForestPath frg = new PagForestPath();
+//				PagForestPath frg = new PagForestPath();
+//				onChoice.onChoiceMade(frg, PagForestPath.NAME, null);
+				PagAfterChallenge frg = new PagAfterChallenge();
 
-				onChoice.onChoiceMade(frg, PagForestPath.NAME, null);
+				onChoice.onChoiceMade(frg, PagAfterChallenge.NAME, PagAfterChallenge.icon);
+				
 				FragmentTransaction ft = getFragmentManager()
 						.beginTransaction();
 				ft.setTransition(R.animator.right_to_left);
 
-				Pag4Frg fb = new Pag4Frg();
+				PagLockMaths fb = new PagLockMaths();
+				fb.isVaultPage(false);
+				
 				ft.replace(R.id.detailFragment, fb);
-				ft.addToBackStack(NAME);
+				//ft.addToBackStack(getString(NAME));
 				ft.commit();
 			} else {
-				Toast.makeText(getActivity(), "Resto da imagem clicada",
-						Toast.LENGTH_SHORT).show();
+				Log.d("PagFindFriend", "Resto da imagem clicada");
 			}
 			break;
 		}

@@ -17,7 +17,7 @@ import android.widget.ImageView;
 public class PagQuizz extends Fragment {
 	View view = null;
 	private IMainActivity onChoice;
-	public static String NAME = "Quizz";
+	public static int NAME = R.string.action_settings;
 	ImageView amuleto = null;
 
 	@Override
@@ -61,7 +61,7 @@ public class PagQuizz extends Fragment {
 				
 				PagTheEnd fb = new PagTheEnd();
 
-				onChoice.onChoiceMade(fb, PagTheEnd.NAME, null);
+				onChoice.onChoiceMade(fb, PagTheEnd.NAME, -1);
 				onChoice.onChoiceMadeCommit(NAME, true);
 				
 			}
@@ -72,7 +72,6 @@ public class PagQuizz extends Fragment {
 	
 	@Override
 	public void onDetach() {
-		Log.d(NAME, "onDetach()");
 		super.onDetach();
 
 	}

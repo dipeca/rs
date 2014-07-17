@@ -2,6 +2,8 @@ package com.dipeca.prototype;
 
 import java.util.Date;
 
+import android.graphics.Bitmap;
+
 public class ObjectItem {
 
 	public ObjectItem() {
@@ -16,11 +18,14 @@ public class ObjectItem {
 		this.created = created;
 	}
 
-	public static final int TYPE_BOOK = 1;
+	public static final int TYPE_BOOK_OF_SPELS = 1;
 	public static final int TYPE_PAPER = 2;
 	public static final int TYPE_BOTTLE = 3;
-	public static final int TYPE_MASK = 4;
+	public static final int TYPE_ROPE = 4;
 	public static final int TYPE_AMULET = 5;
+	public static final int TYPE_PLANK = 6;
+	public static final int TYPE_BOOK_OF_SCIENCES = 7;
+	public static final int TYPE_CORN = 8;
 
 	private Long id;
 	private String name;
@@ -59,5 +64,16 @@ public class ObjectItem {
 	}
 
 	Date created;
+	
+	Bitmap bitmap = null;
+
+	public Bitmap getBitmap() {
+		return bitmap;
+	}
+
+	public void setBitmap(Bitmap bitmap) {
+		this.bitmap = bitmap;
+	}
+	
 
 }

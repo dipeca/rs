@@ -2,8 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/back"
-    android:orientation="vertical" >
+    android:background="@drawable/backoldpaper"
+    android:orientation="vertical"
+    android:padding="8dp" >
 
     <ImageView
         android:id="@+id/imageView1"
@@ -27,7 +28,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tirar foto" />
+            android:text="@string/takePic" />
     </LinearLayout>
 
     <FrameLayout
@@ -41,7 +42,7 @@
             android:layout_height="24dp"
             android:layout_marginLeft="8dp"
             android:fontFamily="sans"
-            android:text="Percurso"
+            android:text="@string/journey"
             android:textColor="#444444"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -51,9 +52,9 @@
             android:name="com.dipeca.prototype.JourneySoFar"
             android:layout_width="198dp"
             android:layout_height="fill_parent"
+            android:layout_marginBottom="8dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="34dp"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginTop="34dp" />
     </FrameLayout>
 
     <LinearLayout
@@ -74,19 +75,6 @@
             android:fontFamily="sans"
             android:paddingLeft="2dp"
             android:paddingTop="4dp"
-            android:text="100"
-            android:textColor="#444444"
-            android:textSize="20sp"
-            android:textStyle="bold|italic" />
-
-        <TextView
-            android:id="@+id/points"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:fontFamily="sans"
-            android:paddingLeft="2dp"
-            android:paddingTop="4dp"
-            android:text="Pontos"
             android:textColor="#444444"
             android:textSize="20sp"
             android:textStyle="bold|italic" />
@@ -96,8 +84,9 @@
         android:id="@+id/textPag2"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
         android:fontFamily="sans"
-        android:text="Objetos"
+        android:text="@string/objects"
         android:textColor="#444444"
         android:textSize="20sp"
         android:textStyle="bold" />

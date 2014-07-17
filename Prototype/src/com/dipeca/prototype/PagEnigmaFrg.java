@@ -2,6 +2,8 @@ package com.dipeca.prototype;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
@@ -15,6 +17,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
@@ -24,7 +27,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -34,8 +36,8 @@ import android.widget.Toast;
 public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 
 	private IMainActivity onChoice;
-	public static String NAME = "Enigma";
-	private static String iconNextPage = "village_icon";
+	public static int NAME = R.string.enigma;
+	public static int icon = R.drawable.enigma_icon;
 	private static Toast toastObject = null;
 
 	ImageView imageView = null;
@@ -45,7 +47,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 	Canvas canvas = null;
 	Bitmap bitmap = null;
 	ImageButton btn = null;
-	Button btnHelp = null;
+	ImageButton btnHelp = null;
 
 	Display display = null;
 	Point size = null;
@@ -58,7 +60,11 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 	private int height = 400;
 
 	private float density = 1;
-
+	// We will give 15 px of margin. So everything less then 15px of
+	// difference is considered accurate
+	private float fingerTouchMargin = 15 * density;
+	
+	
 	private float converterX = 1.66f;
 	private float converterY = 5;
 
@@ -79,12 +85,15 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 		}
 	}
 
+	Timer timer = new Timer(false);
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
 		density = (float) getResources().getDisplayMetrics().density;
-
+		fingerTouchMargin = 15 * density;
+		
 		// Converts 400 dip into its equivalent px
 		Resources r = getResources();
 		float widthPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
@@ -140,7 +149,8 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		params.addRule(RelativeLayout.CENTER_IN_PARENT);
 		layout.addView(imageView, params);
-		layout.setBackgroundColor(Color.BLACK);
+
+		layout.setBackgroundResource(R.drawable.back_black);
 
 		drawCorrectLines();
 		drawIncorrectLines();
@@ -163,6 +173,9 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 		layout.setOnTouchListener(this);
 
 		BookActivity.playMusic(R.raw.timer);
+
+		startTimer();
+
 		return layout;
 	}
 
@@ -193,9 +206,9 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 
 		layout.addView(btn, params1);
 
-		btnHelp = new Button(getActivity());
-		btnHelp.setText(getString(R.string.findHelp));
-		btn.setBackgroundResource(R.drawable.button_back);
+		btnHelp = new ImageButton(getActivity());
+		btnHelp.setImageResource(R.drawable.ic_action_help);
+		btnHelp.setBackgroundResource(R.drawable.button_back);
 
 		RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -214,11 +227,15 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 			@Override
 			public void onClick(View v) {
 				if (isMazeSolved) {
+
 					PagVillageAfterEnigmaFrg fb = new PagVillageAfterEnigmaFrg();
 
-					onChoice.onChoiceMade(fb, PagVillageAfterEnigmaFrg.NAME,
-							iconNextPage);
-					onChoice.onChoiceMadeCommit(NAME, true);
+					onChoice.onChoiceMade(
+							fb,
+							getString(PagVillageAfterEnigmaFrg.NAME),
+							getResources().getResourceName(
+									PagVillageAfterEnigmaFrg.icon));
+					onChoice.onChoiceMadeCommit(getString(NAME), true);
 
 				} else {
 					cancelToast();
@@ -241,7 +258,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 						try {
 							pixelColor = bitmap.getPixel(lg.getX3(), lg.getY3());
 						} catch (IllegalArgumentException e) {
-							Log.d(NAME, "Error on: " + e);
+							Log.d(getString(NAME), "Error on: " + e);
 						}
 						// If the line is not draw already then we draw it, once
 						if (!(Color.rgb(Color.red(Color.BLACK),
@@ -268,6 +285,31 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 				checkMazeDone();
 			}
 		});
+	}
+
+	private void startTimer() {
+		final Handler handler = new Handler();
+		TimerTask timerTask = new TimerTask() {
+			@Override
+			public void run() {
+				handler.post(new Runnable() {
+					@Override
+					public void run() {
+						onChoice.setAddPoints(-1);
+
+					}
+				});
+			}
+		};
+		timer.scheduleAtFixedRate(timerTask, 5000, 5000); // 1000 = 1 second.
+	}
+
+	private void stopTimer() {
+		// Reset timer
+		timer.cancel();
+		timer.purge();
+		timer = null;
+
 	}
 
 	private void drawCrosses() {
@@ -575,13 +617,15 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 
 			isMazeSolved = true;
 			BookActivity.stopOrPlayMusic();
+			// stop timer
+			stopTimer();
 		}
 
 		cancelToast();
 		toastObject = Toast.makeText(this.getActivity(),
 				getString(R.string.youHaveDoneIt), Toast.LENGTH_SHORT);
 		toastObject.show();
-
+		
 		return true;
 	}
 
@@ -591,6 +635,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 
 		}
 	}
+
 
 	/*
 	 * This function is equivalent to the other function to get the lines from
@@ -629,7 +674,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 			// As opposite to the others functions, we don't care if this point
 			// is inside the line or not
 			// !! WE ONLY COMPARE THE EQUATION TO THE POINT
-			if (value < 15) {
+			if (value < fingerTouchMargin) {
 				return lg;
 			}
 		}
@@ -665,7 +710,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 
 			// We will give 15 px of margin. So everything less then 15px of
 			// difference is considered accurate
-			if (value < 15
+			if (value < fingerTouchMargin
 					&& (p.x >= Math.min(lg.getX1(), lg.getX2() - 10) && p.x <= Math
 							.max(lg.getX1(), lg.getX2()) + 10) /*
 																 * The x point
@@ -685,6 +730,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 		return null;
 	}
 
+	
 	private LineSegment getClosestLineIncorrect(Point p) {
 		int b1 = 200;
 		int m1 = -1;
@@ -705,7 +751,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 				value = Math.abs(lg.getX1() - p.x);
 			}
 
-			if (value < 15
+			if (value < fingerTouchMargin
 					&& (p.x >= Math.min(lg.getX1(), lg.getX2() - 10) && p.x <= Math
 							.max(lg.getX1(), lg.getX2()) + 10)
 					&& (p.y >= Math.min(lg.getY1(), lg.getY2()) - 10 && p.y <= Math

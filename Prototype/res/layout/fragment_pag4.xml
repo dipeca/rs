@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activityRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/back"
@@ -7,31 +8,50 @@
     android:tag="Cadeado" >
 
     <ImageView
+        android:id="@+id/imageViewBack"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:scaleType="fitXY" />
+
+    <ImageView
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:scaleType="fitXY"
-         />
+        android:scaleType="fitXY" />
 
     <TextView
         android:id="@+id/textPag1"
+        style="@style/StoryBlock"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/container_dropshadow"
-        style="@style/StoryBlock" 
-        android:text="@string/pag4_1"/>
+        android:text="@string/pag4_1" />
 
     <RelativeLayout
         android:id="@+id/mathTr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
-    
+        android:layout_centerVertical="true"
+        android:paddingTop="200dp" />
+
+    <ImageButton
+        android:id="@+id/btnHelp"
+        style="@style/ButtonText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="12dp"
+        android:background="@drawable/button_back"
+        android:src="@drawable/ic_action_help" />
+
     <ImageButton
         android:id="@+id/goToNextPage"
         style="@style/ButtonText"

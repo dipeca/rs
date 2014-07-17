@@ -24,8 +24,8 @@ import android.widget.Toast;
 public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener {
 	View view = null;
 	private IMainActivity onChoice;
-	public static String NAME = "O amuleto";
-	private static String iconNextPage = "quarto_olhar_talisma_icon";
+	public static int NAME = R.string.TheAmulet;
+	public static int icon = R.drawable.quarto_olhar_talisma_icon;
 	private TextView tv1 = null;
 	private DialogBox tv2 = null;
 	private TextView tv3 = null;
@@ -175,7 +175,7 @@ public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener {
 				}
 
 				if (isAmuletAcknoledged) {
-					onChoice.onChoiceMade(fb, PagFindPortalFrg.NAME, iconNextPage);
+					onChoice.onChoiceMade(fb, PagFindPortalFrg.NAME, PagFindPortalFrg.icon);
 					onChoice.onChoiceMadeCommit(NAME, true);
 				} else {
 					Toast.makeText(getActivity(), R.string.theAmuletWarning,
@@ -191,7 +191,7 @@ public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener {
 
 				PagBedRoomfrg fb = new PagBedRoomfrg();
 
-				onChoice.onChoiceMade(fb, PagBedRoomfrg.NAME, iconNextPage);
+				onChoice.onChoiceMade(fb, PagBedRoomfrg.NAME, PagBedRoomfrg.icon);
 				onChoice.onChoiceMadeCommit(NAME, false);
 			}
 		});
@@ -212,13 +212,13 @@ public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener {
 		tv3.setVisibility(View.GONE);
 
 		RelativeLayout.LayoutParams rl = (LayoutParams) tv1.getLayoutParams();
-		rl.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+		rl.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
 		rl.setMargins(16 * density, 16 * density, 16 * density, 16 * density);
 		//rl.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		Utils.removeRule(rl, RelativeLayout.ALIGN_PARENT_LEFT);
 		 
 		RelativeLayout.LayoutParams rl2 = (LayoutParams) tv2.getLayoutParams();
-		rl2.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+		rl2.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
 		rl2.setMargins(60 * density, 16 * density, 16 * density, 16 * density);
 		//rl2.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		Utils.removeRule(rl2, RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -282,8 +282,8 @@ public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener {
 		Log.d("BedRoom ", "BedRoom onDetach()");
 		super.onDetach();
 
-		bitmap1.recycle();
-		bitmap1 = null;
+		//bitmap1.recycle();
+		//bitmap1 = null;
 
 	}
 
@@ -313,7 +313,7 @@ public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener {
 
 				long end = new Date().getTime();
 				long timeTotal = end - start;
-				System.out.println("Time = " + timeTotal);
+				Log.d("PagBedRoomAm","Time = " + timeTotal);
 			}
 			break;
 		}

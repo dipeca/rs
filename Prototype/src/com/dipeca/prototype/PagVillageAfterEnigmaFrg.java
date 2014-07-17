@@ -16,8 +16,8 @@ import android.widget.TextView;
 
 public class PagVillageAfterEnigmaFrg extends Fragment {
 	private IMainActivity onChoice;
-	public static String NAME = "Enigma resolvido";
-	private static String iconNextPage = "caminho_somebody_icon";
+	public static int NAME = R.string.enigmaSolved;
+	public static int icon = R.drawable.village_icon;
 
 	private TextView tv1 = null;
 	private TextView tv2 = null;
@@ -52,7 +52,7 @@ public class PagVillageAfterEnigmaFrg extends Fragment {
 
 		long endTime = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
-		Log.d(NAME, "onCreateView after inflate time ="
+		Log.d(getString(NAME), "onCreateView after inflate time ="
 				+ totalTime);
 
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
@@ -63,7 +63,7 @@ public class PagVillageAfterEnigmaFrg extends Fragment {
 		RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(
 				dialogB.getLayoutParams().width, 
 				dialogB.getLayoutParams().height);
-		params1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		params1.addRule(RelativeLayout.ALIGN_RIGHT,R.id.goToNextPage );
 		params1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		params1.addRule(RelativeLayout.ALIGN_TOP, R.id.textPag1);
 
@@ -79,10 +79,10 @@ public class PagVillageAfterEnigmaFrg extends Fragment {
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				PagAfterChallenge fb = new PagAfterChallenge();
+				PagSomethingMoving fb = new PagSomethingMoving();
 
-				onChoice.onChoiceMade(fb, PagAfterChallenge.NAME, iconNextPage);
-				onChoice.onChoiceMadeCommit(NAME, true);
+				onChoice.onChoiceMade(fb, getString(PagSomethingMoving.NAME), getResources().getResourceName(PagSomethingMoving.icon));
+				onChoice.onChoiceMadeCommit(getString(NAME), true);
 			}
 		});
 
@@ -94,8 +94,8 @@ public class PagVillageAfterEnigmaFrg extends Fragment {
 
 				PagVillageFrg fb = new PagVillageFrg();
 
-				onChoice.onChoiceMade(fb, PagVillageFrg.NAME, iconNextPage);
-				onChoice.onChoiceMadeCommit(NAME, false);
+				onChoice.onChoiceMade(fb, getString(PagVillageFrg.NAME), getResources().getResourceName(PagVillageFrg.icon));
+				onChoice.onChoiceMadeCommit(getString(NAME), false);
 			}
 		});
 		

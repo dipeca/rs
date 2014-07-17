@@ -3,6 +3,7 @@ package com.dipeca.prototype;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.ActionBar.LayoutParams;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -10,9 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class PagLockMaths extends Fragment {
@@ -24,8 +27,12 @@ public class PagLockMaths extends Fragment {
 	MathMentalPyramidFrg math = null;
 	View view = null;
 	ImageView iv1;
+	ImageView ivBack;
 	private float density = 1;
-
+	private static ImageButton btnHelp = null;
+	private static Bitmap lock = null;
+	private static Bitmap background = null;
+	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -37,16 +44,37 @@ public class PagLockMaths extends Fragment {
 		}
 	}
 
+	private static boolean isVaultPageToShow = false;
+	
+	public void isVaultPage(boolean isVault){
+		isVaultPageToShow = isVault;
+	}
+	
 	private void loadImages() {
 		Log.d(NAME, "loadImages()");
 
 		iv1 = (ImageView) view.findViewById(R.id.imageView1);
-
-		Bitmap mountain = Utils.decodeSampledBitmapFromResource(getResources(),
+		ivBack = (ImageView) view.findViewById(R.id.imageViewBack);
+		
+		lock = Utils.decodeSampledBitmapFromResource(getResources(),
 				R.drawable.cadeado, 600,
 				300);
-		iv1.setImageBitmap(mountain);
+		iv1.setImageBitmap(lock);
 
+		background = null;
+		
+		if(isVaultPageToShow){
+			background = Utils.decodeSampledBitmapFromResource(getResources(),
+					R.drawable.cofre_fechado_back, 600,
+					300);
+		}else{
+			background = Utils.decodeSampledBitmapFromResource(getResources(),
+					R.drawable.companheira_presa_lock_bg, 600,
+					300);
+		}
+
+		ivBack.setImageBitmap(background);
+		
 	}
 
 	@Override
@@ -73,12 +101,24 @@ public class PagLockMaths extends Fragment {
 			@Override
 			public void onClick(View arg0) { 
 				if (math.isLockUnlocked()) {
-					onChoice.onChoiceMadeCommit("Cadeado", true);
+					onChoice.onChoiceMadeCommit(R.string.lock, true);
 				}
 
 			}
 		});
+		
+		btnHelp = (ImageButton) view.findViewById(R.id.btnHelp);
+		btnHelp.setOnClickListener(new OnClickListener() {
 
+			@Override
+			public void onClick(View v) {
+				math.setHelpVisible();
+				// For the help we take 20
+				onChoice.setAddPoints(-20);
+			}
+		});
+		
+		
 		final View activityRootView = view.findViewById(R.id.activityRoot);
 		activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 		    @Override
@@ -94,11 +134,28 @@ public class PagLockMaths extends Fragment {
 				        view.findViewById(R.id.mathTr).setPadding(0, (int) (160 * density), 0, 0);
 			        }
 			        else{
-			            view.findViewById(R.id.mathTr).setPadding(0, (int) (264 * density), 0, 0);
+			            view.findViewById(R.id.mathTr).setPadding(0, (int) (232 * density), 0, 0);
 			        }
 		        }
 		     }
 		});
 		return view;
+	}
+	
+	
+	@Override
+	public void onDetach() {
+		Log.d(NAME, " onDetach()");
+		super.onDetach();
+
+		if (lock != null) {
+			lock.recycle();
+			lock = null;
+		}
+
+		if (background != null) {
+			background.recycle();
+			background = null;
+		}
 	}
 }

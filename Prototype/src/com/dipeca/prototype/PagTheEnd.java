@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 public class PagTheEnd extends Fragment {
 	private IMainActivity onChoice;
-	public static String NAME = "Fim da hist—ria";
+	public static int NAME = R.string.theEnd;
 
 	AnimationDrawable backGroundChangeAnimJake;
 	AnimationDrawable backGroundChangeAnimGui;
@@ -28,7 +28,7 @@ public class PagTheEnd extends Fragment {
 
 	private TextView tv1 = null;
 	private TextView tv2 = null; 
-	private DialogBox dialogBox;
+	private DialogBox dialogBox; 
 
 	@Override 
 	public void onAttach(Activity activity) {
@@ -83,8 +83,8 @@ public class PagTheEnd extends Fragment {
 				onChoice.restartApp();
 				PagBedRoomDarkfrg fb = new PagBedRoomDarkfrg();
 
-				onChoice.onChoiceMade(fb, PagBedRoomDarkfrg.NAME, null);
-				onChoice.onChoiceMadeCommit(NAME, true);
+				onChoice.onChoiceMade(fb, getString(PagBedRoomDarkfrg.NAME), getResources().getResourceName(PagBedRoomDarkfrg.icon));
+				onChoice.onChoiceMadeCommit(getString(NAME), true);
 			}
 		});
 
@@ -94,7 +94,7 @@ public class PagTheEnd extends Fragment {
 	}
 
 	private void loadImages() {
-		Log.d(NAME, "loadImages()"); 
+		Log.d(getString(NAME), "loadImages()"); 
 
 		int density = (int) getResources().getDisplayMetrics().density;
 

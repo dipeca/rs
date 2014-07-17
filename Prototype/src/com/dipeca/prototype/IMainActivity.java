@@ -6,9 +6,15 @@ public interface IMainActivity {
 	
 	void onChoiceMade(Fragment nextPag, String currentPage, String iconPath);	
 	
+	void onChoiceMade(Fragment nextPag, int currentPage, int iconPath);
+	
 	void onChoiceMade(Fragment nextPag, String currentPage);	
 	
+	void onChoiceMade(Fragment nextPag, int currentPage);	
+	
 	void onChoiceMadeCommit(String namePreviousPage, Boolean isToPersist);
+	
+	void onChoiceMadeCommit(int namePreviousPage, Boolean isToPersist);
 	
 	void onChoiceMadeCommitFirstPage(String namePreviousPage, Boolean isToPersist);
 	
@@ -20,7 +26,11 @@ public interface IMainActivity {
 	
 	void objectFoundPersist(ObjectItem oi);
 	
+	void restartLoaderObjects();
+	
 	void setAddPoints(int points);
+	
+	void setPoints(int points);
 	
 	boolean isInObjects(ObjectItem oi);
 	

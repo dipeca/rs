@@ -15,9 +15,8 @@ import android.widget.TextView;
 public class PagBedRoomDarkfrg extends Fragment {
 	View view = null;
 	private IMainActivity onChoice;
-	public static String NAME = "Um barulho no quarto";
-	public static String iconCurrentPage = "quarto_vazio_escuro_icon";
-	public static String iconNextPage = "quarto_vazio_icon";
+	public static int NAME = R.string.soundInBedRoom;
+	public static int icon = R.drawable.quarto_vazio_escuro_icon;
 	private TextView tv1 = null;
 	private DialogBox tv2 = null;
 	private TextView tv3 = null;
@@ -176,12 +175,12 @@ public class PagBedRoomDarkfrg extends Fragment {
 				}
 
 				onChoice.onChoiceMade(PagBedRoomDarkfrg.this, PagBedRoomDarkfrg.NAME,
-						PagBedRoomDarkfrg.iconCurrentPage);
+						PagBedRoomDarkfrg.icon);
 				// Commit the page to database
-				onChoice.onChoiceMadeCommitFirstPage(PagBedRoomDarkfrg.NAME, true);
+				onChoice.onChoiceMadeCommitFirstPage(getString(PagBedRoomDarkfrg.NAME), true);
 				
-				onChoice.onChoiceMade(fb, PagBedRoomfrg.NAME, iconNextPage);
-				onChoice.onChoiceMadeCommit(NAME, true);
+				onChoice.onChoiceMade(fb, PagBedRoomfrg.NAME, PagBedRoomfrg.icon);
+				onChoice.onChoiceMadeCommit(PagBedRoomDarkfrg.NAME, true);
 			}
 		});
 		

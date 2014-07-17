@@ -6,6 +6,7 @@
     android:background="@drawable/back"
     android:fitsSystemWindows="true"
     android:tag="Cabana"
+    android:id="@+id/scareCrowRL"
     tools:context=".BookActivity" >
 
     <ImageView
@@ -17,17 +18,16 @@
         android:scaleType="fitXY" />
 
     <ImageView
-        android:id="@+id/pag1ImageViewBirds"
+        android:id="@+id/clickable"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:scaleType="fitXY" />
+        android:scaleType="fitXY"
+        android:visibility="invisible" />
 
     <TextView
         android:id="@+id/textPag1"
         style="@style/StoryBlock"
-        android:layout_width="340dp"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
@@ -58,6 +58,18 @@
         android:layout_margin="12dp"
         android:background="@drawable/button_back"
         android:src="@drawable/ic_action_play"
+        android:text="@string/next" />
+
+    <ImageButton
+        android:id="@+id/goToPrevPage"
+        style="@style/ButtonText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="12dp"
+        android:background="@drawable/button_back"
+        android:src="@drawable/ic_action_prev"
         android:text="@string/next" />
 
 </RelativeLayout>

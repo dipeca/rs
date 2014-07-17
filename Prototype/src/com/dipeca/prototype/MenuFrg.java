@@ -29,7 +29,7 @@ import android.widget.ImageView;
 public class MenuFrg extends Fragment {
 
 	private ImageView mImageView;
-
+	 
 	private static final int ACTION_TAKE_PHOTO_B = 1;
 	private static final int ACTION_TAKE_PHOTO_S = 2;
 
@@ -37,7 +37,7 @@ public class MenuFrg extends Fragment {
 	private static final String JPEG_FILE_SUFFIX = ".jpg";
 
 	private static final int RESULT_OK = -1;
-
+ 
 	private String mCurrentPhotoPath;
 	private Bitmap mImageBitmap;
 

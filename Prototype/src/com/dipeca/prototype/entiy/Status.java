@@ -9,6 +9,8 @@ public class Status {
 	public static final String ENERGY = "energy";
 	// FOREIGN KEY TO USER
 	public static final String POINTS = "points";
+	// FOREIGN KEY TO USER
+	public static final String CURRENTCHAPTER = "currentChapter";
 	// NAME OF THE TABLE
 	public static final String TABLE_NAME = "status";
 }

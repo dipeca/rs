@@ -40,8 +40,8 @@ public class PagFindPortalFrg extends Fragment {
 		BookActivity.bitmapTalisma = null;
 	}
 
-	public static String NAME = "Encontrar o portal";
-	private static String iconNextPage = "kingdom_icon";
+	public static int NAME = R.string.findGate;
+	public static int icon = R.drawable.quarto_olhar_talisma_icon;
 
 	// Create a string for the ImageView label
 	View view;
@@ -152,7 +152,7 @@ public class PagFindPortalFrg extends Fragment {
 		long totalTime = endTime - startTime;
 		Log.d("Total time", " loadImages time =" + totalTime);
 		
-		Log.d(NAME, "width: " + ivTalisman.getWidth() + " layout Params width: " + ivTalisman.getLayoutParams().width + " x: " + ivTalisman.getX());
+		Log.d(getString(NAME), "width: " + ivTalisman.getWidth() + " layout Params width: " + ivTalisman.getLayoutParams().width + " x: " + ivTalisman.getX());
 		
 		int[] location = new int[2];
 		Rect rectf = new Rect();
@@ -225,7 +225,7 @@ public class PagFindPortalFrg extends Fragment {
 							Toast.LENGTH_LONG).show();
 					PagKingDomfrg fb = new PagKingDomfrg();
 
-					onChoice.onChoiceMade(fb, PagKingDomfrg.NAME, iconNextPage);
+					onChoice.onChoiceMade(fb, PagKingDomfrg.NAME, PagKingDomfrg.icon);
 					onChoice.onChoiceMadeCommit(NAME, true);
 
 					long endTime = System.currentTimeMillis();

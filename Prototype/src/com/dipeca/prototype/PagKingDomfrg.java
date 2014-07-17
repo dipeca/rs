@@ -23,8 +23,8 @@ import android.widget.TextView;
 public class PagKingDomfrg extends Fragment {
 	View view = null;
 	private IMainActivity onChoice;
-	public static String NAME = "Reino de Semgi";
-	private static String iconNextPage = "village_icon";
+	public static int NAME = R.string.semgiKingDom;
+	public static int icon = R.drawable.kingdom_icon;
 	private TextView tv1 = null;
 	private TextView tv3 = null;
 	private boolean isTextHide = false;
@@ -164,7 +164,7 @@ public class PagKingDomfrg extends Fragment {
 
 				PagVillageFrg fb = new PagVillageFrg();
 
-				onChoice.onChoiceMade(fb, PagVillageFrg.NAME, iconNextPage);
+				onChoice.onChoiceMade(fb, PagVillageFrg.NAME, PagVillageFrg.icon);
 				onChoice.onChoiceMadeCommit(NAME, true);
 			}
 		});
@@ -175,7 +175,7 @@ public class PagKingDomfrg extends Fragment {
 
 				PagFindPortalFrg fb = new PagFindPortalFrg();
 
-				onChoice.onChoiceMade(fb, PagFindPortalFrg.NAME, iconNextPage);
+				onChoice.onChoiceMade(fb, PagFindPortalFrg.NAME, PagFindPortalFrg.icon);
 				onChoice.onChoiceMadeCommit(NAME, false);
 			}
 		});

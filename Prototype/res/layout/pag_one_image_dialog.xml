@@ -17,6 +17,13 @@
         android:scaleType="fitXY" />
 
     <ImageView
+        android:id="@+id/clickable"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="fitXY"
+        android:visibility="invisible" />
+
+    <ImageView
         android:id="@+id/pag1ImageViewAmuleto"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -24,30 +31,6 @@
         android:layout_alignParentTop="true"
         android:scaleType="fitXY"
         android:visibility="invisible" />
-
-    <!-- <ImageView -->
-    <!-- android:id="@+id/jake" -->
-    <!-- android:layout_width="wrap_content" -->
-    <!-- android:layout_height="wrap_content" /> -->
-
-
-    <!-- <ImageView -->
-    <!-- android:id="@+id/cloud" -->
-    <!-- android:layout_width="wrap_content" -->
-    <!-- android:layout_height="wrap_content" -->
-    <!-- android:src="@drawable/cloud" /> -->
-
-
-    <!-- <ImageView -->
-    <!-- android:id="@+id/imageViewClick1" -->
-    <!-- android:layout_width="fill_parent" -->
-    <!-- android:layout_height="fill_parent" -->
-    <!-- android:layout_alignParentLeft="true" -->
-    <!-- android:layout_alignParentTop="true" -->
-    <!-- android:alpha="0.5" -->
-    <!-- android:scaleType="fitXY" -->
-    <!-- android:src="@drawable/cabana_cl1" -->
-    <!-- android:visibility="visible"/> -->
 
     <TextView
         android:id="@+id/textPag1"
@@ -80,15 +63,6 @@
         android:layout_marginLeft="200dp"
         android:layout_marginTop="200dp"
         android:scaleType="fitXY" />
-
-    <com.dipeca.prototype.DialogBox
-        android:id="@+id/dialog"
-        android:layout_width="340dp"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/textPag1"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="48dp"
-        android:layout_marginBottom="12dp" />
 
     <TextView
         android:id="@+id/textPag1_2"
@@ -124,24 +98,35 @@
         android:background="@drawable/button_back"
         android:src="@drawable/ic_action_prev"
         android:text="@string/next" />
-    
-    <!-- <Button -->
-    <!-- android:id="@+id/finn" -->
-    <!-- android:layout_width="wrap_content" -->
-    <!-- android:layout_height="wrap_content" -->
-    <!-- android:layout_alignBottom="@+id/goToNextPage" -->
-    <!-- android:layout_alignParentLeft="true" -->
-    <!-- android:layout_marginBottom="43dp" -->
-    <!-- android:background="@drawable/finn" -->
-    <!-- android:padding="10dp" /> -->
-    <!-- <Button -->
-    <!-- android:id="@+id/jake" -->
-    <!-- android:layout_width="wrap_content" -->
-    <!-- android:layout_height="wrap_content" -->
-    <!-- android:layout_above="@+id/finn" -->
-    <!-- android:layout_marginBottom="70dp" -->
-    <!-- android:layout_toRightOf="@+id/finn" -->
-    <!-- android:background="@drawable/jake" -->
-    <!-- android:padding="10dp" /> -->
+
+    <ImageView
+        android:id="@+id/icon1"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignRight="@+id/goToNextPage"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/imagebg"
+        android:scaleType="fitXY" 
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:id="@+id/icon2"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignRight="@+id/goToNextPage"
+        android:layout_below="@+id/icon1"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/imagebg"
+        android:scaleType="fitXY"
+        android:visibility="invisible" />
+
+    <com.dipeca.prototype.DialogBox
+        android:id="@+id/dialog"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/goToNextPage"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="8dp" />
 
 </RelativeLayout>

@@ -16,8 +16,8 @@ import android.widget.TextView;
 
 public class PagVillageFrg extends Fragment {
 	private IMainActivity onChoice;
-	public static String NAME = "Terra de L‡";
-	private static String iconNextPage = "enigma_icon";
+	public static int icon = R.drawable.village_icon;
+	public static int NAME = R.string.landOfLa;
 
 	private TextView tv1 = null;
 	private TextView tv2 = null;
@@ -64,8 +64,8 @@ public class PagVillageFrg extends Fragment {
 
 				PagEnigmaFrg fb = new PagEnigmaFrg();
 
-				onChoice.onChoiceMade(fb, PagEnigmaFrg.NAME, iconNextPage);
-				onChoice.onChoiceMadeCommit(NAME, true);
+				onChoice.onChoiceMade(fb, getString(PagEnigmaFrg.NAME), getResources().getResourceName(PagEnigmaFrg.icon));
+				onChoice.onChoiceMadeCommit(getString(NAME), true);
 			}
 		});
 		
@@ -77,8 +77,8 @@ public class PagVillageFrg extends Fragment {
 
 				PagKingDomfrg fb = new PagKingDomfrg();
 
-				onChoice.onChoiceMade(fb, PagKingDomfrg.NAME, iconNextPage);
-				onChoice.onChoiceMadeCommit(NAME, true);
+				onChoice.onChoiceMade(fb, getString(PagKingDomfrg.NAME), getResources().getResourceName(PagKingDomfrg.icon));
+				onChoice.onChoiceMadeCommit(getString(NAME), true);
 			}
 		});
 
@@ -117,7 +117,7 @@ public class PagVillageFrg extends Fragment {
 
 		int density = (int) getResources().getDisplayMetrics().density;
 
-		Log.d(NAME, "density: " + density);
+		Log.d(getString(NAME), "density: " + density);
 		Bitmap village = Utils.decodeSampledBitmapFromResource(getResources(),
 				R.drawable.village, 600, 300);
 		iv1.setImageBitmap(village);

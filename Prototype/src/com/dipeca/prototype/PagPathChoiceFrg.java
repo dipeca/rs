@@ -16,7 +16,8 @@ import android.widget.Toast;
 public class PagPathChoiceFrg extends Fragment implements OnTouchListener {
 
 	private IMainActivity onChoice;
-	public static String NAME = "Escolha de caminho";
+	public static int NAME = R.string.choicePath;
+	public static int icon = R.drawable.choice_icon;
 	View view = null;
 
 	@Override
@@ -30,12 +31,25 @@ public class PagPathChoiceFrg extends Fragment implements OnTouchListener {
 		}
 	}
 
+	private static boolean isScareCrowDone = false;
+	private static boolean isLakeDone = false;
+
+	@Deprecated
+	public void setScareCrowPathDone(boolean isScareCrow) {
+		this.isScareCrowDone = isScareCrow;
+	}
+
+	@Deprecated
+	public void setLakePathDone(boolean isLakeDone) {
+		this.isLakeDone = isLakeDone;
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		view = inflater.inflate(R.layout.pag_one_image_clickable, container, false);
+		view = inflater.inflate(R.layout.pag_one_image_clickable, container,
+				false);
 
-		BookActivity.stopMusic();
 		loadImages();
 
 		view.setOnTouchListener(this);
@@ -47,13 +61,12 @@ public class PagPathChoiceFrg extends Fragment implements OnTouchListener {
 		// record the choice on main activity
 		String iconNextPage;
 		if (isShadowPath) {
-			iconNextPage = "companheira_presa_icon";
-			PagFindFriend frg = new PagFindFriend();
-			onChoice.onChoiceMade(frg, PagFindFriend.NAME, iconNextPage);
+			PagScareCrow frg = new PagScareCrow();
+			onChoice.onChoiceMade(frg, PagScareCrow.NAME, PagScareCrow.icon);
 		} else {
-			iconNextPage = "robot_icon";
-			PagRobot frg = new PagRobot();
-			onChoice.onChoiceMade(frg, PagRobot.NAME, iconNextPage);
+			PagLakeToCross frg = new PagLakeToCross();
+			onChoice.onChoiceMade(frg, PagLakeToCross.NAME, PagLakeToCross.icon);
+
 		}
 
 		onChoice.onChoiceMadeCommit(NAME, true);
@@ -65,6 +78,7 @@ public class PagPathChoiceFrg extends Fragment implements OnTouchListener {
 	Bitmap bitmap1;
 	Bitmap bitmap2;
 	private int density;
+
 	private void loadImages() {
 
 		iv1 = (ImageView) view.findViewById(R.id.page3Image);
@@ -72,13 +86,37 @@ public class PagPathChoiceFrg extends Fragment implements OnTouchListener {
 
 		density = (int) getResources().getDisplayMetrics().density;
 
-		bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.choice, 600, 300 );
+		ObjectItem oiBook = new ObjectItem();
+		ObjectItem oiBottle = new ObjectItem();
+
+		oiBook.setObjectImageType(ObjectItem.TYPE_BOOK_OF_SPELS);
+		oiBottle.setObjectImageType(ObjectItem.TYPE_BOTTLE);
+
+		isLakeDone = onChoice.isInObjects(oiBook);
+		isScareCrowDone = onChoice.isInObjects(oiBottle);
+
+		if (isScareCrowDone && isLakeDone) {
+			
+			bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
+					R.drawable.choice_both_path, 600, 300);
+		} else if (isScareCrowDone) {
+
+			bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
+					R.drawable.choice_after_scarecrow, 600, 300);
+		} else if (isLakeDone) {
+
+			bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
+					R.drawable.choice_lake, 600, 300);
+		} else {
+
+			bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
+					R.drawable.choice_none, 600, 300);
+		}
+
 		iv1.setImageBitmap(bitmap1);
 
-		bitmap2 = Utils.decodeSampledBitmapFromResource(
-				getResources(), R.drawable.choice_cli, 50,
-				25);
+		bitmap2 = Utils.decodeSampledBitmapFromResource(getResources(),
+				R.drawable.choice_cli, 50, 25);
 		iv2.setImageBitmap(bitmap2);
 
 	}
@@ -98,7 +136,7 @@ public class PagPathChoiceFrg extends Fragment implements OnTouchListener {
 
 			int tolerance = 25;
 			if (Utils.closeMatch(Color.RED, touchColor, tolerance)) {
-				// Do the action associated with the RED region 
+				// Do the action associated with the RED region
 				Toast.makeText(getActivity(), getString(R.string.ravenPath),
 						Toast.LENGTH_SHORT).show();
 
@@ -107,9 +145,9 @@ public class PagPathChoiceFrg extends Fragment implements OnTouchListener {
 				// Do the action associated with the white region
 				Toast.makeText(getActivity(), getString(R.string.forestPath),
 						Toast.LENGTH_SHORT).show();
- 
+
 				transitionFragment(false);
-			} 
+			}
 			break;
 		}
 

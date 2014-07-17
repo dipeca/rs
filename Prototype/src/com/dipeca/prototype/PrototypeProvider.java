@@ -347,7 +347,7 @@ public class PrototypeProvider extends ContentProvider {
 			break;
 		}
 
-		long id = db.insert(tableName, nullColumnHack, values);
+		long id = db.insertWithOnConflict(tableName, nullColumnHack, values, SQLiteDatabase.CONFLICT_REPLACE);
 		if (id > -1) {
 			// Construct and return the URI of the newly inserted row.
 			Uri insertedId = ContentUris.withAppendedId(content_uri, id);
@@ -403,7 +403,7 @@ public class PrototypeProvider extends ContentProvider {
 	private static class SchemaHelper extends SQLiteOpenHelper {
 
 		public static final String DATABASE_NAME = "reading_project.db";
-		public static final int DATABASE_VERSION = 1;
+		public static final int DATABASE_VERSION = 2;
 
 		public SchemaHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -453,10 +453,10 @@ public class PrototypeProvider extends ContentProvider {
 					+ ") REFERENCES " + Game.TABLE_NAME + " (" + Game.ID
 					+ "));");
 
-			// CREATE STATUS TABLE
+			// CREATE STATUS TABLE 
 			db.execSQL("CREATE TABLE " + Status.TABLE_NAME + " (" + Status.ID
 					+ " INTEGER PRIMARY KEY AUTOINCREMENT," + Status.ENERGY
-					+ " INTEGER," + Status.GAME_ID + " INTEGER,"
+					+ " INTEGER," + Status.GAME_ID + " INTEGER," + Status.CURRENTCHAPTER + " TEXT,"
 					+ Status.POINTS + " INTEGER ," + " FOREIGN KEY ("
 					+ Status.GAME_ID + ") REFERENCES " + Game.TABLE_NAME + " ("
 					+ Game.ID + "));");

@@ -18,12 +18,13 @@ import android.widget.RelativeLayout.LayoutParams;
 public class PagRobotDestroyedfrg extends Fragment {
 	View view = null;
 	private IMainActivity onChoice;
-	public static String NAME = "Robot foi destru’do";
+	public static int NAME = R.string.robotDestroyed;
+	public static int icon = R.drawable.robot_destroyed_icon;
+	
 	private TextView tv1 = null;
 	private TextView tv3 = null;
 	private DialogBox dialog = null;
 	private boolean isTextHide = false;
-	public static String iconNextPage = "theend_icon";
 
 	private static Bitmap bitmap1;
 
@@ -42,7 +43,7 @@ public class PagRobotDestroyedfrg extends Fragment {
 	private ImageView image2;   
  
 	private void loadImages() {
-		Log.d(NAME, "loadImages()");
+		Log.d(getString(NAME), "loadImages()");
 		image1 = (ImageView) view.findViewById(R.id.pag1ImageView);
 		image2 = (ImageView) view.findViewById(R.id.pag1ImageViewBirds);
 
@@ -75,7 +76,7 @@ public class PagRobotDestroyedfrg extends Fragment {
 	}
 	
 	
-	ImageButton button = null;
+	ImageButton btnNext = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -122,15 +123,15 @@ public class PagRobotDestroyedfrg extends Fragment {
 			}
 		});
 
-		button = (ImageButton) view.findViewById(R.id.goToNextPage);
-		button.setOnClickListener(new View.OnClickListener() {
+		btnNext = (ImageButton) view.findViewById(R.id.goToNextPage);
+		btnNext.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
 				// Do the action associated with the RED region
-				PagForestPath frg = new PagForestPath();
+				PagRobotDestroyedEnigmafrg frg = new PagRobotDestroyedEnigmafrg();
 
-				onChoice.onChoiceMade(frg, PagForestPath.NAME, iconNextPage);
-				onChoice.onChoiceMadeCommit(NAME, true);
+				onChoice.onChoiceMade(frg,PagRobotDestroyedEnigmafrg.NAME, PagRobotDestroyedEnigmafrg.icon);
+				onChoice.onChoiceMadeCommit(getString( NAME), true);
 			}
 		});
 		
@@ -142,8 +143,8 @@ public class PagRobotDestroyedfrg extends Fragment {
 
 				PagRobot fb = new PagRobot();
 
-				onChoice.onChoiceMade(fb, PagRobot.NAME, null);
-				onChoice.onChoiceMadeCommit(NAME, false);
+				onChoice.onChoiceMade(fb, getString(PagRobot.NAME), null);
+				onChoice.onChoiceMadeCommit(getString(NAME), false);
 			}
 		});
 

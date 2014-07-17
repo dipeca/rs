@@ -24,8 +24,8 @@ import android.widget.Toast;
 public class PagRobotAttack extends Fragment {
 	View view = null;
 	private IMainActivity onChoice;
-	public static String NAME = "Robot ataca";
-	public static String iconNextPage = "robot_destroyed_icon";
+	public static int NAME = R.string.robotAttacks;
+	public static int icon = R.drawable.robot_attack_icon;
 
 	private TextView tv1 = null;
 
@@ -60,7 +60,7 @@ public class PagRobotAttack extends Fragment {
 	}
 	
 	private void loadImages() {
-		Log.d(NAME, "loadImages()");
+		Log.d(getString(NAME), "loadImages()");
 		iv1 = (ImageView) view.findViewById(R.id.topleft);
 		iv2 = (ImageView) view.findViewById(R.id.clickable);
 		ivBattery = (ImageView) view.findViewById(R.id.porta);
@@ -107,7 +107,7 @@ public class PagRobotAttack extends Fragment {
 		view = inflater.inflate(R.layout.pag_drag_object, container, false);
 		long endTime = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
-		Log.d(NAME, "onCreateView after inflate time =" + totalTime);
+		Log.d(getString(NAME), "onCreateView after inflate time =" + totalTime);
 
 		// loadImages()
 		loadImages();
@@ -125,7 +125,7 @@ public class PagRobotAttack extends Fragment {
 
 	@Override
 	public void onDetach() {
-		Log.d(NAME, " onDetach()");
+		Log.d(getString(NAME), " onDetach()");
 		super.onDetach();
 
 		if (bitmap1 != null) {
@@ -219,8 +219,8 @@ public class PagRobotAttack extends Fragment {
 							Toast.LENGTH_LONG).show();
 					PagRobotDestroyedfrg fb = new PagRobotDestroyedfrg();
 
-					onChoice.onChoiceMade(fb, PagRobotDestroyedfrg.NAME, iconNextPage);
-					onChoice.onChoiceMadeCommit(NAME, true);
+					onChoice.onChoiceMade(fb, getString(PagRobotDestroyedfrg.NAME), getResources().getResourceName(PagRobotDestroyedfrg.icon));
+					onChoice.onChoiceMadeCommit(getString(NAME), true);
 
 					long endTime = System.currentTimeMillis();
 					long totalTime = endTime - startTime;

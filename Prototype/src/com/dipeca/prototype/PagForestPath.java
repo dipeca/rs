@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 public class PagForestPath extends Fragment {
 	private IMainActivity onChoice;
-	public static String NAME = "Fim da hist—ria";
+	public static int NAME = R.string.theEnd;
 
 	AnimationDrawable backGroundChangeAnimJake;
 	AnimationDrawable backGroundChangeAnimGui;
@@ -78,11 +78,14 @@ public class PagForestPath extends Fragment {
 
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				PagPathChoiceFrg fb = new PagPathChoiceFrg();
 
-				PagQuizz fb = new PagQuizz();
-
-				onChoice.onChoiceMade(fb, PagPathChoiceFrg.NAME, null);
+				onChoice.onChoiceMade(fb, PagPathChoiceFrg.NAME, PagPathChoiceFrg.icon);
 				onChoice.onChoiceMadeCommit(NAME, true);
+//				PagQuizz fb = new PagQuizz();
+//
+//				onChoice.onChoiceMade(fb, PagPathChoiceFrg.NAME, null);
+//				onChoice.onChoiceMadeCommit(NAME, true);
 			}
 		});
 
@@ -92,7 +95,6 @@ public class PagForestPath extends Fragment {
 	}
 
 	private void loadImages() {
-		Log.d(NAME, "loadImages()"); 
 
 		int density = (int) getResources().getDisplayMetrics().density;
 

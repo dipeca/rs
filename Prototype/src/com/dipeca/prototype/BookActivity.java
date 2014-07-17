@@ -1,5 +1,5 @@
 package com.dipeca.prototype;
- 
+
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,7 +12,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -25,6 +24,8 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -32,10 +33,14 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dipeca.prototype.entiy.Chapter;
@@ -49,20 +54,20 @@ public class BookActivity extends Activity implements IMainActivity,
 
 	@Override
 	public void restartApp() {
-		
+
 		ContentResolver cr = getContentResolver();
 
 		// Delete all rows
 		points = 80;
 		cr.delete(PrototypeProvider.CONTENT_URI_CHAPTERS, null, null);
-		
-		if(journeyItemList == null){
+
+		if (journeyItemList == null) {
 			journeyItemList = new ArrayList<JourneyItem>();
-		}else{
+		} else {
 			journeyItemList.clear();
 		}
 		journeyArrayAdapter.notifyDataSetChanged();
-		
+
 		cr.delete(PrototypeProvider.CONTENT_URI_OBJECTS, null, null);
 		restartLoaderObjects();
 	}
@@ -80,7 +85,7 @@ public class BookActivity extends Activity implements IMainActivity,
 	private JourneyListAdapter journeyArrayAdapter;
 
 	private ArrayList<ObjectItem> objectItemList;
-	private ImageAdapter objectsAdapter;
+	private ObjectItemImageAdapter objectsAdapter;
 
 	private ActionBarDrawerToggle mDrawerToggle;
 
@@ -104,14 +109,13 @@ public class BookActivity extends Activity implements IMainActivity,
 	public static int points = 100;
 	private TextView pointsText = null;
 
-	
 	@Override
 	protected void onPause() {
 		super.onPause();
 
 		stopMusic();
 	}
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -123,29 +127,16 @@ public class BookActivity extends Activity implements IMainActivity,
 		display.getSize(sizeofDisplay);
 		Log.d("SIZE: ", " " + sizeofDisplay.x + "x" + sizeofDisplay.y);
 
-		// Check that the activity is using the layout version with
-		// the detailFragment FrameLayout
-		if (findViewById(R.id.detailFragment) != null) {
-
-			// However, if we're being restored from a previous state,
-			// then we don't need to do anything and should return or else
-			// we could end up with overlapping fragments.
-			if (savedInstanceState != null) {
-				return;
-			}
-
-			// Create a new Fragment to be placed in the activity layout
-			// PagBedRoomfrg firstFragment = new PagBedRoomfrg();
-			PagBedRoomDarkfrg firstFragment = new PagBedRoomDarkfrg();
-
-			// In case this activity was started with special instructions from
-			// an Intent, pass the Intent's extras to the fragment as arguments
-			firstFragment.setArguments(getIntent().getExtras());
-
-			// Add the fragment to the 'detailFragment' FrameLayout
-			getFragmentManager().beginTransaction()
-					.add(R.id.detailFragment, firstFragment).commit();
-		}
+		// However, if we're being restored from a previous state,
+		// then we don't need to do anything and should return or else
+		// we could end up with overlapping fragments.
+		// if (savedInstanceState != null) {
+		// Log.d("savedInstanceState",
+		// "savedInstanceState is not null so we don't perform action");
+		// // configure the toggle menu
+		// configureDrawerMenu();
+		// return;
+		// }
 
 		// Get references to the Fragments
 		FragmentManager fm = getFragmentManager();
@@ -166,8 +157,47 @@ public class BookActivity extends Activity implements IMainActivity,
 		objectItemList = new ArrayList<ObjectItem>();
 
 		objectsGridView = (GridView) findViewById(R.id.gridView1);
-		objectsAdapter = new ImageAdapter(this, objectItemList);
+		objectsAdapter = new ObjectItemImageAdapter(this, objectItemList);
 		objectsGridView.setAdapter(objectsAdapter);
+
+		objectsGridView
+				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> arg0, View arg1,
+							int arg2, long arg3) {
+
+						Log.d("bookactivity", "OnItemClick");
+						if (ivObjects != null) {
+							((ViewGroup) ivObjects.getParent())
+									.removeView(ivObjects);
+						}
+						ivObjects = new ImageView(arg1.getContext());
+						ivObjects.setBackgroundResource(R.drawable.back);
+
+						RelativeLayout layout = (RelativeLayout) nextPage
+								.getView();
+						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+								256, 256);
+						params.addRule(RelativeLayout.CENTER_IN_PARENT);
+
+						layout.addView(ivObjects, params);
+
+						ObjectItem oi = (ObjectItem) objectsAdapter
+								.getItem(arg2);
+						ivObjects.setImageBitmap(oi.getBitmap());
+
+						ivObjects
+								.setOnClickListener(new View.OnClickListener() {
+
+									@Override
+									public void onClick(View arg0) {
+										arg0.setVisibility(View.GONE);
+
+									}
+								});
+					}
+				});
 
 		pointsText = (TextView) findViewById(R.id.pointsValue);
 		// configure the toggle menu
@@ -177,14 +207,16 @@ public class BookActivity extends Activity implements IMainActivity,
 
 		loadDataBase();
 	}
-	
-	private void loadDataBase(){
+
+	private static ImageView ivObjects = null;
+
+	private void loadDataBase() {
 		String[] projection = new String[] { User.ID, User.NAME, User.AGE };
 		makeProviderBundle(projection, null, null, null,
 				PrototypeProvider.CONTENT_URI_USERS.toString());
 		tableLoaded = PrototypeProvider.USER_ALLROWS;
-		getLoaderManager().initLoader(0, myBundle, BookActivity.this);		
-		
+		getLoaderManager().initLoader(0, myBundle, BookActivity.this);
+
 	}
 
 	public static void playMusic(int id) {
@@ -340,7 +372,6 @@ public class BookActivity extends Activity implements IMainActivity,
 		myBundle.putString("uri", uri);
 	}
 
-	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -378,6 +409,10 @@ public class BookActivity extends Activity implements IMainActivity,
 		super.onStop();
 
 		stopMusic();
+
+		persistStatusGame();
+		Log.d("bookactivity", "onStop");
+
 		//
 		// if (nextPageName != null && nextPageName.length() > 0) { //if the
 		// next page is not null
@@ -388,15 +423,39 @@ public class BookActivity extends Activity implements IMainActivity,
 		// }
 	}
 
+	/**
+	 * Persist current game status
+	 */
+	private void persistStatusGame() {
+		// If we are navigating then we must persist data to DataBase
+		// Create a new row of values to insert.
+
+		if (nextPageClass != null && nextPageClass != "") {
+			ContentResolver cr = getContentResolver();
+			ContentValues newValues = new ContentValues();
+			// Assign values for each row.
+			newValues.put(Status.ID, 1);
+			newValues.put(Status.POINTS, points);
+			newValues.put(Status.CURRENTCHAPTER, nextPageClass);
+			newValues.put(Status.GAME_ID, 1);
+			// Insert the row
+			Uri myRowUri = cr.insert(PrototypeProvider.CONTENT_URI_STATUS,
+					newValues);
+		}
+	}
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 
 		stopMusic();
+
+		Log.d("bookactivity", "onDestroy");
 	}
 
 	@Override
-	public void onChoiceMadeCommitFirstPage(String namePreviousPage, Boolean isToPersist) {
+	public void onChoiceMadeCommitFirstPage(String namePreviousPage,
+			Boolean isToPersist) {
 		if (nextPage != null) {
 
 			imm.hideSoftInputFromWindow(pointsText.getWindowToken(), 0);
@@ -406,12 +465,19 @@ public class BookActivity extends Activity implements IMainActivity,
 			}
 		}
 	}
-	
+
+	@Override
+	protected void onRestart() {
+		// TODO Auto-generated method stub
+		super.onRestart();
+		Log.d("bookactivity", "onRestart");
+	}
+
 	@Override
 	public void onChoiceMadeCommit(String namePreviousPage, Boolean isToPersist) {
 		if (nextPage != null) {
 
-			// stopMusic();
+			stopMusic();
 
 			imm.hideSoftInputFromWindow(pointsText.getWindowToken(), 0);
 
@@ -506,7 +572,7 @@ public class BookActivity extends Activity implements IMainActivity,
 
 		// if not already on journey path
 		if (!isInJourney(chapterName)) {
-			journeyItemList.add(ji);
+			journeyItemList.add(0, ji);
 			persistJourney(chapterName);
 
 			// handle Points; We only add points if we didn't passe here already
@@ -575,11 +641,6 @@ public class BookActivity extends Activity implements IMainActivity,
 			objectItemList.add(oi);
 		}
 
-		oi = new ObjectItem();
-		oi.setObjectImageType(ObjectItem.TYPE_BOOK);
-		oi.setName("Livro m‡gico");
-		objectItemList.add(oi);
-
 		objectsAdapter.notifyDataSetChanged();
 		objectsGridView.invalidateViews();
 
@@ -632,6 +693,59 @@ public class BookActivity extends Activity implements IMainActivity,
 		Log.d("Prototype-ALERTA", "LOW MEMORY - FAz qq coisa p‡h!");
 	}
 
+	private void handleStatusCursor(Loader<Cursor> loader, Cursor data) {
+		int id = data.getColumnIndex(Status.ID);
+		int gameId = data.getColumnIndex(Status.GAME_ID);
+		int points = data.getColumnIndex(Status.POINTS);
+		int currentChapter = data.getColumnIndex(Status.CURRENTCHAPTER);
+
+		String name = null;
+		while (data.moveToNext()) {
+			Fragment current = getFragmentFromClassname(data
+					.getString(currentChapter));
+			if (current != null) {
+				name = getNameFromFragment(current);
+				// Go to next page
+				onChoiceMade(current, name);
+				// onChoiceMadeCommit(name, false);
+				// Load the next Page of the story
+				loadNextPage();
+
+				int currentPoints = data.getInt(points);
+				setPoints(currentPoints);
+			}
+		}
+
+		if (name == null || "".equals(name)) {
+			handler.sendEmptyMessage(0);
+		}
+
+	}
+
+	private Handler handler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			// Check that the activity is using the layout version with
+			// the detailFragment FrameLayout
+			if (findViewById(R.id.detailFragment) != null) {
+
+				// Create a new Fragment to be placed in the activity layout
+				// PagBedRoomfrg firstFragment = new PagBedRoomfrg();
+				PagBedRoomDarkfrg firstFragment = new PagBedRoomDarkfrg();
+
+				// In case this activity was started with special instructions
+				// from
+				// an Intent, pass the Intent's extras to the fragment as
+				// arguments
+				firstFragment.setArguments(getIntent().getExtras());
+
+				// Add the fragment to the 'detailFragment' FrameLayout
+				getFragmentManager().beginTransaction()
+						.add(R.id.detailFragment, firstFragment).commit();
+			}
+		}
+	};
+
 	private void handleChapterCursor(Loader<Cursor> loader, Cursor data) {
 		int id = data.getColumnIndex(Chapter.ID);
 		int cur = data.getColumnIndex(Chapter.CURRENT);
@@ -670,17 +784,6 @@ public class BookActivity extends Activity implements IMainActivity,
 
 			journeyItemList.add(ji);
 
-			// if (isFirst && ji != null && 9 == 1) {
-			//
-			// Fragment fb = getFragmentFromJourneyItem(ji);
-			// String name = getNameFromFragment(fb);
-			// // Go to next page
-			// onChoiceMade(fb, name);
-			// // onChoiceMadeCommit(name, false);
-			// // Load the next Page of the story
-			// loadNextPage();
-			// }
-
 			isFirst = false;
 		}
 
@@ -698,21 +801,15 @@ public class BookActivity extends Activity implements IMainActivity,
 			int age = data.getColumnIndex(User.AGE);
 			int id = data.getColumnIndex(User.ID);
 
-			// while (data.moveToNext()) {
-			// Log.d("users",
-			// "Name: " + data.getString(name) + " is "
-			// + data.getString(age) + " old. Id => "
-			// + data.getString(id));
-			// }
+			// Initiate status loading
+			restartLoaderStatus();
 
-			// Initiate chapters loading
-			projection = new String[] { Chapter.ID, Chapter.CURRENT,
-					Chapter.DATE, Chapter.PREVIOUS_CHAPTER_ID,
-					Chapter.CURRENT_CLASS, Chapter.ICON_PATH };
-			makeProviderBundle(projection, null, null, Chapter.DATE + " DESC",
-					PrototypeProvider.CONTENT_URI_CHAPTERS.toString());
-			tableLoaded = PrototypeProvider.CHAPTER_ALLROWS;
-			getLoaderManager().restartLoader(0, myBundle, BookActivity.this);
+			break;
+		case PrototypeProvider.STATUS_ALLROWS:
+			handleStatusCursor(loader, data);
+
+			// Initiate quizz Loading
+			restartLoaderChapter();
 
 			break;
 		case PrototypeProvider.CHAPTER_ALLROWS:
@@ -740,7 +837,8 @@ public class BookActivity extends Activity implements IMainActivity,
 	/**
 	 * Set the Objects table as main cursor again
 	 */
-	private void restartLoaderObjects() {
+	@Override
+	public void restartLoaderObjects() {
 		String[] projection = null;
 		projection = new String[] { Objects.ID, Objects.NAME,
 				Objects.IMAGE_PATH, Objects.IS_SHOW, Objects.GAME_ID,
@@ -768,13 +866,49 @@ public class BookActivity extends Activity implements IMainActivity,
 		getLoaderManager().restartLoader(0, myBundle, BookActivity.this);
 	}
 
+	/**
+	 * Set the Chapter table as main cursor again
+	 */
+	private void restartLoaderChapter() {
+		String[] projection = null;
+
+		projection = new String[] { Chapter.ID, Chapter.CURRENT, Chapter.DATE,
+				Chapter.PREVIOUS_CHAPTER_ID, Chapter.CURRENT_CLASS,
+				Chapter.ICON_PATH };
+		makeProviderBundle(projection, null, null, Chapter.DATE + " DESC",
+				PrototypeProvider.CONTENT_URI_CHAPTERS.toString());
+		tableLoaded = PrototypeProvider.CHAPTER_ALLROWS;
+		getLoaderManager().restartLoader(0, myBundle, BookActivity.this);
+
+	}
+
+	/**
+	 * Set the Status table as main cursor again
+	 */
+	private void restartLoaderStatus() {
+		String[] projection = null;
+
+		projection = new String[] { Status.ID, Status.GAME_ID, Status.POINTS,
+				Status.CURRENTCHAPTER };
+		makeProviderBundle(projection, null, null, Status.ID + " DESC",
+				PrototypeProvider.CONTENT_URI_STATUS.toString());
+		tableLoaded = PrototypeProvider.STATUS_ALLROWS;
+		getLoaderManager().restartLoader(0, myBundle, BookActivity.this);
+
+	}
+
 	@Override
 	public Fragment getFragmentFromJourneyItem(JourneyItem ji) {
+
+		return getFragmentFromClassname(ji.getCurrentClass());
+	}
+
+	private Fragment getFragmentFromClassname(String className) {
 		Fragment frg = null;
 
 		Class c = null;
 		try {
-			c = Class.forName(ji.getCurrentClass());
+			c = Class.forName(className);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -789,11 +923,11 @@ public class BookActivity extends Activity implements IMainActivity,
 			e.printStackTrace();
 		} catch (NullPointerException e) {
 			e.printStackTrace();
-			Log.d("Class instantiation of",
-					"currentClass: " + ji.getCurrentClass());
+			Log.d("Class instantiation of", "currentClass: " + className);
 		}
 
 		return frg;
+
 	}
 
 	@Override
@@ -813,7 +947,7 @@ public class BookActivity extends Activity implements IMainActivity,
 		}
 		String name = null;
 		try {
-			name = (String) f.get(f);
+			name = getString((Integer) f.get(f));
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -837,7 +971,18 @@ public class BookActivity extends Activity implements IMainActivity,
 
 	@Override
 	public void setAddPoints(int points) {
-		BookActivity.points += points;
+
+		if (BookActivity.points >= 0 || points > 0) {
+			BookActivity.points += points;
+		}
+		
+		pointsText.setText(BookActivity.points + "");
+
+	}
+
+	@Override
+	public void setPoints(int points) {
+		BookActivity.points = points;
 
 		pointsText.setText(BookActivity.points + "");
 
@@ -953,7 +1098,8 @@ public class BookActivity extends Activity implements IMainActivity,
 		case R.id.rb_gosto_no:
 			if (checked) {
 
-				newValuesQuizz.put(QuestionAnswer.LIKEIT, QuestionAnswer.LIKE_IT_NO);
+				newValuesQuizz.put(QuestionAnswer.LIKEIT,
+						QuestionAnswer.LIKE_IT_NO);
 
 			}
 			break;
@@ -992,8 +1138,8 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValuesQuizz
-						.put(QuestionAnswer.ENIGMA_LIKE, "Enigma: gosto maths");
+				newValuesQuizz.put(QuestionAnswer.ENIGMA_LIKE,
+						"Enigma: gosto maths");
 
 			}
 			break;
@@ -1001,8 +1147,8 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValuesQuizz
-						.put(QuestionAnswer.ENIGMA_LIKE, "Enigma: gosto ecran");
+				newValuesQuizz.put(QuestionAnswer.ENIGMA_LIKE,
+						"Enigma: gosto ecran");
 
 			}
 			break;
@@ -1010,8 +1156,8 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValuesQuizz
-						.put(QuestionAnswer.ENIGMA_LIKE, "Enigma: gosto todos");
+				newValuesQuizz.put(QuestionAnswer.ENIGMA_LIKE,
+						"Enigma: gosto todos");
 
 			}
 			break;
@@ -1033,8 +1179,8 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValuesQuizz
-						.put(QuestionAnswer.ENIGMA_DISLIKE, "N‹o gosto linhas");
+				newValuesQuizz.put(QuestionAnswer.ENIGMA_DISLIKE,
+						"N‹o gosto linhas");
 
 			}
 			break;
@@ -1042,7 +1188,8 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.ENIGMA_DISLIKE, "N‹o gosto maths");
+				newValuesQuizz.put(QuestionAnswer.ENIGMA_DISLIKE,
+						"N‹o gosto maths");
 
 			}
 			break;
@@ -1050,7 +1197,8 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (checked) {
 
 				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.ENIGMA_DISLIKE, "N‹o gosto ecran");
+				newValuesQuizz.put(QuestionAnswer.ENIGMA_DISLIKE,
+						"N‹o gosto ecran");
 
 			}
 			break;
@@ -1109,7 +1257,8 @@ public class BookActivity extends Activity implements IMainActivity,
 		switch (v.getId()) {
 		case R.id.rb_mistery:
 			if (checked) {
-				newValuesQuizz.put(QuestionAnswer.TYPE, QuestionAnswer.TYPE_MISTERY);
+				newValuesQuizz.put(QuestionAnswer.TYPE,
+						QuestionAnswer.TYPE_MISTERY);
 
 			}
 			break;
@@ -1122,20 +1271,22 @@ public class BookActivity extends Activity implements IMainActivity,
 			break;
 		case R.id.rb_fantasia:
 			if (checked) {
-				newValuesQuizz
-						.put(QuestionAnswer.TYPE, QuestionAnswer.TYPE_FANTASIA);
+				newValuesQuizz.put(QuestionAnswer.TYPE,
+						QuestionAnswer.TYPE_FANTASIA);
 
 			}
 			break;
 		case R.id.rb_rir:
 			if (checked) {
-				newValuesQuizz.put(QuestionAnswer.TYPE, QuestionAnswer.TYPE_RIR);
+				newValuesQuizz
+						.put(QuestionAnswer.TYPE, QuestionAnswer.TYPE_RIR);
 
 			}
 			break;
 		case R.id.rb_all:
 			if (checked) {
-				newValuesQuizz.put(QuestionAnswer.TYPE, QuestionAnswer.TYPE_ALL);
+				newValuesQuizz
+						.put(QuestionAnswer.TYPE, QuestionAnswer.TYPE_ALL);
 
 			}
 			break;
@@ -1202,13 +1353,14 @@ public class BookActivity extends Activity implements IMainActivity,
 			break;
 		case R.id.rb_leio_as_vezes:
 			if (checked) {
-				newValuesQuizz
-						.put(QuestionAnswer.READS, QuestionAnswer.READ_OCASION);
+				newValuesQuizz.put(QuestionAnswer.READS,
+						QuestionAnswer.READ_OCASION);
 			}
 			break;
 		case R.id.rb_leio_pouco:
 			if (checked) {
-				newValuesQuizz.put(QuestionAnswer.READS, QuestionAnswer.READ_NOT);
+				newValuesQuizz.put(QuestionAnswer.READS,
+						QuestionAnswer.READ_NOT);
 			}
 			break;
 		}
@@ -1247,6 +1399,18 @@ public class BookActivity extends Activity implements IMainActivity,
 	}
 
 	@Override
+	public void onChoiceMade(Fragment nextPag, int currentPage, int iconPath) {
+
+		String iconPathStr = null;
+
+		if (iconPath > -1) {
+			iconPathStr = getResources().getResourceName(iconPath);
+		}
+		onChoiceMade(nextPag, getString(currentPage), iconPathStr);
+
+	}
+
+	@Override
 	public void onChoiceMadeCommit(String namePreviousPage,
 			Boolean isToPersist, Boolean isToStopMusic) {
 
@@ -1255,6 +1419,18 @@ public class BookActivity extends Activity implements IMainActivity,
 		}
 
 		onChoiceMadeCommit(namePreviousPage, isToPersist);
+
+	}
+
+	@Override
+	public void onChoiceMade(Fragment nextPag, int currentPage) {
+		onChoiceMade(nextPag, getString(currentPage));
+
+	}
+
+	@Override
+	public void onChoiceMadeCommit(int namePreviousPage, Boolean isToPersist) {
+		onChoiceMadeCommit(getString(namePreviousPage), isToPersist);
 
 	}
 

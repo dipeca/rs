@@ -83,4 +83,13 @@
         android:src="@drawable/ic_action_prev"
         android:text="@string/next" />
 
+    <ImageView
+        android:id="@+id/ivWalk"
+        android:layout_width="100dp"
+        android:layout_height="220dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignBottom="@id/page2Image"
+        android:layout_alignLeft="@id/page2Image"
+        android:scaleType="fitEnd" />
+
 </RelativeLayout>

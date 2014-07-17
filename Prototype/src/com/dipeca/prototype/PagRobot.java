@@ -22,8 +22,8 @@ import android.widget.RelativeLayout.LayoutParams;
 public class PagRobot extends Fragment {
 	View view = null;
 	private IMainActivity onChoice;
-	public static String NAME = "Robot";
-	public static String iconNextPage = "robot_attack_icon";
+	public static int NAME = R.string.robot;
+	public static int icon = R.drawable.robot_icon;
 	private TextView tv1 = null;
 	private TextView tv3 = null;
 	private DialogBox dialogBox = null;
@@ -38,7 +38,7 @@ public class PagRobot extends Fragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		try {
-			Log.d(NAME, "On attach started");
+			Log.d(getString(NAME), "On attach started");
 			onChoice = (IMainActivity) activity;
 		} catch (ClassCastException e) {
 			throw new ClassCastException(activity.toString()
@@ -50,7 +50,7 @@ public class PagRobot extends Fragment {
 	private ImageView image2;
 
 	private void loadImages() {
-		Log.d(NAME, "loadImages()");
+		Log.d(getString(NAME), "loadImages()");
 		image1 = (ImageView) view.findViewById(R.id.pag1ImageView);
 		image2 = (ImageView) view.findViewById(R.id.pag1ImageViewBirds);
 
@@ -63,7 +63,7 @@ public class PagRobot extends Fragment {
 	}
 
 	private void loadText() {
-		Log.d(NAME, "loadText()");
+		Log.d(getString(NAME), "loadText()");
 
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
 		tv1.setText(R.string.pagRobotInFront);
@@ -169,7 +169,7 @@ public class PagRobot extends Fragment {
 
 				PagRobotAttack fb = new PagRobotAttack();
 
-				onChoice.onChoiceMade(fb, PagRobotAttack.NAME, iconNextPage);
+				onChoice.onChoiceMade(fb, PagRobotAttack.NAME, PagRobotAttack.icon);
 				onChoice.onChoiceMadeCommit(NAME, true);
 			}
 		});
@@ -182,7 +182,7 @@ public class PagRobot extends Fragment {
 
 				PagPathChoiceFrg fb = new PagPathChoiceFrg();
 
-				onChoice.onChoiceMade(fb, PagPathChoiceFrg.NAME, null);
+				onChoice.onChoiceMade(fb, PagPathChoiceFrg.NAME, PagPathChoiceFrg.icon);
 				onChoice.onChoiceMadeCommit(NAME, false);
 			}
 		});

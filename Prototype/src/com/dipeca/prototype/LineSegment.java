@@ -105,7 +105,10 @@ public class LineSegment {
 			setX3(x1);
 		} else { // for any other line
 			Point[] ps = { new Point(x1, y1), new Point(x2, y2) };
-			m = (ps[1].y - ps[0].y) / (ps[1].x - ps[0].x);
+			float yTemp = ps[1].y - ps[0].y;
+			float xTemp = ps[1].x - ps[0].x;
+			float tempFlaot = yTemp / xTemp;
+			m = Math.round(tempFlaot);
 			b = ps[1].y - m * ps[1].x;
 
 			int i = Math.min(x1, x2);
@@ -118,6 +121,11 @@ public class LineSegment {
 				}
 			}
 			
+			if(Math.abs(tempFlaot) < 1 && Math.abs(tempFlaot) > 0){
+				setY3(y2);
+				setX3(x2);
+			}
+			
 			if(getY3() == 0){
 				System.out.println("Damm");
 			}
@@ -125,6 +133,7 @@ public class LineSegment {
 			// setX3(10);
 		}
 
+		
 		setX1(x1);
 		setY1(y1);
 
