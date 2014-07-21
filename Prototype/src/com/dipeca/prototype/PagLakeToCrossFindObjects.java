@@ -20,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class PagLakeToCrossFindObjects extends Fragment implements
-		OnTouchListener {
+		OnTouchListener, IFragmentBook {
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.theLakeToCross;
@@ -276,6 +276,16 @@ public class PagLakeToCrossFindObjects extends Fragment implements
 		}
 
 		return true;
+	}
+
+	@Override
+	public String getPrevPage() {
+		return PagLakeToCross.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		return null;
 	}
 
 }

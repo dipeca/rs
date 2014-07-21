@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PagFindFriend extends Fragment implements OnTouchListener {
+public class PagFindFriend extends Fragment implements OnTouchListener, IFragmentBook {
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.foundFriend;
@@ -80,8 +80,6 @@ public class PagFindFriend extends Fragment implements OnTouchListener {
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
 		tv1.setText(R.string.pagFoundFriend);
 
-		BookActivity.stopMusic();
-		// loadImages()
 		loadImages();
 		
 		view.setOnTouchListener(this);
@@ -144,5 +142,15 @@ public class PagFindFriend extends Fragment implements OnTouchListener {
 		}
 
 		return true;
+	}
+
+	@Override
+	public String getPrevPage() {
+		return PagSomethingMoving.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		return null;
 	}
 }

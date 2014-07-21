@@ -17,7 +17,7 @@ public class JourneySoFar extends ListFragment{
 		JourneyItem ji = (JourneyItem) l.getAdapter().getItem(position);
 
 		Fragment fb = onChoice.getFragmentFromJourneyItem(ji);
-		String name = onChoice.getNameFromFragment(fb);
+		String name = onChoice.getAttrValueFromFragment(fb, "NAME");
 		
 		//Go to next page
 		onChoice.onChoiceMade(fb, name, ji.getIconName());

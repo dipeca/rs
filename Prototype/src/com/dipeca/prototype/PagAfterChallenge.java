@@ -20,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class PagAfterChallenge extends Fragment {
+public class PagAfterChallenge extends Fragment implements IFragmentBook{
 	private IMainActivity onChoice;
 	public static int NAME = R.string.adventureBegins;
 	public static int icon = R.drawable.caminho_somebody_icon;
@@ -56,8 +56,8 @@ public class PagAfterChallenge extends Fragment {
 		ivWalking.setBackgroundResource(R.anim.gui_walk);
 		backGroundChangeAnim = (AnimationDrawable) ivWalking.getBackground();
 
-		Animation animation = new TranslateAnimation(0, (getResources()
-				.getDisplayMetrics().widthPixels / 2 + 10) * density, -8
+		Animation animation = new TranslateAnimation(0, ((getResources()
+				.getDisplayMetrics().widthPixels/2) + 80) * density, -8
 				* density, -8 * density);
 		animation.setDuration(10000);
 
@@ -154,9 +154,9 @@ public class PagAfterChallenge extends Fragment {
 			}
 		});
 
-		loadImages();
+		loadImages(); 
 
-		BookActivity.playMusic(R.raw.midnight_walk);
+//		BookActivity.playMusic(R.raw.midnight_walk);
 		return view;
 	}
 
@@ -207,5 +207,16 @@ public class PagAfterChallenge extends Fragment {
 			caminhoBm.recycle();
 			caminhoBm = null;
 		}
+	}
+
+	@Override
+	public String getPrevPage() {
+		return PagFindFriend.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

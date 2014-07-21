@@ -90,7 +90,7 @@ public class PagRobotDestroyedfrg extends Fragment {
 				+ totalTime);
 
 		//plays the explosion sound
-		BookActivity.playMusicOnce(R.raw.robot_destroyed);
+	//	BookActivity.playMusicOnce(R.raw.robot_destroyed);
 		
 		// loadImages()   
 		loadImages();  

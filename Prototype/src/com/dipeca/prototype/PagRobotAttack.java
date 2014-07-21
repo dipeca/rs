@@ -113,7 +113,7 @@ public class PagRobotAttack extends Fragment {
 		loadImages();
 		loadText();
 
-		BookActivity.playMusic(R.raw.robot_in_front);
+//		BookActivity.playMusic(R.raw.robot_in_front);
 
 		ivTalisman.setOnTouchListener(new MyTouchListener());
 		view.setOnDragListener(new MyDragListener());

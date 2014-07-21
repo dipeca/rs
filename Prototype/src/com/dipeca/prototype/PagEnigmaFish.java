@@ -43,7 +43,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 	private static ImageButton btn = null;
 	private static ImageButton btnHelp = null;
 
-	private static boolean isMazeSolved = false;
+	private boolean isMazeSolved = false;
 
 	public static int NAME = R.string.enigma;
 	public static int icon = R.drawable.enigma_icon;
@@ -162,7 +162,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 
 					PagVillageAfterEnigmaFrg fb = new PagVillageAfterEnigmaFrg();
 					stopTimer();
-					
+
 					onChoice.onChoiceMade(
 							fb,
 							getString(PagVillageAfterEnigmaFrg.NAME),
@@ -186,27 +186,36 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 			public void onClick(View v) {
 				if (!isMazeSolved) {
 					for (LineSegment lg : secondFishLines) {
-						if(!lg.isDrawn()){
-							//get the previous color of the line (black or grey)
-							previousColor = bitmap.getPixel(lg.getX3(), lg.getY3());
-							
+						if (!lg.isDrawn() && !lockHelp) {
+							// get the previous color of the line (black or
+							// grey)
+							previousColor = bitmap.getPixel(lg.getX3(),
+									lg.getY3());
+
 							paintStroke.setColor(Color.BLUE);
-							
+
 							int x1 = lg.getX1();
 							int y1 = lg.getY1();
 							int x2 = lg.getX2();
 							int y2 = lg.getY2();
-							
+
 							canvas.drawLine(x1, y1, x2, y2, paintStroke);
 							lgToBeErased = lg;
 							lgToBeErased.setDrawn(true);
-							
+
+							lockHelp = true;
 							startTimer();
+
+							// For each line we take 2 points
+							// and we take 3 more because we are in a help state
+							onChoice.setAddPoints(-2);
+							onChoice.setAddPoints(-3);
 							
 							break;
-							
+
 						}
 					}
+
 
 					imageView.invalidate();
 				}
@@ -217,7 +226,8 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 	Timer timer = new Timer(false);
 	LineSegment lgToBeErased = null;
 	int previousColor = -1;
-	
+	private static boolean lockHelp = false;
+
 	private void startTimer() {
 		final Handler handler = new Handler();
 		TimerTask timerTask = new TimerTask() {
@@ -227,21 +237,23 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 					@Override
 					public void run() {
 						paintStroke.setColor(previousColor);
-						
+
 						int x1 = lgToBeErased.getX1();
 						int y1 = lgToBeErased.getY1();
 						int x2 = lgToBeErased.getX2();
 						int y2 = lgToBeErased.getY2();
-						
+
 						canvas.drawLine(x1, y1, x2, y2, paintStroke);
 						lgToBeErased.setDrawn(false);
 
 						imageView.invalidate();
+						
+						lockHelp = false;
 					}
 				});
 			}
 		};
-		
+
 		timer.schedule(timerTask, 1500); // 1000 = 1 second.
 	}
 
@@ -250,8 +262,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 		timer.cancel();
 		timer.purge();
 	}
-	
-	
+
 	private void handleText() {
 		TextView txt = new TextView(this.getActivity());
 		txt.setText(R.string.enigma_fish);
@@ -758,6 +769,8 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 					}
 				}
 			}
+			// remove 2 points for each move
+			onChoice.setAddPoints(-2);
 
 			imageView.invalidate();
 			isMazeSolved = checkMazeDone();
@@ -773,6 +786,12 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 	}
 
 	private boolean checkMazeDone() {
+		
+		//If we have any help line drawn then it's not done 
+		if(lockHelp){
+			return false;
+		}
+		
 		// Check if all correct lines are Ok
 		for (LineSegment lg : secondFishLines) {
 			if (!lg.isDrawn()) {
@@ -784,6 +803,8 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 			}
 		}
 
+		// For the correct answer we add 30 points,
+		onChoice.setAddPoints(30);
 		return true;
 	}
 

@@ -26,7 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PagBedRoomfrg extends Fragment {
+public class PagBedRoomfrg extends Fragment implements IFragmentBook{
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.bedroom;
@@ -38,6 +38,9 @@ public class PagBedRoomfrg extends Fragment {
 	ImageView amuleto = null;
 	private static Bitmap bitmap1;
 	private static Bitmap bitmap2;
+	
+	public static String nextPage = "com.dipeca.prototype.PagBedRoomfAmuletfrg";
+	public static String prevPage = PagBedRoomDarkfrg.class.getName();
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -180,8 +183,8 @@ public class PagBedRoomfrg extends Fragment {
 		loadText();
 		// loadImages()
 		loadImages();
-		
-		BookActivity.playMusic(R.raw.bedroom_chopin);
+		 
+		BookActivity.playMusic(R.raw.bedroom);
 
 		button = (ImageButton) view.findViewById(R.id.goToNextPage);
 		// button.setVisibility(View.INVISIBLE);
@@ -193,7 +196,7 @@ public class PagBedRoomfrg extends Fragment {
 
 				try {
 					c = Class
-							.forName("com.dipeca.prototype.PagBedRoomfAmuletfrg");
+							.forName(nextPage);
 				} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -264,5 +267,15 @@ public class PagBedRoomfrg extends Fragment {
 	}
 
 	AnimationDrawable backGroundChangeAnim;
+
+	@Override
+	public String getPrevPage() {
+		return prevPage;
+	}
+
+	@Override
+	public String getNextPage() {
+		return nextPage;
+	}
 
 }

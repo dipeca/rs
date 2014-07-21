@@ -12,7 +12,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class PagBedRoomDarkfrg extends Fragment {
+public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook{
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.soundInBedRoom;
@@ -23,6 +23,9 @@ public class PagBedRoomDarkfrg extends Fragment {
 	private boolean isTextHide = false;
 	private static Bitmap bitmap1;
 
+	public static String nextPage = "com.dipeca.prototype.PagBedRoomfrg";
+	public static String prevPage = "";
+	
 	@Override
 	public void onAttach(Activity activity) { 
 		super.onAttach(activity);
@@ -158,7 +161,7 @@ public class PagBedRoomDarkfrg extends Fragment {
 				Fragment fb = null;
 
 				try {
-					c = Class.forName("com.dipeca.prototype.PagBedRoomfrg");
+					c = Class.forName(nextPage);
 				} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -190,7 +193,7 @@ public class PagBedRoomDarkfrg extends Fragment {
 		// run the start() method later on the UI thread
 		view.postDelayed(mUpdateTimeTask, 1000);
 
-		BookActivity.playMusic(R.raw.boxes_moving);
+//		BookActivity.playMusic(R.raw.boxes_moving);
 
 		return view;
 	}
@@ -203,6 +206,17 @@ public class PagBedRoomDarkfrg extends Fragment {
 		bitmap1.recycle();
 		bitmap1 = null;
 
+	}
+
+	@Override
+	public String getPrevPage() {
+		return prevPage;
+	}
+
+	@Override
+	public String getNextPage() {
+		
+		return nextPage;
 	}
 
 

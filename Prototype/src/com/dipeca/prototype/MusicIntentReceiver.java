@@ -10,7 +10,7 @@ public class MusicIntentReceiver extends BroadcastReceiver {
 	   public void onReceive(Context ctx, Intent intent) {
 	      if (intent.getAction().equals(
 	                    android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
-	          BookActivity.stopOrPlayMusic();
+	          BookActivity.stopMusic();
 	      }
 	   }
 }

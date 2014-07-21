@@ -55,22 +55,19 @@ public class MenuFrg extends Fragment {
 
 		mImageView = (ImageView) view.findViewById(R.id.imageView1);
 
-		Button picSBtn = (Button) view.findViewById(R.id.btnIntendS);
+		ImageButton picSBtn = (ImageButton) view.findViewById(R.id.btnIntendS);
+		picSBtn.setImageResource(R.drawable.ic_action_camera);
 		setBtnListenerOrDisable(picSBtn, mTakePicSOnClickListener,
 				MediaStore.ACTION_IMAGE_CAPTURE);
 
 		BookActivity.stopButton = (ImageButton) view.findViewById(R.id.stopSound);
-		BookActivity.stopButton.setImageResource(R.drawable.ic_action_stop);
+		BookActivity.stopButton.setImageResource(R.drawable.ic_action_volume_on);
 		BookActivity.stopButton.setOnClickListener(new View.OnClickListener() {
 		boolean isPlaying = true;
 			@Override
 			public void onClick(View v) {
-				BookActivity.stopOrPlayMusic();
-				if(isPlaying){
-					isPlaying = false;
-				}else{
-					isPlaying = true;
-				}
+				
+				BookActivity.setMuted();
 				BookActivity.stopButton.setImageResource(BookActivity.playIcon);
 			}
 		});
@@ -222,13 +219,12 @@ public class MenuFrg extends Fragment {
 		return list.size() > 0;
 	}
 
-	private void setBtnListenerOrDisable(Button btn,
+	private void setBtnListenerOrDisable(ImageButton btn,
 			Button.OnClickListener onClickListener, String intentName) {
 		if (isIntentAvailable(getActivity(), intentName)) {
 			btn.setOnClickListener(onClickListener);
 		} else {
-			btn.setText(getText(R.string.cannot).toString() + " "
-					+ btn.getText());
+			btn.setImageResource(R.drawable.ic_action_camera);
 			btn.setClickable(false);
 		}
 	}

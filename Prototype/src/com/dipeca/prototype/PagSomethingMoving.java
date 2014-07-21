@@ -21,7 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PagSomethingMoving extends Fragment {
+public class PagSomethingMoving extends Fragment implements IFragmentBook{
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.somethingMoving;
@@ -130,6 +130,16 @@ public class PagSomethingMoving extends Fragment {
 			bitmap2 = null;
 		}
 
+	}
+
+	@Override
+	public String getPrevPage() {
+		return PagVillageAfterEnigmaFrg.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		return null;
 	}
 
 }

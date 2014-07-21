@@ -19,7 +19,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class PagFindPortalFrg extends Fragment {
+public class PagFindPortalFrg extends Fragment implements IFragmentBook {
 
 	@Override
 	public void onDetach() {
@@ -50,11 +50,11 @@ public class PagFindPortalFrg extends Fragment {
 	ImageView ivTalisman;
 	ImageView ivClickable;
 
-	private IMainActivity onChoice; 
+	private IMainActivity onChoice;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {    
+			Bundle savedInstanceState) {
 
 		long startTime = System.currentTimeMillis();
 
@@ -116,15 +116,13 @@ public class PagFindPortalFrg extends Fragment {
 
 		if (BookActivity.bitmapInitial == null) {
 			BookActivity.bitmapInitial = Utils.decodeSampledBitmapFromResource(
-					getResources(), R.drawable.quarto_vazio, 600,
-					300);
+					getResources(), R.drawable.quarto_vazio, 600, 300);
 
 		}
 
 		if (BookActivity.bitmap1 == null) {
 			BookActivity.bitmap1 = Utils.decodeSampledBitmapFromResource(
-					getResources(), R.drawable.quarto_portal, 600,
-					300);
+					getResources(), R.drawable.quarto_portal, 600, 300);
 
 		}
 
@@ -139,8 +137,7 @@ public class PagFindPortalFrg extends Fragment {
 		if (BookActivity.bitmapTalisma == null) {
 
 			BookActivity.bitmapTalisma = Utils.decodeSampledBitmapFromResource(
-					getResources(), R.drawable.talisma, 178,
-					178);
+					getResources(), R.drawable.talisma, 178, 178);
 		}
 
 		ivRoom.setImageBitmap(BookActivity.bitmapInitial);
@@ -151,19 +148,20 @@ public class PagFindPortalFrg extends Fragment {
 		long endTime = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
 		Log.d("Total time", " loadImages time =" + totalTime);
-		
-		Log.d(getString(NAME), "width: " + ivTalisman.getWidth() + " layout Params width: " + ivTalisman.getLayoutParams().width + " x: " + ivTalisman.getX());
-		
+
+		Log.d(getString(NAME), "width: " + ivTalisman.getWidth()
+				+ " layout Params width: " + ivTalisman.getLayoutParams().width
+				+ " x: " + ivTalisman.getX());
+
 		int[] location = new int[2];
 		Rect rectf = new Rect();
 		ivTalisman.getLocalVisibleRect(rectf);
 
-		
-		
 		float toXPos = 0;
 		float toYPos = 0;
-		
-		TranslateAnimation ta = new TranslateAnimation(-480*density, toXPos, 100*density, toYPos);
+
+		TranslateAnimation ta = new TranslateAnimation(-480 * density, toXPos,
+				100 * density, toYPos);
 		ta.setDuration(2000);
 		ivTalisman.setAnimation(ta);
 		ivTalisman.getAnimation().start();
@@ -181,6 +179,8 @@ public class PagFindPortalFrg extends Fragment {
 	}
 
 	private int density;
+	private boolean isPlayingMagnet = false;
+
 	class MyDragListener implements OnDragListener {
 		@Override
 		public boolean onDrag(View v, DragEvent event) {
@@ -189,7 +189,7 @@ public class PagFindPortalFrg extends Fragment {
 					(int) event.getX(), (int) event.getY(), view);
 			int tolerance = 25;
 			switch (event.getAction()) {
-			case DragEvent.ACTION_DRAG_STARTED:
+			case DragEvent.ACTION_DRAG_STARTED: 
 				Log.d("onDrag", "ACTION_DRAG_STARTED");
 				break;
 			case DragEvent.ACTION_DRAG_ENTERED:
@@ -200,8 +200,11 @@ public class PagFindPortalFrg extends Fragment {
 
 				if (Utils.closeMatch(Color.WHITE, touchColor, tolerance)) {
 					Log.d("color", "WHITE");
-					// imgPortaWeek.setVisibility(ImageView.VISIBLE);
-					// imgPorta.setVisibility(ImageView.GONE);
+
+					if (!isPlayingMagnet) {
+						BookActivity.playMusic(R.raw.magnet);
+						isPlayingMagnet = true;
+					}
 				} else if (Utils.closeMatch(Color.RED, touchColor, tolerance)) {
 					Log.d("color", "RED");
 					// imgPortaWeek.setVisibility(ImageView.GONE);
@@ -209,6 +212,8 @@ public class PagFindPortalFrg extends Fragment {
 				} else {
 					ivPortal.setVisibility(ImageView.GONE);
 					// imgPortaWeek.setVisibility(ImageView.GONE);
+					BookActivity.stopMusic();
+					isPlayingMagnet = false;
 					Log.d("color", "Not RED");
 				}
 
@@ -225,16 +230,18 @@ public class PagFindPortalFrg extends Fragment {
 							Toast.LENGTH_LONG).show();
 					PagKingDomfrg fb = new PagKingDomfrg();
 
-					onChoice.onChoiceMade(fb, PagKingDomfrg.NAME, PagKingDomfrg.icon);
+					onChoice.onChoiceMade(fb, PagKingDomfrg.NAME,
+							PagKingDomfrg.icon);
 					onChoice.onChoiceMadeCommit(NAME, true);
 
 					long endTime = System.currentTimeMillis();
 					long totalTime = endTime - startTime;
-					
+
 					Log.d("Total time", "time =" + totalTime);
 					view.setOnDragListener(null);
 				} else {
-					//if we do not have found the portal, we set the object to it's initial position
+					// if we do not have found the portal, we set the object to
+					// it's initial position
 					ivTalisman.setVisibility(View.VISIBLE);
 				}
 
@@ -247,5 +254,15 @@ public class PagFindPortalFrg extends Fragment {
 			}
 			return true;
 		}
+	}
+
+	@Override
+	public String getPrevPage() {
+		return PagBedRoomfAmuletfrg.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		return null;
 	}
 }

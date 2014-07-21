@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class PagChestOpen extends Fragment {
+public class PagChestOpen extends Fragment implements IFragmentBook {
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.openChest;
@@ -144,6 +144,16 @@ public class PagChestOpen extends Fragment {
 		bitmap1.recycle();
 		bitmap1 = null;
 
+	}
+
+	@Override
+	public String getPrevPage() {
+		return PagChest.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		return null;
 	}
 
 }

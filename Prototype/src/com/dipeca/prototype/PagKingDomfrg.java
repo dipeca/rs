@@ -20,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class PagKingDomfrg extends Fragment {
+public class PagKingDomfrg extends Fragment implements IFragmentBook{
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.semgiKingDom;
@@ -180,7 +180,7 @@ public class PagKingDomfrg extends Fragment {
 			}
 		});
 
-		BookActivity.playMusic(R.raw.village);
+//		BookActivity.playMusic(R.raw.village);
 		return view;
 	}
 
@@ -195,5 +195,16 @@ public class PagKingDomfrg extends Fragment {
 	}
 
 	AnimationDrawable backGroundChangeAnim;
+
+	@Override
+	public String getPrevPage() {
+		return PagFindPortalFrg.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

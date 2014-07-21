@@ -128,7 +128,7 @@ public class PagRobot extends Fragment {
 		Log.d("Total time kingdom", "onCreateView after inflate time ="
 				+ totalTime);
 
-		BookActivity.playMusic(R.raw.robot_page);
+//		BookActivity.playMusic(R.raw.robot_page);
 
 		density = (int) getResources().getDisplayMetrics().density;
 

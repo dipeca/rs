@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class PagPathChoiceFrg extends Fragment implements OnTouchListener {
+public class PagPathChoiceFrg extends Fragment implements OnTouchListener, IFragmentBook {
 
 	private IMainActivity onChoice;
 	public static int NAME = R.string.choicePath;
@@ -152,6 +152,16 @@ public class PagPathChoiceFrg extends Fragment implements OnTouchListener {
 		}
 
 		return true;
+	}
+
+	@Override
+	public String getPrevPage() {
+		return PagAfterChallenge.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		return null;
 	}
 
 }

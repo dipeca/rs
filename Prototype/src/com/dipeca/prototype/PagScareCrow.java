@@ -21,7 +21,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class PagScareCrow extends Fragment implements OnTouchListener {
+public class PagScareCrow extends Fragment implements OnTouchListener, IFragmentBook {
 	View view = null; 
 	private IMainActivity onChoice;
 	public static int NAME = R.string.scarecrow;
@@ -442,6 +442,16 @@ public class PagScareCrow extends Fragment implements OnTouchListener {
 			}
 			return true;
 		}
+	}
+
+	@Override
+	public String getPrevPage() {
+		return PagPathChoiceFrg.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		return null;
 	}
 
 }

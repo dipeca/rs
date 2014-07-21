@@ -33,7 +33,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PagEnigmaFrg extends Fragment implements OnTouchListener {
+public class PagEnigmaFrg extends Fragment implements OnTouchListener, IFragmentBook {
 
 	private IMainActivity onChoice;
 	public static int NAME = R.string.enigma;
@@ -172,7 +172,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 
 		layout.setOnTouchListener(this);
 
-		BookActivity.playMusic(R.raw.timer);
+//		BookActivity.playMusic(R.raw.timer);
 
 		startTimer();
 
@@ -189,6 +189,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 		txt.setPadding(pad, pad, pad, pad);
 		LayoutParams lpTxt = new LayoutParams(Math.round(240 * density),
 				LayoutParams.WRAP_CONTENT);
+		lpTxt.setMargins((int)(16 * density), (int)(16 * density), (int)(16 * density), (int)(16 * density));
 		layout.addView(txt, lpTxt);
 	}
 
@@ -271,9 +272,9 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 							lg.setDrawn(true);
 
 							// For each line we take 2 points
-							// and we take 3 more because we are in a help state
+							// and we take 10 more because we are in a help state
 							onChoice.setAddPoints(-2);
-							onChoice.setAddPoints(-3);
+							onChoice.setAddPoints(-8);
 
 							break;
 						}
@@ -287,6 +288,9 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 		});
 	}
 
+	/**
+	 * Each 10 seconds we will remove 1 point, i.e, 10 minutes removes 60 points 
+	 */
 	private void startTimer() {
 		final Handler handler = new Handler();
 		TimerTask timerTask = new TimerTask() {
@@ -301,7 +305,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 				});
 			}
 		};
-		timer.scheduleAtFixedRate(timerTask, 5000, 5000); // 1000 = 1 second.
+		timer.scheduleAtFixedRate(timerTask, 10000, 10000); // 1000 = 1 second.
 	}
 
 	private void stopTimer() {
@@ -616,7 +620,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 			onChoice.setAddPoints(30);
 
 			isMazeSolved = true;
-			BookActivity.stopOrPlayMusic();
+			BookActivity.stopMusic();
 			// stop timer
 			stopTimer();
 		}
@@ -760,6 +764,16 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener {
 			}
 		}
 
+		return null;
+	}
+
+	@Override
+	public String getPrevPage() {
+		return PagVillageFrg.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
 		return null;
 	}
 }

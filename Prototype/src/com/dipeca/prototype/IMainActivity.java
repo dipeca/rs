@@ -18,11 +18,9 @@ public interface IMainActivity {
 	
 	void onChoiceMadeCommitFirstPage(String namePreviousPage, Boolean isToPersist);
 	
-	void onChoiceMadeCommit(String namePreviousPage, Boolean isToPersist, Boolean isToStopMusic);
-	
 	Fragment getFragmentFromJourneyItem(JourneyItem ji);
 	
-	String getNameFromFragment(Fragment frg);
+	String getAttrValueFromFragment(Fragment frg, String AttrName);
 	
 	void objectFoundPersist(ObjectItem oi);
 	

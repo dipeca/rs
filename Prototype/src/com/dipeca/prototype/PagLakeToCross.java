@@ -19,7 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PagLakeToCross extends Fragment {
+public class PagLakeToCross extends Fragment implements IFragmentBook{
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.theLake;
@@ -149,6 +149,16 @@ public class PagLakeToCross extends Fragment {
 		bitmap2.recycle();
 		bitmap2 = null;
 		
+	}
+
+	@Override
+	public String getPrevPage() {
+		return PagPathChoiceFrg.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		return null;
 	}
 
 }

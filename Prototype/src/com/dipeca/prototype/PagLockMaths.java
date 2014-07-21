@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-public class PagLockMaths extends Fragment {
+public class PagLockMaths extends Fragment implements IFragmentBook {
 
 	private IMainActivity onChoice;
 	public static String NAME = "Lock";
@@ -157,5 +157,15 @@ public class PagLockMaths extends Fragment {
 			background.recycle();
 			background = null;
 		}
+	}
+
+	@Override
+	public String getPrevPage() {
+		return PagLockMaths.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		return null;
 	}
 }

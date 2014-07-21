@@ -3,7 +3,11 @@
 
     <string name="app_name">Reading Adventures</string>
     <string name="menu">Menu</string>
+    <string name="adventureRule">Regras da aventura</string>
+    <string name="objectsHelp">1 - A tua fotografia \n\n2 - Podes desligar o som da aventura e podes mudar a tua fotografia \n\n3 - A lista dos capítulos e desafios que já leste e venceste\n\n4 - A tua pontuação \n\n5 - Ao longo da aventura encontrarás objetos que te ajudarão e te darão pontos</string>
     <string name="wood">Madeira</string>
+    <string name="navHelp">Navega pela páginas com estes butões</string>
+    <string name="helpHelp">Quando estiveres a tentar resolver enigmas, se carregares neste butão, terás uma ajuda. Cuidado as ajudas custam pontos</string>
     <string name="rope">Corda</string>
     <string name="objects">Objetos</string>
     <string name="journey">Percurso</string>
@@ -19,7 +23,7 @@
     <string name="foundFriend">Encontrou uma amiga</string>
     <string name="adventureBegins">Aventura começa</string>
     <string name="afterLakeTitle">Regresso do lago</string>
-     <string name="afterLake">Gui recuperou mais um objeto. A hora de recuperar o livro da ciência do Reino aproxima-se.</string>
+    <string name="afterLake">Gui recuperou mais um objeto. A hora de recuperar o livro da ciência do Reino aproxima-se.</string>
     <string name="choicePath">Escolha de caminho</string>
     <string name="scarecrow">O espantalho</string>
     <string name="adventureGoesOn">Aventura continua</string>
@@ -32,7 +36,7 @@
     <string name="didnotopen">O cadeado não abriu, será que te enganaste?</string>
     <string name="solvefirst">Resolve o enigma antes de submeter.</string>
     <string name="submitSolution">Abrir</string>
-     <string name="findTwoObjects">Encontra os dois objetos que podem ajudar Gui e Namaid a atravessar o lago.</string>
+    <string name="findTwoObjects">Encontra os dois objetos que podem ajudar Gui e Namaid a atravessar o lago.</string>
     <string name="findHelp">Ajuda</string>
     <string name="theAmulet">Zig tinha algo para Gui.</string>
     <string name="theAmuletWarning">Clica no amuleto para guardá-lo nos teus objetos.</string>
@@ -46,7 +50,7 @@ desaparecer! </string>
     <string name="ravenPath">"Caminho dos corvos"</string>
     <string name="removeLines">Ainda tens linhas a mais...</string>
     <string name="youHaveDoneIt">Conseguiste!</string>
-     <string name="removeLineFirst">Retira uma linha do peixe primeiro.</string>
+    <string name="removeLineFirst">Retira uma linha do peixe primeiro.</string>
     <string name="pagVillage">Gui encontrou o líder da Terra de Lá.</string>
     <string name="pagVillageChallengeDone">Resolveste o enigma!</string>
     <string name="pagVillageChallengeDoneDialog">- Parabéns! No livro estão contidos os maiores segredos do nosso reino. Foi-nos roubado! Terás de partir para o porto, e embarcar em direção à Terra dos Ladrões. \nPor favor, sê o mais discreto possível pois ninguém pode saber que o livro desapareceu.</string>
@@ -84,12 +88,12 @@ desaparecer! </string>
     <string name="chestClosed">Um cofre fechado! O que estará dentro?</string>
     <string name="pagRobotAttack">O robot não está para conversas e ataca Gui! Tens de encontrar o ponto fraco do robot, usa o amuleto.</string>
     <string name="pagSomethingMoving">Enquanto caminhava, Gui apercebe-se que algo está a mexer.</string>
-    
+
     <!-- <string name="pag1_3">Tão rápido como apareceu, a criatura desapareceu. -->
     <!-- Gui beliscou-se e, definitivamente, estava bem acordado. -->
     <!-- Gui tentou imaginar o que poderia ser a chave que abriria a passagem para esse mundo misterioso. Curioso como é, tinha de encontra-la!</string> -->
     <string name="enigma_missao">Resolve este enigma. \nTens de desenhar 2 quadrados que separem todas as cruzes, \nsem tocar nelas.</string>
-    <string name="enigma_fish"> Um peixe está  a nadar para o lado esquerdo. \n Mexendo 3 linhas apenas \n, ele tem de ficar a nadar para o lado direito.</string>
+    <string name="enigma_fish"> Um peixe está  a nadar para o lado esquerdo. \nMexendo 3 linhas apenas \n,o peixe tem de ficar a nadar para o lado direito.</string>
     <string name="pag2_2">-Conseguiste chegar! Por favor ajuda-nos a encontrar o “Grande Livro da Ciência de Lá”.
 Todos os segredos do nosso mundo estão nesse livro. Ele foi-nos roubado, está em Aquém-Lá, terra dos ladrões. Nós não temos força para conseguir. Por isso te chamamos. Precisamos de ti para salvar o nosso Reino! O nosso ancião tem uma prova para ti afim de mostrares o teu valor.</string>
     <string name="pag2_3">Gui sentia uma sensação estranha. Como se alguém o observava.</string>
@@ -104,4 +108,5 @@ Todos os segredos do nosso mundo estão nesse livro. Ele foi-nos roubado, esta�
     <string name="pagRobotDestroyedDialog">- Euh.. olá.. sou o Lopo, guarda da aldeia de Grimstaad. Não sabia que eras da Terra de Lá, só depois de ver o amuleto é que percebi. \n\t- Olá! Bela armadura! Preciso de entrar aí, na «Terra dos limões». \n- «Terra dos Ladrões»! Esta cidade é muito pergosa!\n</string>
     <string name="pagRobotDestroyedDialog2">-Eu sei, mas preciso de recuperar algo, é muito importante.\n\t - Ok, ok... Bom, sabes eu, como guarda da cidade, passo muitas horas aqui e... \n-Imagino.\n\t... e se me ajudares a resolver um jogo de tabuleiro então deixo-te entrar na cidade, está bem?</string>
     <string name="theEnd">Fim</string>
+
 </resources>

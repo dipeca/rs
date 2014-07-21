@@ -52,6 +52,8 @@ import com.dipeca.prototype.entiy.User;
 public class BookActivity extends Activity implements IMainActivity,
 		LoaderManager.LoaderCallbacks<Cursor> {
 
+	private static boolean isMusicMuted = false;
+
 	@Override
 	public void restartApp() {
 
@@ -78,7 +80,6 @@ public class BookActivity extends Activity implements IMainActivity,
 	private static Context context;
 	private static int idToPlay = -1;
 	public static int playIcon;
-	private static boolean isStopped = false;
 	public static ImageButton stopButton;
 	private static InputMethodManager imm = null;
 	private ArrayList<JourneyItem> journeyItemList;
@@ -113,7 +114,7 @@ public class BookActivity extends Activity implements IMainActivity,
 	protected void onPause() {
 		super.onPause();
 
-		stopMusic();
+		releaseMusic();
 	}
 
 	@Override
@@ -231,50 +232,61 @@ public class BookActivity extends Activity implements IMainActivity,
 
 	public static void playMusicOnce(int id) {
 		createMP(id);
-		mediaPlayer.setLooping(false);
-		play();
+		if (mediaPlayer != null) {
+			mediaPlayer.setLooping(false);
+			play();
+		}
 	}
 
 	private static void createMP(int id) {
 		if (id > -1) {
-			stopMusic();
+			
+			releaseMusic();
+			
 			idToPlay = id;
+			
 			mediaPlayer = MediaPlayer.create(context, id);
-		}
+		}  
 	}
 
 	private static void play() {
 
-		mediaPlayer.start();
-		// Set the icon as stop because the music is now playing
-		playIcon = R.drawable.ic_action_stop;
-		setStopIcon();
-	}
-
-	private static void setStopIcon() {
-		if (stopButton != null) {
-			stopButton.setImageResource(playIcon);
+		if (!isMusicMuted && mediaPlayer != null) {
+			mediaPlayer.start();
 		}
 	}
 
 	public static void stopMusic() {
 		if (mediaPlayer != null) {
-			mediaPlayer.release();
-			mediaPlayer = null;
-			// Set the icon as play because the music is now stopped
-			playIcon = R.drawable.ic_action_play;
-			setStopIcon();
+			mediaPlayer.stop();
 		}
 	}
-
-	public static void stopOrPlayMusic() {
-		if (mediaPlayer != null) {
+	
+	private static void releaseMusic(){
+		if(mediaPlayer != null){
 			stopMusic();
-			isStopped = true;
-		} else if (idToPlay > -1) {
-			playMusic(idToPlay);
-			isStopped = false;
+			
+			mediaPlayer.release();
+			mediaPlayer = null;
 		}
+		
+	}
+
+	public static void setMuted() {
+		isMusicMuted = !isMusicMuted;
+
+		if (isMusicMuted) {
+			// Set the icon as muted because the music is now stopped
+			playIcon = R.drawable.ic_action_volume_muted;
+			stopMusic();
+		} else {
+			// Set the icon as volume on because the music is now playing
+			playIcon = R.drawable.ic_action_volume_on;
+			play();
+		}
+
+		stopButton.setImageResource(playIcon);
+
 	}
 
 	/**
@@ -375,19 +387,22 @@ public class BookActivity extends Activity implements IMainActivity,
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
+		// getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
 	private Fragment nextPage = null;
 	private String nextPageName = null;
 	private String nextPageClass = null;
+	private String prevPageClass = null;
 	private String iconPath = "quarto_olhar_talisma_icon";
 
 	@Override
 	public void onChoiceMade(Fragment frg, String currentPage, String iconPath) {
 		nextPage = frg;
 		nextPageName = currentPage;
+		// get previous page
+		prevPageClass = nextPageClass;
 		nextPageClass = frg.getClass().getName();
 		if (iconPath != null) {
 			this.iconPath = iconPath;
@@ -408,19 +423,10 @@ public class BookActivity extends Activity implements IMainActivity,
 	protected void onStop() {
 		super.onStop();
 
-		stopMusic();
+		releaseMusic();
 
 		persistStatusGame();
 		Log.d("bookactivity", "onStop");
-
-		//
-		// if (nextPageName != null && nextPageName.length() > 0) { //if the
-		// next page is not null
-		// if (!isInJourney(nextPageName)) { // if the nextpage to be loaded is
-		// not already on the list
-		// persistJourney(nextPageName);
-		// }
-		// }
 	}
 
 	/**
@@ -448,7 +454,7 @@ public class BookActivity extends Activity implements IMainActivity,
 	protected void onDestroy() {
 		super.onDestroy();
 
-		stopMusic();
+		releaseMusic();
 
 		Log.d("bookactivity", "onDestroy");
 	}
@@ -470,14 +476,13 @@ public class BookActivity extends Activity implements IMainActivity,
 	protected void onRestart() {
 		// TODO Auto-generated method stub
 		super.onRestart();
+		play();
 		Log.d("bookactivity", "onRestart");
 	}
 
 	@Override
 	public void onChoiceMadeCommit(String namePreviousPage, Boolean isToPersist) {
 		if (nextPage != null) {
-
-			stopMusic();
 
 			imm.hideSoftInputFromWindow(pointsText.getWindowToken(), 0);
 
@@ -539,6 +544,9 @@ public class BookActivity extends Activity implements IMainActivity,
 	 */
 	private void loadNextPage() {
 		if (nextPage != null) {
+
+			releaseMusic();
+
 			FragmentTransaction ft = getFragmentManager().beginTransaction();
 			// ft.setCustomAnimations(R.anim.slide_in_left,
 			// R.anim.right_to_left);
@@ -704,7 +712,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			Fragment current = getFragmentFromClassname(data
 					.getString(currentChapter));
 			if (current != null) {
-				name = getNameFromFragment(current);
+				name = getAttrValueFromFragment(current, "NAME");
 				// Go to next page
 				onChoiceMade(current, name);
 				// onChoiceMadeCommit(name, false);
@@ -931,11 +939,11 @@ public class BookActivity extends Activity implements IMainActivity,
 	}
 
 	@Override
-	public String getNameFromFragment(Fragment frg) {
+	public String getAttrValueFromFragment(Fragment frg, String attrName) {
 
 		Field f = null;
 		try {
-			f = frg.getClass().getField("NAME");
+			f = frg.getClass().getField(attrName);
 
 		} catch (NullPointerException e) {
 			// TODO Auto-generated catch block
@@ -975,7 +983,7 @@ public class BookActivity extends Activity implements IMainActivity,
 		if (BookActivity.points >= 0 || points > 0) {
 			BookActivity.points += points;
 		}
-		
+
 		pointsText.setText(BookActivity.points + "");
 
 	}
@@ -1411,18 +1419,6 @@ public class BookActivity extends Activity implements IMainActivity,
 	}
 
 	@Override
-	public void onChoiceMadeCommit(String namePreviousPage,
-			Boolean isToPersist, Boolean isToStopMusic) {
-
-		if (isToStopMusic) {
-			stopMusic();
-		}
-
-		onChoiceMadeCommit(namePreviousPage, isToPersist);
-
-	}
-
-	@Override
 	public void onChoiceMade(Fragment nextPag, int currentPage) {
 		onChoiceMade(nextPag, getString(currentPage));
 
@@ -1432,6 +1428,33 @@ public class BookActivity extends Activity implements IMainActivity,
 	public void onChoiceMadeCommit(int namePreviousPage, Boolean isToPersist) {
 		onChoiceMadeCommit(getString(namePreviousPage), isToPersist);
 
+	}
+
+	@Override
+	public void onBackPressed() {
+
+		if (nextPage != null && nextPage != null) {
+
+			try {
+				IFragmentBook current = (IFragmentBook) nextPage;
+				Fragment prev = getFragmentFromClassname(current.getPrevPage());
+
+				if (prev != null) {
+					String name = getAttrValueFromFragment(prev, "NAME");
+					if (name != null) {
+						onChoiceMade(prev, name);
+
+						// Load the next Page of the story
+						loadNextPage();
+					}
+				}
+			} catch (ClassCastException e) {
+				Log.d("BookActivity", "CAst exception");
+
+				throw new ClassCastException();
+			}
+
+		}
 	}
 
 }

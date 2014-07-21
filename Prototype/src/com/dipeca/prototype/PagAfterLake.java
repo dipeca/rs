@@ -107,7 +107,7 @@ public class PagAfterLake extends Fragment {
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
 		Bitmap caminhoSomebodyBm = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.caminho_dia_fim2, 600, 300 );
+				R.drawable.caminho_dia, 600, 300 );
 		iv1.setImageBitmap(caminhoSomebodyBm);
  
 		iv2.setVisibility(View.GONE);

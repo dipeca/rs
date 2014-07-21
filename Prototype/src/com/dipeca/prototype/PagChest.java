@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PagChest extends Fragment implements OnTouchListener {
+public class PagChest extends Fragment implements OnTouchListener, IFragmentBook {
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.chest;
@@ -67,7 +67,7 @@ public class PagChest extends Fragment implements OnTouchListener {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+			Bundle savedInstanceState) { 
 
 		long startTime = System.currentTimeMillis();
 		view = inflater.inflate(R.layout.pag_one_image_clickable, container,
@@ -79,7 +79,6 @@ public class PagChest extends Fragment implements OnTouchListener {
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
 		tv1.setText(R.string.chestClosed);
 
-		BookActivity.stopMusic();
 		// loadImages()
 		loadImages();
 
@@ -141,5 +140,15 @@ public class PagChest extends Fragment implements OnTouchListener {
 		}
 
 		return true;
+	}
+
+	@Override
+	public String getPrevPage() {
+		return PagLakeToCross.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		return null;
 	}
 }

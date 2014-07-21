@@ -21,7 +21,7 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener {
+public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener, IFragmentBook {
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.TheAmulet;
@@ -319,6 +319,17 @@ public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener {
 		}
 
 		return true;
+	}
+
+	@Override
+	public String getPrevPage() {
+		// TODO Auto-generated method stub
+		return PagBedRoomfrg.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		return "com.dipeca.prototype.PagFindPortalFrg";
 	}
 
 }

@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class PagAfterChallengeScareCrow extends Fragment {
+public class PagAfterChallengeScareCrow extends Fragment implements IFragmentBook {
 	private IMainActivity onChoice;
 	public static int NAME = R.string.adventureGoesOn;
 	public static String icon = "caminho_somebody_icon";
@@ -148,9 +148,9 @@ public class PagAfterChallengeScareCrow extends Fragment {
 		buttonPrev.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				PagFindFriend fb = new PagFindFriend();
+				PagScareCrow fb = new PagScareCrow();
 
-				onChoice.onChoiceMade(fb, PagFindFriend.NAME, PagFindFriend.icon);
+				onChoice.onChoiceMade(fb, PagScareCrow.NAME, PagScareCrow.icon);
 				onChoice.onChoiceMadeCommit(NAME, false);
 			}
 		});
@@ -169,13 +169,23 @@ public class PagAfterChallengeScareCrow extends Fragment {
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
 		Bitmap caminhoSomebodyBm = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.caminho_dia_scarecrow, 600, 300 );
+				R.drawable.caminho_dia, 600, 300 );
 		iv1.setImageBitmap(caminhoSomebodyBm);
-
+ 
 		iv2.setVisibility(View.GONE);
 
 
 	}
 	AnimationDrawable backGroundChangeAnim;
+
+	@Override
+	public String getPrevPage() {
+		return PagPathChoiceFrg.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		return null;
+	}
 
 }

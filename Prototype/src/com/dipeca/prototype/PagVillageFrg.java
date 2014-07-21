@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class PagVillageFrg extends Fragment {
+public class PagVillageFrg extends Fragment implements IFragmentBook {
 	private IMainActivity onChoice;
 	public static int icon = R.drawable.village_icon;
 	public static int NAME = R.string.landOfLa;
@@ -62,10 +62,11 @@ public class PagVillageFrg extends Fragment {
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				PagEnigmaFrg fb = new PagEnigmaFrg();
+				PageHelp fb = new PageHelp();
 
-				onChoice.onChoiceMade(fb, getString(PagEnigmaFrg.NAME), getResources().getResourceName(PagEnigmaFrg.icon));
-				onChoice.onChoiceMadeCommit(getString(NAME), true);
+				onChoice.onChoiceMade(fb, PageHelp.NAME,
+						PageHelp.icon);
+				onChoice.onChoiceMadeCommit(NAME, true);
 			}
 		});
 		
@@ -124,6 +125,17 @@ public class PagVillageFrg extends Fragment {
 		long endTime = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
 		System.out.println(" Village loadImages Total time: " + totalTime);
+	}
+
+	@Override
+	public String getPrevPage() {
+		return PagKingDomfrg.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

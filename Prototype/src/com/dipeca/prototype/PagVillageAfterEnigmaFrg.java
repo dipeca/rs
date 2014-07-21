@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class PagVillageAfterEnigmaFrg extends Fragment {
+public class PagVillageAfterEnigmaFrg extends Fragment implements IFragmentBook {
 	private IMainActivity onChoice;
 	public static int NAME = R.string.enigmaSolved;
 	public static int icon = R.drawable.village_icon;
@@ -119,6 +119,16 @@ public class PagVillageAfterEnigmaFrg extends Fragment {
 		long totalTime = endTime - startTime;
 		System.out.println(" Village loadImages Total time: " + totalTime);
 	
+	}
+
+	@Override
+	public String getPrevPage() {
+		return PagEnigmaFrg.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		return null;
 	} 
 
 }
