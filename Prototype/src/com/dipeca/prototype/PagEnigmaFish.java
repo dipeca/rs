@@ -15,6 +15,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -141,7 +143,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 		lines.addAll(0, firstFish);
 		lines.addAll(0, secondFishLines);
 
-		layout.setOnTouchListener(this);
+		imageView.setOnTouchListener(this);
 
 		// Add textview
 		handleText();
@@ -657,8 +659,8 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 		if (!isMazeSolved && event.getAction() == MotionEvent.ACTION_DOWN) {
 			imageView.getLocationOnScreen(baseCoordinates);
 
-			float x = event.getX() - baseCoordinates[0];
-			float y = event.getY() - baseCoordinates[1];
+			float x = event.getX();// - baseCoordinates[0];
+			float y = event.getY();// - baseCoordinates[1];
 
 			Log.d("OnTouch", "x: " + x + " y:" + y);
 
@@ -666,13 +668,14 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 			// drawer layout we have to
 			// account for the 240dp = 320 px from the menu hided
 			if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) <= Configuration.SCREENLAYOUT_SIZE_LARGE) {
-				x = x - (240 * density);
+				//x = x - (240 * density);
 
 			}
 
 			// Add the space occupied by the menus
-			x = x + (240 * density);
-			y += (80 * density);
+			//x = x + (240 * density);
+			
+			//y += (80 * density);
 
 			Log.d("OnTouch after correction", "x: " + x + " y:" + y);
 
@@ -733,7 +736,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 				}
 
 			} else if (movesAllowed == 0) {
-				Log.d("OnTouch", "MovesAlowed  = 0. =" + movesAllowed);
+				Log.d("OnTouch", "MovesAlowed  = 0.");
 				// We don't have any moves so we must erase a line segment to
 				// earn moves
 				paintStroke.setColor(0xffd2c38f);
@@ -769,11 +772,13 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 					}
 				}
 			}
+			
+			imageView.invalidate();
+			isMazeSolved = checkMazeDone();
+			
 			// remove 2 points for each move
 			onChoice.setAddPoints(-2);
 
-			imageView.invalidate();
-			isMazeSolved = checkMazeDone();
 			if (isMazeSolved) {
 
 				Toast.makeText(this.getActivity(),
@@ -785,6 +790,16 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 		return true;
 	}
 
+	
+	private int getStatusBarHeight() { 
+	      int result = 0;
+	      int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+	      if (resourceId > 0) {
+	          result = getResources().getDimensionPixelSize(resourceId);
+	      } 
+	      return result;
+	} 
+	
 	private boolean checkMazeDone() {
 		
 		//If we have any help line drawn then it's not done 

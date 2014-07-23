@@ -33,7 +33,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PagEnigmaFrg extends Fragment implements OnTouchListener, IFragmentBook {
+public class PagEnigmaFrg extends Fragment implements OnTouchListener,
+		IFragmentBook {
 
 	private IMainActivity onChoice;
 	public static int NAME = R.string.enigma;
@@ -59,12 +60,13 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener, IFragment
 	private int width = 400;
 	private int height = 400;
 
+
 	private float density = 1;
+	
 	// We will give 15 px of margin. So everything less then 15px of
 	// difference is considered accurate
 	private float fingerTouchMargin = 15 * density;
-	
-	
+
 	private float converterX = 1.66f;
 	private float converterY = 5;
 
@@ -85,7 +87,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener, IFragment
 		}
 	}
 
-	Timer timer = new Timer(false);
+	private Timer timer = new Timer(false);
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -93,7 +95,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener, IFragment
 
 		density = (float) getResources().getDisplayMetrics().density;
 		fingerTouchMargin = 15 * density;
-		
+
 		// Converts 400 dip into its equivalent px
 		Resources r = getResources();
 		float widthPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
@@ -170,9 +172,9 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener, IFragment
 		// set the listeners to buttons
 		addListeners();
 
-		layout.setOnTouchListener(this);
+		imageView.setOnTouchListener(this);
 
-//		BookActivity.playMusic(R.raw.timer);
+		// BookActivity.playMusic(R.raw.timer);
 
 		startTimer();
 
@@ -189,7 +191,8 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener, IFragment
 		txt.setPadding(pad, pad, pad, pad);
 		LayoutParams lpTxt = new LayoutParams(Math.round(240 * density),
 				LayoutParams.WRAP_CONTENT);
-		lpTxt.setMargins((int)(16 * density), (int)(16 * density), (int)(16 * density), (int)(16 * density));
+		lpTxt.setMargins((int) (16 * density), (int) (16 * density),
+				(int) (16 * density), (int) (16 * density));
 		layout.addView(txt, lpTxt);
 	}
 
@@ -272,9 +275,10 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener, IFragment
 							lg.setDrawn(true);
 
 							// For each line we take 2 points
-							// and we take 10 more because we are in a help state
+							// and we take 10 more because we are in a help
+							// state
 							onChoice.setAddPoints(-2);
-							onChoice.setAddPoints(-8);
+							onChoice.setAddPoints(-10);
 
 							break;
 						}
@@ -289,7 +293,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener, IFragment
 	}
 
 	/**
-	 * Each 10 seconds we will remove 1 point, i.e, 10 minutes removes 60 points 
+	 * Each 10 seconds we will remove 1 point, i.e, 10 minutes removes 60 points
 	 */
 	private void startTimer() {
 		final Handler handler = new Handler();
@@ -310,10 +314,11 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener, IFragment
 
 	private void stopTimer() {
 		// Reset timer
-		timer.cancel();
-		timer.purge();
-		timer = null;
-
+		if (timer != null) {
+			timer.cancel();
+			timer.purge();
+			timer = null;
+		}
 	}
 
 	private void drawCrosses() {
@@ -504,8 +509,8 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener, IFragment
 		if (event.getAction() == MotionEvent.ACTION_DOWN && !checkMazeDone()) {
 			imageView.getLocationOnScreen(baseCoordinates);
 
-			float x = event.getX() - baseCoordinates[0];
-			float y = event.getY() - baseCoordinates[1];
+			float x = event.getX();// - baseCoordinates[0];
+			float y = event.getY();// - baseCoordinates[1];
 
 			int actionBarHeight = -1;
 			TypedValue tv = new TypedValue();
@@ -525,17 +530,22 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener, IFragment
 			// now get the closest border to perform the drawing
 			paintStroke.setColor(Color.BLACK);
 
-			x = x + (width / converterX);
-			y = y + (height / converterY);
+			//x = x + (width / converterX);
+			//y = y + (height / converterY);
 
 			// Bad, bad move but I have to do this because when we user the
 			// drawer layout we have to
 			// account for the 240dp = 320 px from the menu hided
 			if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) <= Configuration.SCREENLAYOUT_SIZE_LARGE) {
-				x = x - (240 * density);
+				//x = x - (240 * density);
 
 			}
+			
+			//x = x/density;
+			//y = y/density;
 
+			Log.d("OnTouch after correction", "x: " + x + " y:" + y);
+			
 			Point p = new Point((int) x, (int) y);
 			LineSegment lg2 = getClosestLine(p);
 			if (lg2 != null) {
@@ -592,6 +602,15 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener, IFragment
 		return true;
 	}
 
+	private int getStatusBarHeight() { 
+	      int result = 0;
+	      int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+	      if (resourceId > 0) {
+	          result = getResources().getDimensionPixelSize(resourceId);
+	      } 
+	      return result;
+	} 
+	
 	private boolean checkMazeDone() {
 		// Check if all correct lines are Ok
 		if (!isMazeSolved) {
@@ -629,7 +648,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener, IFragment
 		toastObject = Toast.makeText(this.getActivity(),
 				getString(R.string.youHaveDoneIt), Toast.LENGTH_SHORT);
 		toastObject.show();
-		
+
 		return true;
 	}
 
@@ -639,7 +658,6 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener, IFragment
 
 		}
 	}
-
 
 	/*
 	 * This function is equivalent to the other function to get the lines from
@@ -734,7 +752,6 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener, IFragment
 		return null;
 	}
 
-	
 	private LineSegment getClosestLineIncorrect(Point p) {
 		int b1 = 200;
 		int m1 = -1;
@@ -776,4 +793,14 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener, IFragment
 	public String getNextPage() {
 		return null;
 	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		
+		//Stops timer 
+		stopTimer();
+	}
+	
+	
 }
