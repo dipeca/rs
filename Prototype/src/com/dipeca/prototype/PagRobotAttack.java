@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -21,7 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PagRobotAttack extends Fragment {
+public class PagRobotAttack extends Fragment implements IFragmentBook{
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.robotAttacks;
@@ -235,11 +236,23 @@ public class PagRobotAttack extends Fragment {
 				break;
 			case DragEvent.ACTION_DRAG_ENDED:
 				Log.d("onDrag", event.getAction() + " ACTION_DRAG_ENDED");
+				ivTalisman.setVisibility(View.VISIBLE);
 			default:
 				Log.d("onDrag", event.getAction() + "");
 				break;
 			}
 			return true;
 		}
+	}
+
+	@Override
+	public String getPrevPage() {
+		return PagRobotAttack.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

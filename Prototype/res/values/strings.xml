@@ -7,7 +7,7 @@
     <string name="objectsHelp">1 - A tua fotografia \n\n2 - Podes desligar o som da aventura e podes mudar a tua fotografia \n\n3 - A lista dos capítulos e desafios que já leste e venceste\n\n4 - A tua pontuação \n\n5 - Ao longo da aventura encontrarás objetos que te ajudarão e te darão pontos</string>
     <string name="wood">Madeira</string>
     <string name="navHelp">Navega pela páginas com estes butões</string>
-    <string name="helpHelp">Quando estiveres a tentar resolver enigmas, se carregares neste butão, terás uma ajuda. Cuidado as ajudas custam pontos</string>
+    <string name="helpHelp">Este butão contêm pistas e ajudas. Cuidado, as ajudam custam pontos.</string>
     <string name="rope">Corda</string>
     <string name="objects">Objetos</string>
     <string name="journey">Percurso</string>

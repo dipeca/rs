@@ -119,11 +119,9 @@ public class PagFindFriend extends Fragment implements OnTouchListener, IFragmen
 			int tolerance = 25;
 			if (Utils.closeMatch(Color.RED, touchColor, tolerance)) {
 				// Do the action associated with the RED region
-//				PagForestPath frg = new PagForestPath();
-//				onChoice.onChoiceMade(frg, PagForestPath.NAME, null);
-				PagAfterChallenge frg = new PagAfterChallenge();
+				PagLockMaths frg = new PagLockMaths();
 
-				onChoice.onChoiceMade(frg, PagAfterChallenge.NAME, PagAfterChallenge.icon);
+				onChoice.onChoiceMade(frg, PagLockMaths.NAME, PagLockMaths.icon);
 				
 				FragmentTransaction ft = getFragmentManager()
 						.beginTransaction();

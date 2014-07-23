@@ -3,25 +3,22 @@ package com.dipeca.prototype;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.app.ActionBar.LayoutParams;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 public class PagLockMaths extends Fragment implements IFragmentBook {
 
 	private IMainActivity onChoice;
-	public static String NAME = "Lock";
+	public static int NAME = R.string.lock;
+	public static int icon = R.drawable.cadeado_icon;
 	private static ImageButton button;
 
 	MathMentalPyramidFrg math = null;
@@ -51,7 +48,7 @@ public class PagLockMaths extends Fragment implements IFragmentBook {
 	}
 	
 	private void loadImages() {
-		Log.d(NAME, "loadImages()");
+		Log.d(getString(NAME), "loadImages()");
 
 		iv1 = (ImageView) view.findViewById(R.id.imageView1);
 		ivBack = (ImageView) view.findViewById(R.id.imageViewBack);
@@ -101,7 +98,11 @@ public class PagLockMaths extends Fragment implements IFragmentBook {
 			@Override
 			public void onClick(View arg0) { 
 				if (math.isLockUnlocked()) {
-					onChoice.onChoiceMadeCommit(R.string.lock, true);
+					
+					PagAfterChallenge frg = new PagAfterChallenge();
+
+					onChoice.onChoiceMade(frg, PagAfterChallenge.NAME, PagAfterChallenge.icon);
+					onChoice.onChoiceMadeCommit(PagAfterChallenge.NAME, true);
 				}
 
 			}
@@ -134,7 +135,7 @@ public class PagLockMaths extends Fragment implements IFragmentBook {
 				        view.findViewById(R.id.mathTr).setPadding(0, (int) (160 * density), 0, 0);
 			        }
 			        else{
-			            view.findViewById(R.id.mathTr).setPadding(0, (int) (232 * density), 0, 0);
+			           view.findViewById(R.id.mathTr).setPadding(0, (int) (232 * density), 0, 0);
 			        }
 		        }
 		     }
@@ -145,7 +146,7 @@ public class PagLockMaths extends Fragment implements IFragmentBook {
 	
 	@Override
 	public void onDetach() {
-		Log.d(NAME, " onDetach()");
+		Log.d(getString(NAME), " onDetach()");
 		super.onDetach();
 
 		if (lock != null) {

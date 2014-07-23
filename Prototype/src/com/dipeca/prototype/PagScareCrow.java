@@ -266,6 +266,8 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 		}
 	};
 	
+	private boolean isBottleDragging = false;
+	
 	@Override
 	public boolean onTouch(View arg0, MotionEvent ev) {
 		final int action = ev.getAction();
@@ -304,6 +306,7 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 				view.postDelayed(mUpdateTimeTask, 1000);
 			} else if (Utils.closeMatch(Color.GREEN, touchColor, tolerance)) {
 
+				isBottleDragging = false;
 				tv1.setText(R.string.pagScareCrowThisIsNotABottle);
 				// ivCorn.setVisibility(View.VISIBLE);
 
@@ -320,9 +323,8 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 				}
 				
 			} else if (Utils.closeMatch(Color.WHITE, touchColor, tolerance)) {
-
+				isBottleDragging = true;
 				tv1.setText(R.string.pagScareCrowSaveBottle);
-				// ivBottle.setVisibility(View.VISIBLE);
 
 				// Start dragging
 				ClipData data = ClipData.newPlainText("", "");
@@ -396,17 +398,6 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 				if (Utils.closeMatch(Color.YELLOW, touchColor, tolerance)) {
 					Log.d("color", "YELLOW");
 
-					checkObjectsAlreadyFound();
-					if(!isBottleInObjects && !lockPersistBottle){
-						
-						lockPersistBottle = true;
-						onChoice.setAddPoints(40);
-						view.postDelayed(persistBottle, 1);
-					}
-					PagAfterChallengeScareCrow fb = new PagAfterChallengeScareCrow();
-
-					onChoice.onChoiceMade(fb, getString( PagAfterChallengeScareCrow.NAME));
-					onChoice.onChoiceMadeCommit(getString( NAME), true);
 				}
 				break;
 			case DragEvent.ACTION_DRAG_EXITED:
@@ -414,7 +405,7 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 				break;
 			case DragEvent.ACTION_DROP:
 				Log.d("onDrag", event.getAction() + " ACTION_DROP");
-				if (Utils.closeMatch(Color.YELLOW, touchColor, tolerance)) {
+				if (Utils.closeMatch(Color.YELLOW, touchColor, tolerance) && isBottleDragging) {
 					Log.d("color", "YELLOW");
 
 					checkObjectsAlreadyFound();

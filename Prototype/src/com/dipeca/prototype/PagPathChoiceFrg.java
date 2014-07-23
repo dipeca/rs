@@ -156,7 +156,7 @@ public class PagPathChoiceFrg extends Fragment implements OnTouchListener, IFrag
 
 	@Override
 	public String getPrevPage() {
-		return PagAfterChallenge.class.getName();
+		return PagPathChoiceFrg.class.getName();
 	}
 
 	@Override

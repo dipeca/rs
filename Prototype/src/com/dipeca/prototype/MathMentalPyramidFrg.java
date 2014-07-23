@@ -195,16 +195,11 @@ public class MathMentalPyramidFrg extends Fragment {
 			if ((top == medium1 + medium2) && (medium1 == base2Int + base1Int)
 					&& (medium2 == base1Int + base3Int)) {
 
-				Toast toast = Toast.makeText(getActivity(),
-						getString(R.string.youHaveDoneIt), Toast.LENGTH_SHORT);
-				toast.setGravity(Gravity.CENTER, 0, 0);
-				toast.show();
-
 				InputMethodManager imm = (InputMethodManager) getActivity()
 						.getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(base3ET.getWindowToken(), 0);
 
-				onChoice.onChoiceMadeCommit(R.string.lock, true);
+				//onChoice.onChoiceMadeCommit(R.string.lock, true);
 				return true;
 			} else {
 				Toast toast = Toast.makeText(getActivity(),

@@ -246,7 +246,7 @@ public class PagLakeToCrossFindObjects extends Fragment implements
 				onChoice.objectFoundPersist(oi);
 				
 				icon2.setImageBitmap(Utils.decodeSampledBitmapFromResource(getResources(),
-						R.drawable.rope, 48, 48));
+						R.drawable.plank, 48, 48));
 				checkObjectsAlreadyFound();
 
 				

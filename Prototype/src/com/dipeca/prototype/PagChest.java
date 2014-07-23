@@ -127,7 +127,7 @@ public class PagChest extends Fragment implements OnTouchListener, IFragmentBook
 						.beginTransaction();
 				ft.setTransition(R.animator.right_to_left);
 
-				PagLockMaths fb = new PagLockMaths();
+				PagLockMathsVault fb = new PagLockMathsVault();
 				fb.isVaultPage(true);
 				
 				ft.replace(R.id.detailFragment, fb);

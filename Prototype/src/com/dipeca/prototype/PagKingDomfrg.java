@@ -13,6 +13,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
@@ -60,7 +61,7 @@ public class PagKingDomfrg extends Fragment implements IFragmentBook{
 		int density = (int) getResources().getDisplayMetrics().density;
 		Animation animation = new TranslateAnimation(1000 * density, -400
 				* density, density * 200, density * 64); 
-		animation.setDuration(8000); 
+		animation.setDuration(6000); 
 		animation.setRepeatCount(Animation.INFINITE);
 
 		Animation scaleAnimation = new ScaleAnimation(0.3f, 0.0f, 0.3f, 0.0f, 0.5f, 0.5f);
@@ -77,6 +78,8 @@ public class PagKingDomfrg extends Fragment implements IFragmentBook{
 		set.addAnimation(scaleAnimation);
 		set.addAnimation(animation);
 		set.addAnimation(alphaAnim);
+		
+		set.setInterpolator(new BounceInterpolator());
 		
 		image2.setAnimation(set); 
 

@@ -85,11 +85,20 @@
 
     <ImageView
         android:id="@+id/ivWalk"
-        android:layout_width="100dp"
-        android:layout_height="220dp"
-        android:layout_centerHorizontal="true"
+        android:layout_width="180dp"
+        android:layout_height="360dp"
         android:layout_alignBottom="@id/page2Image"
         android:layout_alignLeft="@id/page2Image"
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitEnd" />
+
+    <ImageView
+        android:id="@+id/ivCatWalk"
+        android:layout_width="360dp"
+        android:layout_height="180dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@id/page2Image"
+        android:layout_centerHorizontal="true"
         android:scaleType="fitEnd" />
 
 </RelativeLayout>

@@ -201,20 +201,18 @@ public class PagFindPortalFrg extends Fragment implements IFragmentBook {
 				if (Utils.closeMatch(Color.WHITE, touchColor, tolerance)) {
 					Log.d("color", "WHITE");
 
-					if (!isPlayingMagnet) {
-						BookActivity.playMusic(R.raw.magnet);
-						isPlayingMagnet = true;
-					}
+					playMagnetMusic();
 				} else if (Utils.closeMatch(Color.RED, touchColor, tolerance)) {
 					Log.d("color", "RED");
+					
+					playMagnetMusic();
 					// imgPortaWeek.setVisibility(ImageView.GONE);
 					ivPortal.setVisibility(ImageView.VISIBLE);
 				} else {
 					ivPortal.setVisibility(ImageView.GONE);
 					// imgPortaWeek.setVisibility(ImageView.GONE);
-					BookActivity.stopMusic();
-					isPlayingMagnet = false;
-					Log.d("color", "Not RED");
+					stopMagnetMusic();
+					Log.d("color", "Not RED nor White");
 				}
 
 				break;
@@ -248,12 +246,25 @@ public class PagFindPortalFrg extends Fragment implements IFragmentBook {
 				break;
 			case DragEvent.ACTION_DRAG_ENDED:
 				Log.d("onDrag", event.getAction() + " ACTION_DRAG_ENDED");
+				ivTalisman.setVisibility(View.VISIBLE);
 			default:
 				Log.d("onDrag", event.getAction() + "");
 				break;
 			}
 			return true;
 		}
+	}
+	
+	private void playMagnetMusic(){
+		if (!isPlayingMagnet) {
+			BookActivity.playMusic(R.raw.magnet);
+			isPlayingMagnet = true;
+		}
+	}
+	
+	private void stopMagnetMusic(){
+		BookActivity.stopMusic();
+		isPlayingMagnet = false;
 	}
 
 	@Override

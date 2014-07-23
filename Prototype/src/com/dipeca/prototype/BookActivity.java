@@ -256,6 +256,12 @@ public class BookActivity extends Activity implements IMainActivity,
 		}
 	}
 
+	private static void pauseMusic(){
+		if (mediaPlayer != null) {
+			mediaPlayer.pause();
+		}
+	}
+	
 	public static void stopMusic() {
 		if (mediaPlayer != null) {
 			mediaPlayer.stop();
@@ -278,7 +284,7 @@ public class BookActivity extends Activity implements IMainActivity,
 		if (isMusicMuted) {
 			// Set the icon as muted because the music is now stopped
 			playIcon = R.drawable.ic_action_volume_muted;
-			stopMusic();
+			pauseMusic();
 		} else {
 			// Set the icon as volume on because the music is now playing
 			playIcon = R.drawable.ic_action_volume_on;
@@ -800,14 +806,9 @@ public class BookActivity extends Activity implements IMainActivity,
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-		String[] projection = null;
+ 
 		switch (tableLoaded) {
-		case PrototypeProvider.USER_ALLROWS:
-
-			int name = data.getColumnIndex(User.NAME);
-			int age = data.getColumnIndex(User.AGE);
-			int id = data.getColumnIndex(User.ID);
+		case PrototypeProvider.USER_ALLROWS: 
 
 			// Initiate status loading
 			restartLoaderStatus();
