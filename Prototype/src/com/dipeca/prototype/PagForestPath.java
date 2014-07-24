@@ -110,9 +110,9 @@ public class PagForestPath extends Fragment {
 		rlp.addRule(RelativeLayout.BELOW, iv1.getId());
 		iv2.setLayoutParams(rlp);
 		
-		Bitmap mountainDial = Utils.decodeSampledBitmapFromResource(
-				getResources(), R.drawable.theend, 1024, 600);
-		iv2.setImageBitmap(mountainDial);
+//		Bitmap mountainDial = Utils.decodeSampledBitmapFromResource(
+//				getResources(), R.drawable.theend, 1024, 600);
+//		iv2.setImageBitmap(mountainDial);
 
 
 	}

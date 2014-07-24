@@ -2,12 +2,12 @@ package com.dipeca.prototype;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -56,7 +56,8 @@ public class PagLakeToCrossFindObjects extends Fragment implements
 	private ImageView ivClickable;
 	private ImageView icon1;
 	private ImageView icon2;
-
+	private float density = 1;
+	
 	private void loadImages() {
 		Log.d("KingDom ", "loadImages()");
 		image1 = (ImageView) view.findViewById(R.id.pag1ImageView);
@@ -89,9 +90,9 @@ public class PagLakeToCrossFindObjects extends Fragment implements
 				.inflate(R.layout.pag_one_image_dialog, container, false);
 		long endTime = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
-		Log.d("Total time kingdom", "onCreateView after inflate time ="
-				+ totalTime);
 
+		density = (float) getResources().getDisplayMetrics().density;
+		
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
 		tv1.setText(R.string.pagLake);
 
@@ -155,7 +156,10 @@ public class PagLakeToCrossFindObjects extends Fragment implements
 	
 					onChoice.onChoiceMadeCommit(NAME, true);
 				}else{
-					Toast.makeText(getActivity(), getString(R.string.findTwoObjects), Toast.LENGTH_SHORT).show();
+					
+					Toast t = Toast.makeText(getActivity(), getString(R.string.findTwoObjects), Toast.LENGTH_SHORT);
+					t.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL, 80 * Math.round(density), 0);
+					t.show();
 				}
 			}
 		});

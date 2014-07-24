@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class PagRobotAttack extends Fragment implements IFragmentBook{
 	View view = null;
@@ -119,8 +117,6 @@ public class PagRobotAttack extends Fragment implements IFragmentBook{
 		ivTalisman.setOnTouchListener(new MyTouchListener());
 		view.setOnDragListener(new MyDragListener());
 
-		// view.setOnTouchListener(this);
-
 		return view;
 	}
 
@@ -209,23 +205,15 @@ public class PagRobotAttack extends Fragment implements IFragmentBook{
 
 				break;
 			case DragEvent.ACTION_DRAG_EXITED:
-				Log.d("onDrag", event.getAction() + " ACTION_DRAG_EXITED");
 				break;
 			case DragEvent.ACTION_DROP:
-				Log.d("onDrag", event.getAction() + " ACTION_DROP");
 				if (Utils.closeMatch(Color.RED, touchColor, tolerance)) {
-					long startTime = System.currentTimeMillis();
 
-					Toast.makeText(getActivity(), R.string.success,
-							Toast.LENGTH_LONG).show();
 					PagRobotDestroyedfrg fb = new PagRobotDestroyedfrg();
 
 					onChoice.onChoiceMade(fb, getString(PagRobotDestroyedfrg.NAME), getResources().getResourceName(PagRobotDestroyedfrg.icon));
 					onChoice.onChoiceMadeCommit(getString(NAME), true);
 
-					long endTime = System.currentTimeMillis();
-					long totalTime = endTime - startTime;
-					Log.d("Total time", "time =" + totalTime);
 					view.setOnDragListener(null);
 				} else {
 					// if we do not have found the portal, we set the object to
@@ -235,10 +223,8 @@ public class PagRobotAttack extends Fragment implements IFragmentBook{
 
 				break;
 			case DragEvent.ACTION_DRAG_ENDED:
-				Log.d("onDrag", event.getAction() + " ACTION_DRAG_ENDED");
 				ivTalisman.setVisibility(View.VISIBLE);
 			default:
-				Log.d("onDrag", event.getAction() + "");
 				break;
 			}
 			return true;

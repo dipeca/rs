@@ -9,15 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.RelativeLayout.LayoutParams;
+import android.widget.TextView;
 
 public class PagRobot extends Fragment implements IFragmentBook {
 	View view = null;
@@ -30,7 +26,6 @@ public class PagRobot extends Fragment implements IFragmentBook {
 	private boolean isTextHide = false;
 
 	private static Bitmap bitmap1;
-	private static Bitmap bitmap2;
 
 	private int density = 1;
 
@@ -102,10 +97,10 @@ public class PagRobot extends Fragment implements IFragmentBook {
 				
 				// if the talisman was cleaned after portal page
 				if (BookActivity.bitmapTalisma == null) {
-
+  
 					BookActivity.bitmapTalisma = Utils
 							.decodeSampledBitmapFromResource(getResources(),
-									R.drawable.talisma, 162, 162);
+									R.drawable.talisma, 162, 162);  
 				}
 			}
 			long endTime = System.currentTimeMillis();

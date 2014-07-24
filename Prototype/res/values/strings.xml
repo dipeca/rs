@@ -69,13 +69,14 @@ desaparecer! </string>
     <string name="pag2_1">Gui conseguiu chegar à Terra de Lá, no Reino de Semgi.</string>
     <string name="pagChestOpen">O livro dos feitiços!</string>
     <string name="pagLakeToCross">Um lago separa os héróis de uma ilha.</string>
+    <string name="pagEnterGate">Por fim, a entrada da «Terra dos Ladrões» está ao alcance de Gui.</string>
     <string name="theLake">O lago</string>
     <string name="theLakeToCross">Atravessar o lago</string>
     <string name="chest">Cofre</string>
     <string name="openChest">Chest open</string>
-    <string name="robot">Robot</string>
-    <string name="robotAttacks">Robot ataca</string>
-    <string name="robotDestroyed">Robot foi destruído</string>
+    <string name="robot">robô</string>
+    <string name="robotAttacks">robô ataca</string>
+    <string name="robotDestroyed">robô foi destruído</string>
     <string name="robotDestroyedEnigma">Lopo tem um desafio</string>
     <string name="pagScareCrowTitle">Este espantalho guarda algo que precisarás.</string>
     <string name="pagScareCrowWarning">Cuidado, não o acordes!</string>
@@ -86,7 +87,7 @@ desaparecer! </string>
     <string name="pagLakeGuiDialog">Temos de encontrar material para fazermos uma canoa.</string>
     <string name="pagFoundFriend">Gui entrou pela mata. E encontrou um animal a precisar de ajuda.</string>
     <string name="chestClosed">Um cofre fechado! O que estará dentro?</string>
-    <string name="pagRobotAttack">O robot não está para conversas e ataca Gui! Tens de encontrar o ponto fraco do robot, usa o amuleto.</string>
+    <string name="pagrobotAttack">O robô não está para conversas e ataca Gui! Tens de encontrar o ponto fraco do robô, usa o amuleto.</string>
     <string name="pagSomethingMoving">Enquanto caminhava, Gui apercebe-se que algo está a mexer.</string>
 
     <!-- <string name="pag1_3">Tão rápido como apareceu, a criatura desapareceu. -->
@@ -102,10 +103,10 @@ Todos os segredos do nosso mundo estão nesse livro. Ele foi-nos roubado, esta�
     <string name="cannot">Cannot</string>
     <string name="lock">Cadeado</string>
     <string name="album_name">CameraSample</string>
-    <string name="pagRobotInFront">Um robot assustador surge no caminho de Gui!</string>
-    <string name="pagRobotImGui">- Olá sou o Gui! Estou aqui para tentar encontrar o caminho para o porto.</string>
-    <string name="pagRobotDestroyed">Destruíste o robot, e um pequeno ser aparece no seu lugar.</string>
-    <string name="pagRobotDestroyedDialog">- Euh.. olá.. sou o Lopo, guarda da aldeia de Grimstaad. Não sabia que eras da Terra de Lá, só depois de ver o amuleto é que percebi. \n\t- Olá! Bela armadura! Preciso de entrar aí, na «Terra dos limões». \n- «Terra dos Ladrões»! Esta cidade é muito pergosa!\n</string>
+    <string name="pagrobotInFront">Um robô assustador surge no caminho de Gui!</string>
+    <string name="pagrobotImGui">- Olá sou o Gui! Estou aqui para tentar encontrar o caminho para o porto.</string>
+    <string name="pagrobotDestroyed">Destruíste o robô, e um pequeno ser aparece no seu lugar.</string>
+    <string name="pagrobotDestroyedDialog">- Euh.. olá.. sou o Lopo, guarda da aldeia de Grimstaad. Não sabia que eras da Terra de Lá, só depois de ver o amuleto é que percebi. \n\t- Olá! Bela armadura! Preciso de entrar aí, na «Terra dos limões». \n- «Terra dos Ladrões»! Esta cidade é muito pergosa!\n</string>
     <string name="pagRobotDestroyedDialog2">-Eu sei, mas preciso de recuperar algo, é muito importante.\n\t - Ok, ok... Bom, sabes eu, como guarda da cidade, passo muitas horas aqui e... \n-Imagino.\n\t... e se me ajudares a resolver um jogo de tabuleiro então deixo-te entrar na cidade, está bem?</string>
     <string name="theEnd">Fim</string>
 

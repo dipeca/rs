@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class PagFindFriend extends Fragment implements OnTouchListener, IFragmentBook {
 	View view = null;

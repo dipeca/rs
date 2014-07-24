@@ -15,7 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.RelativeLayout.LayoutParams;
 
-public class PagRobotDestroyedEnigmafrg extends Fragment {
+public class PagRobotDestroyedEnigmafrg extends Fragment implements IFragmentBook {
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.robotDestroyedEnigma;
@@ -40,16 +40,14 @@ public class PagRobotDestroyedEnigmafrg extends Fragment {
 	}
 
 	private ImageView image1;
-	private ImageView image2;   
  
 	private void loadImages() {
 		Log.d(getString(NAME), "loadImages()");
 		image1 = (ImageView) view.findViewById(R.id.pag1ImageView);
-		image2 = (ImageView) view.findViewById(R.id.pag1ImageViewBirds);
 
 		image1.setImageResource(R.drawable.robot_destroyed_enigma); 
 	} 
- 
+  
 	private void loadText() {
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
 		tv1.setVisibility(View.INVISIBLE);
@@ -92,7 +90,6 @@ public class PagRobotDestroyedEnigmafrg extends Fragment {
 		
 		tv1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				int density = (int) getResources().getDisplayMetrics().density;
 				int height1 = 0; 
 				int width3 = 0; 
 				int multiplier = 7;
@@ -158,5 +155,15 @@ public class PagRobotDestroyedEnigmafrg extends Fragment {
 	}
 
 	AnimationDrawable backGroundChangeAnim;
+
+	@Override
+	public String getPrevPage() {
+		return PagRobotDestroyedfrg.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		return null;
+	}
 
 }

@@ -19,6 +19,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,7 +45,8 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 
 	private static ImageButton btn = null;
 	private static ImageButton btnHelp = null;
-
+	private static int marginLeftMenu = 0;
+	
 	private boolean isMazeSolved = false;
 
 	public static int NAME = R.string.enigma;
@@ -151,6 +153,11 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 		// add buttons
 		handleButtons();
 
+		if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) <= Configuration.SCREENLAYOUT_SIZE_LARGE) {
+			marginLeftMenu = 0;
+		}else{
+			marginLeftMenu = 160;
+		}
 		return layout;
 	}
 
@@ -162,14 +169,14 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 			public void onClick(View v) {
 				if (isMazeSolved) {
 
-					PagVillageAfterEnigmaFrg fb = new PagVillageAfterEnigmaFrg();
+					PagEnterGateThiefsLand fb = new PagEnterGateThiefsLand();
 					stopTimer();
 
 					onChoice.onChoiceMade(
 							fb,
-							getString(PagVillageAfterEnigmaFrg.NAME),
+							getString(PagEnterGateThiefsLand.NAME),
 							getResources().getResourceName(
-									PagVillageAfterEnigmaFrg.icon));
+									PagEnterGateThiefsLand.icon));
 					onChoice.onChoiceMadeCommit(getString(NAME), true);
 
 				} else {
@@ -177,6 +184,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 					toastObject = Toast.makeText(getActivity(),
 							getString(R.string.solveEnigmaFirst),
 							Toast.LENGTH_SHORT);
+					toastObject.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL, marginLeftMenu * Math.round(density), 0);
 					toastObject.show();
 				}
 			}
@@ -766,9 +774,12 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 						Log.d("OnTouch", "inside isDrawn() movesAllowed "
 								+ movesAllowed);
 					} else {
-						Toast.makeText(this.getActivity(),
+						cancelToast();
+						toastObject = Toast.makeText(this.getActivity(),
 								getString(R.string.removeLineFirst),
-								Toast.LENGTH_SHORT).show();
+								Toast.LENGTH_SHORT);
+						toastObject.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL, marginLeftMenu * Math.round(density), 0);
+						toastObject.show();
 					}
 				}
 			}
@@ -780,10 +791,13 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 			onChoice.setAddPoints(-2);
 
 			if (isMazeSolved) {
-
-				Toast.makeText(this.getActivity(),
-						getString(R.string.youHaveDoneIt), Toast.LENGTH_LONG)
-						.show();
+				cancelToast();
+				
+				toastObject = Toast.makeText(this.getActivity(),
+						getString(R.string.youHaveDoneIt), Toast.LENGTH_LONG);
+				toastObject.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL, marginLeftMenu * Math.round(density), 0);
+				toastObject.show();
+				
 			}
 		}
 

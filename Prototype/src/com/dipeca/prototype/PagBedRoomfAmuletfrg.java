@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -96,7 +97,7 @@ public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener, I
 
 					BookActivity.bitmapTalisma = Utils
 							.decodeSampledBitmapFromResource(getResources(),
-									R.drawable.talisma, 128, 128);
+									R.drawable.talisma, 162, 162);
 				}
 				
 				//amuleto.setImageBitmap(BookActivity.bitmapTalisma);
@@ -178,8 +179,11 @@ public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener, I
 					onChoice.onChoiceMade(fb, PagFindPortalFrg.NAME, PagFindPortalFrg.icon);
 					onChoice.onChoiceMadeCommit(NAME, true);
 				} else {
-					Toast.makeText(getActivity(), R.string.theAmuletWarning,
-							Toast.LENGTH_LONG).show();
+					Toast toast = Toast.makeText(getActivity(),
+							getString(R.string.theAmuletWarning),
+							Toast.LENGTH_SHORT);
+					toast.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL, 0, 0);
+					toast.show();
 				}
 
 			}

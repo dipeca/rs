@@ -15,7 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.RelativeLayout.LayoutParams;
 
-public class PagRobotDestroyedfrg extends Fragment {
+public class PagRobotDestroyedfrg extends Fragment implements IFragmentBook {
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.robotDestroyed;
@@ -164,5 +164,15 @@ public class PagRobotDestroyedfrg extends Fragment {
 	}
 
 	AnimationDrawable backGroundChangeAnim;
+
+	@Override
+	public String getPrevPage() {
+		return PagRobotAttack.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		return null;
+	}
 
 }

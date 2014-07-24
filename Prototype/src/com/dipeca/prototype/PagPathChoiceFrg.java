@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 public class PagPathChoiceFrg extends Fragment implements OnTouchListener, IFragmentBook {
 
@@ -137,15 +136,9 @@ public class PagPathChoiceFrg extends Fragment implements OnTouchListener, IFrag
 			int tolerance = 25;
 			if (Utils.closeMatch(Color.RED, touchColor, tolerance)) {
 				// Do the action associated with the RED region
-				Toast.makeText(getActivity(), getString(R.string.ravenPath),
-						Toast.LENGTH_SHORT).show();
-
 				transitionFragment(true);
 			} else if (Utils.closeMatch(Color.WHITE, touchColor, tolerance)) {
 				// Do the action associated with the white region
-				Toast.makeText(getActivity(), getString(R.string.forestPath),
-						Toast.LENGTH_SHORT).show();
-
 				transitionFragment(false);
 			}
 			break;

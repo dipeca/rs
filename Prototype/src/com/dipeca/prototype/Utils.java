@@ -4,7 +4,8 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.Build;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,6 +22,60 @@ public class Utils {
 		// }
 	}
 
+	public static int getColorFromPoint(Drawable drawable, int x, int y, Bitmap bitmap){
+
+		Rect imageBounds = drawable.getBounds();
+
+		//original height and width of the bitmap
+		int intrinsicHeight = drawable.getIntrinsicHeight();
+		int intrinsicWidth = drawable.getIntrinsicWidth();
+
+		//height and width of the visible (scaled) image
+		int scaledHeight = imageBounds.height();
+		int scaledWidth = imageBounds.width();
+
+		//Find the ratio of the original image to the scaled image
+		//Should normally be equal unless a disproportionate scaling
+		//(e.g. fitXY) is used.
+		float heightRatio = (float)intrinsicHeight / scaledHeight;
+		float widthRatio = (float)intrinsicWidth / scaledWidth;
+
+		//do whatever magic to get your touch point
+		//MotionEvent event;
+
+		//get the distance from the left and top of the image bounds
+		float scaledImageOffsetX = x - imageBounds.left;
+		float scaledImageOffsetY = y - imageBounds.top;
+
+		//scale these distances according to the ratio of your scaling
+		//For example, if the original image is 1.5x the size of the scaled
+		//image, and your offset is (10, 20), your original image offset
+		//values should be (15, 30). 
+		float originalImageOffsetX = scaledImageOffsetX * widthRatio;
+		float originalImageOffsetY = scaledImageOffsetY * heightRatio;
+
+		int xInt = Math.round(originalImageOffsetX);
+		int yInt = Math.round(originalImageOffsetX);
+		
+		//To be sure that x < bitmap.getWidth and x >= 0
+		if(xInt >= bitmap.getWidth()){
+			xInt = bitmap.getWidth() - 1 ;
+		}else if(xInt < 0){
+			xInt = 0;
+		}
+		
+		//To be sure that y < bitmap.getHeight and y >= 0
+		if(yInt >= bitmap.getHeight()){
+			yInt = bitmap.getHeight() - 1 ;
+		}else if(yInt < 0){
+			yInt = 0;
+		}
+		
+		//get color from pixel of touch point
+		int touchColor = bitmap.getPixel(xInt, yInt);
+
+		return touchColor;
+	}
 	public static int getHotspotColor(int hotspotId, int x, int y, View view) {
 		ImageView img = (ImageView) view.findViewById(hotspotId);
 		img.setDrawingCacheEnabled(true);

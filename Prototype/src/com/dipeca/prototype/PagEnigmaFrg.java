@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -54,6 +55,8 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 	Point size = null;
 	int widthDis = 0;
 	int heightDis = 0;
+	
+	private static int marginLeftMenu = 0;
 
 	// We'll be creating an image that is 400 pixels wide and 400 pixels
 	// tall.
@@ -66,9 +69,6 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 	// We will give 15 px of margin. So everything less then 15px of
 	// difference is considered accurate
 	private float fingerTouchMargin = 15 * density;
-
-	private float converterX = 1.66f;
-	private float converterY = 5;
 
 	private boolean isMazeSolved = false;
 
@@ -112,7 +112,6 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 		widthDis = size.x;
 		heightDis = size.y;
 
-		LineSegment lg = new LineSegment();
 		// Create a bitmap with the dimensions we defined above, and with a
 		// 16-bit pixel format. We'll
 		// get a little more in depth with pixel formats in a later post.
@@ -160,9 +159,6 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 		// we will be drawing the Crosses
 		drawCrosses();
 
-		// Show this layout in our activity.
-		// setContentView(layout);
-
 		// Add textview
 		handleText();
 
@@ -177,6 +173,12 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 		// BookActivity.playMusic(R.raw.timer);
 
 		startTimer();
+		
+		if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) <= Configuration.SCREENLAYOUT_SIZE_LARGE) {
+			marginLeftMenu = 0;
+		}else{
+			marginLeftMenu = 160;
+		}
 
 		return layout;
 	}
@@ -246,6 +248,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 					toastObject = Toast.makeText(getActivity(),
 							getString(R.string.solveEnigmaFirst),
 							Toast.LENGTH_SHORT);
+					toastObject.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL, marginLeftMenu * Math.round(density), 0);
 					toastObject.show();
 				}
 			}
@@ -512,40 +515,12 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 			float x = event.getX();// - baseCoordinates[0];
 			float y = event.getY();// - baseCoordinates[1];
 
-			int actionBarHeight = -1;
-			TypedValue tv = new TypedValue();
-			if (getActivity().getTheme().resolveAttribute(
-					android.R.attr.actionBarSize, tv, true)) {
-				actionBarHeight = TypedValue.complexToDimensionPixelSize(
-						tv.data, getResources().getDisplayMetrics());
-			}
-
 			Log.d("Point", "( " + x + ", " + y + " )\n" + widthDis + "x"
 					+ heightDis);
-			// If the coordinates are in one the lines of the square then we
-			// process
-			// the touchEvent
-			// if(-10<= y && y <= 10 && -10<= x && x <= 410){
-			// We are in one of the lines
-			// now get the closest border to perform the drawing
+
 			paintStroke.setColor(Color.BLACK);
 
-			//x = x + (width / converterX);
-			//y = y + (height / converterY);
 
-			// Bad, bad move but I have to do this because when we user the
-			// drawer layout we have to
-			// account for the 240dp = 320 px from the menu hided
-			if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) <= Configuration.SCREENLAYOUT_SIZE_LARGE) {
-				//x = x - (240 * density);
-
-			}
-			
-			//x = x/density;
-			//y = y/density;
-
-			Log.d("OnTouch after correction", "x: " + x + " y:" + y);
-			
 			Point p = new Point((int) x, (int) y);
 			LineSegment lg2 = getClosestLine(p);
 			if (lg2 != null) {
@@ -602,14 +577,6 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 		return true;
 	}
 
-	private int getStatusBarHeight() { 
-	      int result = 0;
-	      int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-	      if (resourceId > 0) {
-	          result = getResources().getDimensionPixelSize(resourceId);
-	      } 
-	      return result;
-	} 
 	
 	private boolean checkMazeDone() {
 		// Check if all correct lines are Ok
@@ -629,6 +596,8 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 							.makeText(this.getActivity(),
 									getString(R.string.removeLines),
 									Toast.LENGTH_SHORT);
+
+					toastObject.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL, marginLeftMenu * Math.round(density), 0);
 					toastObject.show();
 					isMazeSolved = false;
 					return false;
@@ -647,6 +616,8 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 		cancelToast();
 		toastObject = Toast.makeText(this.getActivity(),
 				getString(R.string.youHaveDoneIt), Toast.LENGTH_SHORT);
+
+		toastObject.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL, marginLeftMenu * Math.round(density), 0);
 		toastObject.show();
 
 		return true;

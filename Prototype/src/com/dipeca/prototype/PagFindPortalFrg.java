@@ -17,7 +17,6 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 public class PagFindPortalFrg extends Fragment implements IFragmentBook {
 
@@ -137,7 +136,7 @@ public class PagFindPortalFrg extends Fragment implements IFragmentBook {
 		if (BookActivity.bitmapTalisma == null) {
 
 			BookActivity.bitmapTalisma = Utils.decodeSampledBitmapFromResource(
-					getResources(), R.drawable.talisma, 178, 178);
+					getResources(), R.drawable.talisma, 162, 162);
 		}
 
 		ivRoom.setImageBitmap(BookActivity.bitmapInitial);
@@ -224,8 +223,6 @@ public class PagFindPortalFrg extends Fragment implements IFragmentBook {
 				if (Utils.closeMatch(Color.RED, touchColor, tolerance)) {
 					long startTime = System.currentTimeMillis();
 
-					Toast.makeText(getActivity(), R.string.success,
-							Toast.LENGTH_LONG).show();
 					PagKingDomfrg fb = new PagKingDomfrg();
 
 					onChoice.onChoiceMade(fb, PagKingDomfrg.NAME,

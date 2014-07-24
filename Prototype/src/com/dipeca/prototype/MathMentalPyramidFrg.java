@@ -56,6 +56,7 @@ public class MathMentalPyramidFrg extends Fragment {
 
 	private LinearLayout solutionLayout;
 	private LinearLayout layout = null;
+	private Toast toast = null;
 
 	private float density = 1;
 
@@ -202,17 +203,19 @@ public class MathMentalPyramidFrg extends Fragment {
 				//onChoice.onChoiceMadeCommit(R.string.lock, true);
 				return true;
 			} else {
-				Toast toast = Toast.makeText(getActivity(),
+				toast = Toast.makeText(getActivity(),
 						getString(R.string.didnotopen), Toast.LENGTH_SHORT);
-				toast.setGravity(Gravity.CENTER, 0, 0);
+				
+				toast.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL, 80 * Math.round(density), 0);
+				
 				toast.show();
 
 				return false;
 			}
 		} else {
-			Toast toast = Toast.makeText(getActivity(),
+			toast = Toast.makeText(getActivity(),
 					getString(R.string.solveEnigmaFirst), Toast.LENGTH_SHORT);
-			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL, 80 * Math.round(density), 0);
 			toast.show();
 
 			return false;
