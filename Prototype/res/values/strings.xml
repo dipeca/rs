@@ -3,6 +3,7 @@
 
     <string name="app_name">Reading Adventures</string>
     <string name="menu">Menu</string>
+     <string name="legend1">Legenda 1</string>
     <string name="adventureRule">Regras da aventura</string>
     <string name="objectsHelp">1 - A tua fotografia \n\n2 - Podes desligar o som da aventura e podes mudar a tua fotografia \n\n3 - A lista dos capítulos e desafios que já leste e venceste\n\n4 - A tua pontuação \n\n5 - Ao longo da aventura encontrarás objetos que te ajudarão e te darão pontos</string>
     <string name="wood">Madeira</string>
@@ -13,6 +14,7 @@
     <string name="journey">Percurso</string>
     <string name="takePic">Tirar foto</string>
     <string name="path">Percurso</string>
+    <string name="pages">Páginas</string>
     <string name="soundInBedRoom">Um barulho no quarto</string>
     <string name="findGate">Encontrar o portal</string>
     <string name="semgiKingDom">Reino de Semgi</string>
@@ -32,6 +34,7 @@
     <string name="TheAmulet">O amuleto</string>
     <string name="solveEnigmaFirst">Resolve o enigma primeiro antes de avançar.</string>
     <string name="action_settings">Settings</string>
+    <string name="action_build_story">Criar história</string>
     <string name="next">Próxima pág.</string>
     <string name="didnotopen">O cadeado não abriu, será que te enganaste?</string>
     <string name="solvefirst">Resolve o enigma antes de submeter.</string>
@@ -107,7 +110,7 @@ Todos os segredos do nosso mundo estão nesse livro. Ele foi-nos roubado, esta�
     <string name="pagrobotImGui">- Olá sou o Gui! Estou aqui para tentar encontrar o caminho para o porto.</string>
     <string name="pagrobotDestroyed">Destruíste o robô, e um pequeno ser aparece no seu lugar.</string>
     <string name="pagrobotDestroyedDialog">- Euh.. olá.. sou o Lopo, guarda da aldeia de Grimstaad. Não sabia que eras da Terra de Lá, só depois de ver o amuleto é que percebi. \n\t- Olá! Bela armadura! Preciso de entrar aí, na «Terra dos limões». \n- «Terra dos Ladrões»! Esta cidade é muito pergosa!\n</string>
-    <string name="pagRobotDestroyedDialog2">-Eu sei, mas preciso de recuperar algo, é muito importante.\n\t - Ok, ok... Bom, sabes eu, como guarda da cidade, passo muitas horas aqui e... \n-Imagino.\n\t... e se me ajudares a resolver um jogo de tabuleiro então deixo-te entrar na cidade, está bem?</string>
+    <string name="pagRobotDestroyedDialog2">-Eu sei, mas preciso de recuperar algo, é muito importante.\n\t - OK, OK... Bom, sabes eu, como guarda da cidade, passo muitas horas aqui e... \n-Imagino.\n\t... e se me ajudares a resolver um jogo de tabuleiro então deixo-te entrar na cidade, está bem?</string>
     <string name="theEnd">Fim</string>
 
 </resources>

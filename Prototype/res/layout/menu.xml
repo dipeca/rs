@@ -53,7 +53,7 @@
 
             <fragment
                 android:id="@+id/journey"
-                android:name="com.dipeca.prototype.JourneySoFar"
+                android:name="com.dipeca.bookactivity.JourneySoFar"
                 android:layout_width="198dp"
                 android:layout_height="fill_parent"
                 android:layout_marginBottom="8dp"

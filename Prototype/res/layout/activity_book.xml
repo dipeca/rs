@@ -23,7 +23,7 @@
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        class="com.dipeca.prototype.MenuFrg" >
+        class="com.dipeca.bookactivity.MenuFrg" >
     </fragment>
 
 </android.support.v4.widget.DrawerLayout>

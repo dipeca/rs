@@ -120,7 +120,7 @@
         android:scaleType="fitXY"
         android:visibility="invisible" />
 
-    <com.dipeca.prototype.DialogBox
+    <com.dipeca.bookactivity.DialogBox
         android:id="@+id/dialog"
         android:layout_width="340dp"
         android:layout_height="wrap_content"

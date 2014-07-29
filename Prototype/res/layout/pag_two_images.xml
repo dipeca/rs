@@ -50,7 +50,7 @@
         android:layout_alignTop="@id/page2Image2"
         android:background="@drawable/container_dropshadow" />
 
-    <com.dipeca.prototype.DialogBox
+    <com.dipeca.bookactivity.DialogBox
         android:id="@+id/dialog"
         android:layout_width="300dp"
         android:layout_height="wrap_content"

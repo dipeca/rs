@@ -8,7 +8,7 @@
         android:id="@+id/listFragment"
         android:layout_width="240dp"
         android:layout_height="match_parent"
-        class="com.dipeca.prototype.MenuFrg" >
+        class="com.dipeca.bookactivity.MenuFrg" >
     </fragment>
 
     <!--
