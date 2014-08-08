@@ -21,25 +21,62 @@ import com.dipeca.bookactivity.entiy.Objects;
 import com.dipeca.bookactivity.entiy.QuestionAnswer;
 import com.dipeca.bookactivity.entiy.Status;
 import com.dipeca.bookactivity.entiy.User;
+import com.dipeca.buildstoryactivity.entity.Drawable;
+import com.dipeca.buildstoryactivity.entity.Legend;
+import com.dipeca.buildstoryactivity.entity.Page;
+import com.dipeca.buildstoryactivity.entity.PageDrawable;
+import com.dipeca.buildstoryactivity.entity.PageStory;
+import com.dipeca.buildstoryactivity.entity.PageType;
+import com.dipeca.buildstoryactivity.entity.Story;
+import com.dipeca.prototype.R;
 
 public class PrototypeProvider extends ContentProvider {
 
 	public static final Uri CONTENT_URI_USERS = Uri
-			.parse("content://com.dipeca.prototypeprovider/users");
+			.parse("content://com.dipeca.adventurestoriesprovider/users");
 
 	public static final Uri CONTENT_URI_CHAPTERS = Uri
-			.parse("content://com.dipeca.prototypeprovider/"
+			.parse("content://com.dipeca.adventurestoriesprovider/"
 					+ Chapter.TABLE_NAME);
 
 	public static final Uri CONTENT_URI_STATUS = Uri
-			.parse("content://com.dipeca.prototypeprovider/"
+			.parse("content://com.dipeca.adventurestoriesprovider/"
 					+ Status.TABLE_NAME);
 
 	public static final Uri CONTENT_URI_OBJECTS = Uri
-			.parse("content://com.dipeca.prototypeprovider/"
+			.parse("content://com.dipeca.adventurestoriesprovider/"
 					+ Objects.TABLE_NAME);
 
-	public static final String AUTHORITY = "com.dipeca.prototypeprovider";
+	public static final Uri CONTENT_URI_DRAWABLES = Uri
+			.parse("content://com.dipeca.adventurestoriesprovider/"
+					+ Drawable.TABLE_NAME);
+
+	public static final Uri CONTENT_URI_LEGENDS = Uri
+			.parse("content://com.dipeca.adventurestoriesprovider/"
+					+ Legend.TABLE_NAME);
+
+	public static final Uri CONTENT_URI_PAGE = Uri
+			.parse("content://com.dipeca.adventurestoriesprovider/"
+					+ Page.TABLE_NAME);
+
+	public static final Uri CONTENT_URI_PAGEDRAWABLE = Uri
+			.parse("content://com.dipeca.adventurestoriesprovider/"
+					+ PageDrawable.TABLE_NAME);
+
+	public static final Uri CONTENT_URI_PAGETYPE = Uri
+			.parse("content://com.dipeca.adventurestoriesprovider/"
+					+ PageType.TABLE_NAME);
+	
+	public static final Uri CONTENT_URI_STORY = Uri
+			.parse("content://com.dipeca.adventurestoriesprovider/"
+					+ Story.TABLE_NAME);
+
+	public static final Uri CONTENT_URI_PAGESTORY = Uri
+			.parse("content://com.dipeca.adventurestoriesprovider/"
+					+ PageStory.TABLE_NAME);
+
+	
+	public static final String AUTHORITY = "com.dipeca.adventurestoriesprovider";
 
 	SchemaHelper myOpenHelper;
 
@@ -55,28 +92,80 @@ public class PrototypeProvider extends ContentProvider {
 	public static final int OBJECT_SINGLE_ROW = 8;
 	public static final int QUIZZ_ALLROWS = 9;
 
+	// build story activity
+	public static final int PAGE_ALLROWS = 10;
+	public static final int PAGE_SINGLE_ROW = 11;
+	public static final int DRAWABLE_ALLROWS = 12;
+	public static final int DRAWABLE_SINGLE_ROW = 13;
+	public static final int LEGEND_ALLROWS = 14;
+	public static final int LEGEND_SINGLE_ROW = 15;
+	public static final int PAGETYPE_ALLROWS = 16;
+	public static final int PAGETYPE_SINGLE_ROW = 17;
+	public static final int DRAWABLEPAGE_ALLROWS = 18;
+	public static final int DRAWABLEPAGE_SINGLE_ROWS = 19;
+	public static final int STORY_ALLROWS = 20;
+	public static final int STORY_SINGLE_ROWS = 21;
+	public static final int PAGESTORY_ALLROWS = 22;
+	public static final int PAGESTORY_SINGLE_ROWS = 23;
+	
 	private static final UriMatcher uriMatcher;
 
-	private static final String PROVIDER_NAME = "com.dipeca.prototypeprovider";
+	private static final String PROVIDER_NAME = "com.dipeca.adventurestoriesprovider";
 	// Populate the UriMatcher object, where a URI ending in
 	// ‘elements’ will correspond to a request for all items,
 	// and ‘elements/[rowID]’ represents a single row.
 	static {
 		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-		uriMatcher.addURI(PROVIDER_NAME, "users", USER_ALLROWS);
-		uriMatcher.addURI(PROVIDER_NAME, "users/#", USER_SINGLE_ROW);
+
+		uriMatcher.addURI(PROVIDER_NAME, User.TABLE_NAME, USER_ALLROWS);
+		uriMatcher.addURI(PROVIDER_NAME, User.TABLE_NAME + "/#",
+				USER_SINGLE_ROW);
+
 		uriMatcher.addURI(PROVIDER_NAME, Chapter.TABLE_NAME, CHAPTER_ALLROWS);
 		uriMatcher.addURI(PROVIDER_NAME, Chapter.TABLE_NAME + "/#",
 				CHAPTER_SINGLE_ROW);
+
 		uriMatcher.addURI(PROVIDER_NAME, Status.TABLE_NAME, STATUS_ALLROWS);
 		uriMatcher.addURI(PROVIDER_NAME, Status.TABLE_NAME + "/#",
 				STATUS_SINGLE_ROW);
+
 		uriMatcher.addURI(PROVIDER_NAME, Objects.TABLE_NAME, OBJECT_ALLROWS);
 		uriMatcher.addURI(PROVIDER_NAME, Objects.TABLE_NAME + "/#",
 				OBJECT_SINGLE_ROW);
 
 		uriMatcher.addURI(PROVIDER_NAME, QuestionAnswer.TABLE_NAME,
 				QUIZZ_ALLROWS);
+
+		uriMatcher.addURI(PROVIDER_NAME, Drawable.TABLE_NAME, DRAWABLE_ALLROWS);
+		uriMatcher.addURI(PROVIDER_NAME, Drawable.TABLE_NAME + "/#",
+				DRAWABLE_SINGLE_ROW);
+
+		uriMatcher.addURI(PROVIDER_NAME, Legend.TABLE_NAME, LEGEND_ALLROWS);
+		uriMatcher.addURI(PROVIDER_NAME, Legend.TABLE_NAME + "/#",
+				LEGEND_SINGLE_ROW);
+
+		uriMatcher.addURI(PROVIDER_NAME, Page.TABLE_NAME, PAGE_ALLROWS);
+		uriMatcher.addURI(PROVIDER_NAME, Page.TABLE_NAME + "/#",
+				PAGE_SINGLE_ROW);
+
+		uriMatcher.addURI(PROVIDER_NAME, PageDrawable.TABLE_NAME,
+				DRAWABLEPAGE_ALLROWS);
+		uriMatcher.addURI(PROVIDER_NAME, PageDrawable.TABLE_NAME + "/#",
+				DRAWABLEPAGE_SINGLE_ROWS);
+
+		uriMatcher.addURI(PROVIDER_NAME, Story.TABLE_NAME,
+				STORY_ALLROWS);
+		uriMatcher.addURI(PROVIDER_NAME, Story.TABLE_NAME + "/#",
+				STORY_SINGLE_ROWS);
+		
+		uriMatcher.addURI(PROVIDER_NAME, PageStory.TABLE_NAME,
+				PAGESTORY_ALLROWS);
+		uriMatcher.addURI(PROVIDER_NAME, PageStory.TABLE_NAME + "/#",
+				PAGESTORY_SINGLE_ROWS);
+		
+		uriMatcher.addURI(PROVIDER_NAME, PageType.TABLE_NAME, PAGETYPE_ALLROWS);
+		uriMatcher.addURI(PROVIDER_NAME, PageType.TABLE_NAME + "/#",
+				PAGETYPE_SINGLE_ROW);
 	}
 
 	@Override
@@ -147,150 +236,61 @@ public class PrototypeProvider extends ContentProvider {
 		case QUIZZ_ALLROWS:
 			tableName = QuestionAnswer.TABLE_NAME;
 			break;
+		case LEGEND_ALLROWS:
+			tableName = Legend.TABLE_NAME;
+			break;
+		case LEGEND_SINGLE_ROW:
+			tableName = Legend.TABLE_NAME;
+			break;
+		case DRAWABLE_ALLROWS:
+			tableName = Drawable.TABLE_NAME;
+			break;
+		case DRAWABLE_SINGLE_ROW:
+			tableName = Drawable.TABLE_NAME;
+			break;
+		case PAGETYPE_ALLROWS:
+			tableName = PageType.TABLE_NAME;
+			break;
+		case PAGETYPE_SINGLE_ROW:
+			tableName = PageType.TABLE_NAME;
+			break;
+		case DRAWABLEPAGE_ALLROWS:
+			tableName = PageDrawable.TABLE_NAME;
+			break;
+		case DRAWABLEPAGE_SINGLE_ROWS:
+			tableName = PageDrawable.TABLE_NAME;
+			break;
+		case PAGE_ALLROWS:
+			tableName = Page.TABLE_NAME;
+			break;
+		case STORY_SINGLE_ROWS:
+			tableName = Story.TABLE_NAME;
+			break;
+		case STORY_ALLROWS:
+			tableName = Story.TABLE_NAME;
+			break;
+		case PAGESTORY_SINGLE_ROWS:
+			tableName = PageStory.TABLE_NAME;
+			break;
+		case PAGESTORY_ALLROWS:
+			tableName = PageStory.TABLE_NAME;
+			break;
 		default:
 			break;
 		}
-		// Specify the table on which to perform the query. This can
-		// be a specific table or a join as required.
-		queryBuilder.setTables(tableName);
-		// Execute the query.
-		Cursor cursor = queryBuilder.query(db, projection, selection,
-				selectionArgs, groupBy, having, sortOrder);
-
-		if (uriMatcher.match(uri) == QUIZZ_ALLROWS) {
-			// Desenhos
-			selection = QuestionAnswer.DRAW + " = 'Gosto muito'";
-			Long drawingsVeryGood = DatabaseUtils.queryNumEntries(db,
-					tableName, selection, selectionArgs);
-			selection = QuestionAnswer.DRAW + " = 'Gosto'";
-			Long drawingsGood = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-			selection = QuestionAnswer.DRAW + " = 'Mto sérios'";
-			Long drawingsTooSerious = DatabaseUtils.queryNumEntries(db,
-					tableName, selection, selectionArgs);
-			selection = QuestionAnswer.DRAW + " = 'Mto infantis'";
-			Long drawingsTooChildish = DatabaseUtils.queryNumEntries(db,
-					tableName, selection, selectionArgs);
-
-			// Draws
-			Log.d("Quizz: Draws", "Gosto muito: " + drawingsVeryGood
-					+ ";\n Gosto: " + drawingsGood + ";\n Mto sérios: "
-					+ drawingsTooSerious + "; \n Mto infantis: "
-					+ drawingsTooChildish);
-
-			// QuestionAnswer.TEXT, ""
-			selection = QuestionAnswer.TEXT + " = 'Texto OK'";
-			Long textVeryGood = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-			selection = QuestionAnswer.TEXT + " = 'Tem pouco'";
-			Long textVeryLittle = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-			selection = QuestionAnswer.TEXT + " = 'Tem mto'";
-			Long textTooMuch = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-
-			// Text
-			Log.d("Quizz: Text", "Texto OK: " + textVeryGood
-					+ ";\n Tem pouco: "	+ textVeryLittle + "; \n Tem mto: "
-					+ textTooMuch);
-			
-			
-			// Enigma likes ""
-			selection = QuestionAnswer.ENIGMA_LIKE
-					+ " = 'Enigma: gosto linhas'";
-			Long enigmaLines = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-			selection = QuestionAnswer.ENIGMA_LIKE + " = 'Enigma: gosto maths'";
-			Long enigmaMaths = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-			selection = QuestionAnswer.ENIGMA_LIKE + " = 'Enigma: gosto ecran'";
-			Long enigmaScreen = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-			selection = QuestionAnswer.ENIGMA_LIKE + " = 'Enigma: gosto todos'";
-			Long enigmaAll = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-
-			// Enigma likes
-			Log.d("Quizz: enigmas likes", "Enigma: gosto linhas: " + enigmaLines
-					+ ";\n Enigma: gosto maths: " + enigmaMaths + ";\n	Enigma: gosto ecran: "
-					+ enigmaScreen + "; \n Enigma: gosto todos: "
-					+ enigmaAll);
-			
-			// Enigmas donts
-			selection = QuestionAnswer.ENIGMA_DISLIKE + " = 'Não gosto linhas'";
-			Long enigmaNotLines = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-			selection = QuestionAnswer.ENIGMA_DISLIKE + " = 'Não gosto maths'";
-			Long enigmaNotMaths = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-			selection = QuestionAnswer.ENIGMA_DISLIKE + " = 'Não gosto ecran'";
-			Long enigmaNotScreen = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-
-			// Enigma dont likes
-			Log.d("Quizz: enigmas dont likes", "Não gosto linhas: " + enigmaNotLines
-					+ ";\n Não gosto maths: " + enigmaNotMaths + ";\n Não gosto ecran: "
-					+ enigmaNotScreen + ";");
-			
-			// Points
-			selection = QuestionAnswer.POINTS + " = 'Pontos: não gosto'";
-			Long pointsDontLike = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-			selection = QuestionAnswer.POINTS + " = 'Pontos: motiva'";
-			Long pointsLike = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-			selection = QuestionAnswer.POINTS
-					+ " = 'Pontos: nem aquece nem arrefece'";
-			Long pointsNoOpinion = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-			
-			// Points
-			Log.d("Quizz: pontos", "Pontos: não gosto: " + pointsDontLike
-					+ ";\n Pontos: motiva: " + pointsLike + ";\n Pontos: nem aquece nem arrefece "
-					+ pointsNoOpinion + ";");
-			
-			// TYPE reading
-			selection = QuestionAnswer.TYPE + " = '"
-					+ QuestionAnswer.TYPE_MISTERY + "'";
-			Long readingMistery = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-			selection = QuestionAnswer.TYPE + " = '"
-					+ QuestionAnswer.TYPE_ADVENTURE + "'";
-			Long readingAdventure = DatabaseUtils.queryNumEntries(db,
-					tableName, selection, selectionArgs);
-			selection = QuestionAnswer.TYPE + " = '"
-					+ QuestionAnswer.TYPE_FANTASIA + "'";
-			Long readingFantasy = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-			selection = QuestionAnswer.TYPE + " = '" + QuestionAnswer.TYPE_RIR + "'";
-			Long readingRir = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-			selection = QuestionAnswer.TYPE + " = '" + QuestionAnswer.TYPE_ALL + "'";
-			Long readingAll = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-						
-			// Path choosing
-			selection = QuestionAnswer.PATH
-					+ " = 'Escolha caminhos: não gosto'";
-			Long pathDontLike = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-			selection = QuestionAnswer.PATH
-					+ " = 'Escolha caminhos: nem aquece nem arrefece'";
-			Long pathNotImportant = DatabaseUtils.queryNumEntries(db,
-					tableName, selection, selectionArgs);
-			selection = QuestionAnswer.PATH
-					+ " = 'Escolha caminhos: é porreiro'";
-			Long pathLike = DatabaseUtils.queryNumEntries(db, tableName,
-					selection, selectionArgs);
-
-			// Enigma dont likes
-			Log.d("Quizz: path choosing", "Escolha caminhos: não gosto: " + pathDontLike
-					+ ";\n Escolha caminhos: nem aquece nem arrefece: " + pathNotImportant + ";\n	Escolha caminhos: é porreiro: "
-					+ pathLike + ";");
-			
+		Cursor cursor;
+		if(PageStory.TABLE_NAME.equals(tableName) || PageDrawable.TABLE_NAME.equals(tableName)){
+			cursor = db.rawQuery(selection, selectionArgs);
+		}else{
+			// Specify the table on which to perform the query. This can
+			// be a specific table or a join as required.
+			queryBuilder.setTables(tableName);
+			// Execute the query.
+			cursor = queryBuilder.query(db, projection, selection,
+					selectionArgs, groupBy, having, sortOrder);
+	
+			// Return the result Cursor.
 		}
-
-		// Return the result Cursor.
 		return cursor;
 	}
 
@@ -339,15 +339,44 @@ public class PrototypeProvider extends ContentProvider {
 			tableName = Objects.TABLE_NAME;
 			content_uri = CONTENT_URI_OBJECTS;
 			break;
-		case QUIZZ_ALLROWS:
-			tableName = QuestionAnswer.TABLE_NAME;
-			content_uri = QuestionAnswer.CONTENT_URI;
+		case DRAWABLE_ALLROWS:
+			tableName = Drawable.TABLE_NAME;
+			content_uri = CONTENT_URI_DRAWABLES;
+			break;
+		case LEGEND_ALLROWS:
+			tableName = Legend.TABLE_NAME;
+			content_uri = CONTENT_URI_LEGENDS;
+			break;
+		case PAGE_ALLROWS:
+			tableName = Page.TABLE_NAME;
+			content_uri = CONTENT_URI_PAGE;
+			break;
+		case DRAWABLEPAGE_ALLROWS:
+			tableName = PageDrawable.TABLE_NAME;
+			content_uri = CONTENT_URI_PAGEDRAWABLE;
+			break;
+		case PAGESTORY_ALLROWS:
+			tableName = PageStory.TABLE_NAME;
+			content_uri = CONTENT_URI_PAGESTORY;
+			break;
+		case PAGESTORY_SINGLE_ROWS:
+			tableName = PageStory.TABLE_NAME;
+			content_uri = CONTENT_URI_PAGESTORY;
+			break;
+		case STORY_ALLROWS:
+			tableName = Story.TABLE_NAME;
+			content_uri = CONTENT_URI_STORY;
+			break;
+		case STORY_SINGLE_ROWS:
+			tableName = Story.TABLE_NAME;
+			content_uri = CONTENT_URI_STORY;
 			break;
 		default:
 			break;
 		}
 
-		long id = db.insertWithOnConflict(tableName, nullColumnHack, values, SQLiteDatabase.CONFLICT_REPLACE);
+		long id = db.insertWithOnConflict(tableName, nullColumnHack, values,
+				SQLiteDatabase.CONFLICT_REPLACE);
 		if (id > -1) {
 			// Construct and return the URI of the newly inserted row.
 			Uri insertedId = ContentUris.withAppendedId(content_uri, id);
@@ -370,7 +399,7 @@ public class PrototypeProvider extends ContentProvider {
 		case USER_SINGLE_ROW:
 			// FROM INCOMING URI GET SSID
 			String ssid = uri.getPathSegments().get(User.SSID_PATH_POSITION);
-			// USER WANTS TO DELETE A SPECIFIC CITIZEN
+			// USER WANTS TO DELETE A SPECIFIC ID
 			String finalWhere = User.ID + "=" + ssid;
 			// IF USER SPECIFIES WHERE FILTER THEN APPEND
 			if (where != null) {
@@ -385,6 +414,22 @@ public class PrototypeProvider extends ContentProvider {
 		case OBJECT_ALLROWS:
 			// PERFORM REGULAR DELETE
 			count = db.delete(Objects.TABLE_NAME, where, whereArgs);
+			break;
+		case PAGE_ALLROWS:
+			// PERFORM REGULAR DELETE
+			count = db.delete(Page.TABLE_NAME, where, whereArgs);
+			break;
+		case PAGE_SINGLE_ROW:
+			// PERFORM REGULAR DELETE
+			count = db.delete(Page.TABLE_NAME, where, whereArgs);
+			break;
+		case STORY_SINGLE_ROWS:
+			// PERFORM REGULAR DELETE
+			count = db.delete(Story.TABLE_NAME, where, whereArgs);
+			break;
+		case STORY_ALLROWS:
+			// PERFORM REGULAR DELETE
+			count = db.delete(Story.TABLE_NAME, where, whereArgs);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
@@ -403,7 +448,7 @@ public class PrototypeProvider extends ContentProvider {
 	private static class SchemaHelper extends SQLiteOpenHelper {
 
 		public static final String DATABASE_NAME = "reading_project.db";
-		public static final int DATABASE_VERSION = 2;
+		public static final int DATABASE_VERSION = 3;
 
 		public SchemaHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -416,17 +461,6 @@ public class PrototypeProvider extends ContentProvider {
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			// CREATE QUIZZ TABLE
-			db.execSQL("CREATE TABLE " + QuestionAnswer.TABLE_NAME + " ("
-					+ QuestionAnswer.ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-					+ QuestionAnswer.DRAW + " TEXT," + QuestionAnswer.TEXT
-					+ " TEXT," + QuestionAnswer.ENIGMA_LIKE + " TEXT,"
-					+ QuestionAnswer.ENIGMA_DISLIKE + " TEXT,"
-					+ QuestionAnswer.POINTS + " TEXT," + QuestionAnswer.PATH
-					+ " TEXT," + QuestionAnswer.LIKEIT + " TEXT,"
-					+ QuestionAnswer.READS + " TEXT,"
-					+ QuestionAnswer.OWN_TABLET + " TEXT,"
-					+ QuestionAnswer.TYPE + " TEXT);");
 
 			// CREATE USER TABLE
 			db.execSQL("CREATE TABLE " + User.TABLE_NAME + " (" + User.ID
@@ -453,13 +487,14 @@ public class PrototypeProvider extends ContentProvider {
 					+ ") REFERENCES " + Game.TABLE_NAME + " (" + Game.ID
 					+ "));");
 
-			// CREATE STATUS TABLE 
+			// CREATE STATUS TABLE
 			db.execSQL("CREATE TABLE " + Status.TABLE_NAME + " (" + Status.ID
 					+ " INTEGER PRIMARY KEY AUTOINCREMENT," + Status.ENERGY
-					+ " INTEGER," + Status.GAME_ID + " INTEGER," + Status.CURRENTCHAPTER + " TEXT,"
-					+ Status.POINTS + " INTEGER ," + " FOREIGN KEY ("
-					+ Status.GAME_ID + ") REFERENCES " + Game.TABLE_NAME + " ("
-					+ Game.ID + "));");
+					+ " INTEGER," + Status.GAME_ID + " INTEGER,"
+					+ Status.CURRENTCHAPTER + " TEXT," + Status.POINTS
+					+ " INTEGER ," + " FOREIGN KEY (" + Status.GAME_ID
+					+ ") REFERENCES " + Game.TABLE_NAME + " (" + Game.ID
+					+ "));");
 
 			// CREATE OBJECTS TABLE
 			db.execSQL("CREATE TABLE " + Objects.TABLE_NAME + " (" + Objects.ID
@@ -470,31 +505,123 @@ public class PrototypeProvider extends ContentProvider {
 					+ " FOREIGN KEY (" + Objects.GAME_ID + ") REFERENCES "
 					+ Game.TABLE_NAME + " (" + Game.ID + "));");
 
-			// //Insert the quiz rows to make the stats
-			//
-			//
-			// //Riddles positive
-			// db.execSQL("INSERT INTO "+QuestionAnswer.TABLE_NAME+" VALUES(4,'Os melhores enigmas são os de ter de encontrar coisas no ecrán (como o do amuleto)',0);");
-			// db.execSQL("INSERT INTO "+QuestionAnswer.TABLE_NAME+" VALUES(5,'Os melhores enigmas são os de desenhar linhas (como o desafio do ancião)',0);");
-			// db.execSQL("INSERT INTO "+QuestionAnswer.TABLE_NAME+" VALUES(6,'Os melhores enigmas são os de fazer exercícios de matemática (como o cadeado)',0);");
-			// db.execSQL("INSERT INTO "+QuestionAnswer.TABLE_NAME+" VALUES(7,'Os enigmas são todos fixes',0);");
-			//
-			// //Riddles negative
-			// db.execSQL("INSERT INTO "+QuestionAnswer.TABLE_NAME+" VALUES(8,'Os enigmas mais chatos são os de ter de encontrar coisas no ecrán (como o do amuleto)',0);");
-			// db.execSQL("INSERT INTO "+QuestionAnswer.TABLE_NAME+" VALUES(9,'Os enigmas mais chatos são os de desenhar linhas (como o desafio do ancião)',0);");
-			// db.execSQL("INSERT INTO "+QuestionAnswer.TABLE_NAME+" VALUES(10,'Os enigmas mais chatos são os de fazer exercícios de matemática (como o cadeado)',0);");
-			// db.execSQL("INSERT INTO "+QuestionAnswer.TABLE_NAME+" VALUES(11,'Os enigmas são todos chatos',0);");
-			//
-			// //Text
-			// db.execSQL("INSERT INTO "+QuestionAnswer.TABLE_NAME+" VALUES(12,'A história tem muito texto',0);");
-			// db.execSQL("INSERT INTO "+QuestionAnswer.TABLE_NAME+" VALUES(13,'A história tem pouco texto',0);");
-			// db.execSQL("INSERT INTO "+QuestionAnswer.TABLE_NAME+" VALUES(14,'A história tem texto suficiente',0);");
-			//
-			// //Points
-			// db.execSQL("INSERT INTO "+QuestionAnswer.TABLE_NAME+" VALUES(15,'A pontuação é porreira',0);");
-			// db.execSQL("INSERT INTO "+QuestionAnswer.TABLE_NAME+" VALUES(16,'A pontuação não serve para nada',0);");
-			// db.execSQL("INSERT INTO "+QuestionAnswer.TABLE_NAME+" VALUES(17,'A pontuação é porreira para comparar com os outros',0);");
+			// CREATE STORY TABLE
+			db.execSQL("CREATE TABLE " + Story.TABLE_NAME + " ("
+					+ Story.ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+					+ Story.TITLE + " INTEGER,"+ Story.DRAWABLE + " INTEGER);");
+			
+			// CREATE PAGE_TYPE TABLE
+			db.execSQL("CREATE TABLE " + PageType.TABLE_NAME + " ("
+					+ PageType.ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+					+ PageType.NAME + " INTEGER);");
 
+			// CREATE PAGE TABLE
+			db.execSQL("CREATE TABLE " + Page.TABLE_NAME + " (" + Page.ID
+					+ " INTEGER PRIMARY KEY AUTOINCREMENT," + Page.TITLE
+					+ " TEXT," + Page.TYPE_ID + " INTEGER, FOREIGN KEY ("
+					+ Page.TYPE_ID + ") REFERENCES " + PageType.TABLE_NAME
+					+ " (" + PageType.ID + "));");
+
+			// CREATE DRAWABLE DRAWING TABLE
+			db.execSQL("CREATE TABLE " + Drawable.TABLE_NAME + " ("
+					+ Drawable.ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+					+ Drawable.NAME + " TEXT);");
+
+			// CREATE LEGEND TABLE
+			db.execSQL("CREATE TABLE " + Legend.TABLE_NAME + " (" + Legend.ID
+					+ " INTEGER PRIMARY KEY AUTOINCREMENT," + Legend.ORDER
+					+ " INTEGER," + Legend.VALUE + " TEXT, " + Legend.PAGE_ID
+					+ " INTEGER,  FOREIGN KEY (" + Legend.PAGE_ID
+					+ ") REFERENCES " + Page.TABLE_NAME + " (" + Page.ID
+					+ "));");
+
+			// CREATE PAGE_DRAWABLE TABLE
+			db.execSQL("CREATE TABLE " + PageDrawable.TABLE_NAME + " ("
+					+ PageDrawable.ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+					+ PageDrawable.ORDER + " INTEGER," + PageDrawable.PAGE_ID
+					+ " INTEGER," + PageDrawable.DRAWABLE_ID + " INTEGER,"
+					+ "FOREIGN KEY (" + PageDrawable.PAGE_ID + ") REFERENCES "
+					+ Page.TABLE_NAME + " (" + Page.ID + "),"
+					+ " FOREIGN KEY (" + PageDrawable.DRAWABLE_ID
+					+ ") REFERENCES " + Drawable.TABLE_NAME + " ("
+					+ Drawable.ID + "));");
+
+			// CREATE PAGE_story TABLE
+			db.execSQL("CREATE TABLE " + PageStory.TABLE_NAME + " ("
+					+ PageStory.ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+					+ PageStory.ORDER + " INTEGER," + PageStory.PAGE_ID
+					+ " INTEGER," + PageStory.STORY_ID + " INTEGER,"
+					+ "FOREIGN KEY (" + PageStory.STORY_ID + ") REFERENCES "
+					+ Story.TABLE_NAME + " (" + Story.ID + "),"
+					+ " FOREIGN KEY (" + PageStory.PAGE_ID
+					+ ") REFERENCES " + Page.TABLE_NAME + " ("
+					+ Page.ID + "));");
+			
+			insertDrawables(db);
+			insertPageTypes(db);
+		}
+
+		/**
+		 * @param db
+		 * 
+		 *            Insert into database all drawables of the application
+		 */
+		private void insertDrawables(SQLiteDatabase db) {
+
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(1,'village');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(2,'quarto');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(3,'kingdom');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(4,'lagoteste2');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(5,'caminho_dia');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(6,'algo_a_mexer_1');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(7,'caminho_dia_watching');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(8,'caminho_dia_scarecrow');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(9,'choice');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(10,'cofre_aberto');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(11,'cofre_fechado');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(12,'companheira_presa');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(13,'gate');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(14,'espantalho1_1');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(15,'quarto_vazio_escuro');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(16,'quarto_vazio');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(17,'robot');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(18,'robot_attack1_scal');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(19,'robot_destroyed1234');");
+			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
+					+ " VALUES(20,'quarto_olhar_talisma');");
+		}
+		
+		/**
+		 * @param db
+		 * 
+		 *            Insert into database all drawables of the application
+		 */
+		private void insertPageTypes(SQLiteDatabase db) {
+			db.execSQL("INSERT INTO " + PageType.TABLE_NAME
+					+ " VALUES(1,'single');");
+			db.execSQL("INSERT INTO " + PageType.TABLE_NAME
+					+ " VALUES(2,'double');");
+			db.execSQL("INSERT INTO " + PageType.TABLE_NAME
+					+ " VALUES(3,'intense');");
 		}
 
 		@Override
@@ -508,6 +635,12 @@ public class PrototypeProvider extends ContentProvider {
 			db.execSQL("DROP TABLE IF EXISTS " + Status.TABLE_NAME);
 			db.execSQL("DROP TABLE IF EXISTS " + Objects.TABLE_NAME);
 			db.execSQL("DROP TABLE IF EXISTS " + QuestionAnswer.TABLE_NAME);
+			// Table to build the story
+			db.execSQL("DROP TABLE IF EXISTS " + Drawable.TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + Legend.TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + Page.TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + PageDrawable.TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + PageType.TABLE_NAME);
 			// CREATE NEW INSTANCE OF SCHEMA
 			onCreate(db);
 

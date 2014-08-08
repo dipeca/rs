@@ -18,6 +18,23 @@ public class ObjectItem {
 		this.created = created;
 	}
 
+	public ObjectItem(Long id, String name, Bitmap image, Date created) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.bitmap = image;
+		this.created = created;
+	}
+
+	public ObjectItem(Long id, String name, Bitmap image, Date created, int idDrawable) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.bitmap = image;
+		this.created = created;
+		this.idDrawable = idDrawable;
+	}
+	
 	public static final int TYPE_BOOK_OF_SPELS = 1;
 	public static final int TYPE_PAPER = 2;
 	public static final int TYPE_BOTTLE = 3;
@@ -51,6 +68,7 @@ public class ObjectItem {
 	private Long id;
 	private String name;
 	private int objectImageType;
+	private int idDrawable;
 
 	public int getObjectImageType() {
 		return objectImageType;
@@ -95,6 +113,13 @@ public class ObjectItem {
 	public void setBitmap(Bitmap bitmap) {
 		this.bitmap = bitmap;
 	}
-	
+
+	public int getIdDrawable() {
+		return idDrawable;
+	}
+
+	public void setIdDrawable(int idDrawable) {
+		this.idDrawable = idDrawable;
+	}
 
 }

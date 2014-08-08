@@ -14,7 +14,7 @@ public class User {
 	// NAME OF THE TABLE
 	public static final String AGE = "age";
 	// NAME OF THE TABLE
-	public static final String TABLE_NAME = "user";
+	public static final String TABLE_NAME = "users";
 	
 	
 	

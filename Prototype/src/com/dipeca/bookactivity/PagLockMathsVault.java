@@ -117,7 +117,7 @@ public class PagLockMathsVault extends Fragment implements IFragmentBook {
 			public void onClick(View v) {
 				math.setHelpVisible();
 				// For the help we take 20
-				onChoice.setAddPoints(-20);
+				onChoice.addPoints(-20);
 			}
 		});
 		

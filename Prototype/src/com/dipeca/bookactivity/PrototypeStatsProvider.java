@@ -23,21 +23,21 @@ import com.dipeca.bookactivity.entiy.User;
 public class PrototypeStatsProvider extends ContentProvider {
 
 	public static final Uri CONTENT_URI_USERS = Uri
-			.parse("content://com.dipeca.prototypeprovider/users");
+			.parse("content://com.dipeca.adventurestoriesprovider/users");
 
 	public static final Uri CONTENT_URI_CHAPTERS = Uri
-			.parse("content://com.dipeca.prototypeprovider/"
+			.parse("content://com.dipeca.adventurestoriesprovider/"
 					+ Chapter.TABLE_NAME);
 
 	public static final Uri CONTENT_URI_STATUS = Uri
-			.parse("content://com.dipeca.prototypeprovider/"
+			.parse("content://com.dipeca.adventurestoriesprovider/"
 					+ Status.TABLE_NAME);
 
 	public static final Uri CONTENT_URI_OBJECTS = Uri
-			.parse("content://com.dipeca.prototypeprovider/"
+			.parse("content://com.dipeca.adventurestoriesprovider/"
 					+ Objects.TABLE_NAME);
 
-	public static final String AUTHORITY = "com.dipeca.prototypeprovider";
+	public static final String AUTHORITY = "com.dipeca.adventurestoriesprovider";
 
 	SchemaHelper myOpenHelper;
 
@@ -54,7 +54,7 @@ public class PrototypeStatsProvider extends ContentProvider {
 
 	private static final UriMatcher uriMatcher;
 
-	private static final String PROVIDER_NAME = "com.dipeca.prototypeprovider";
+	private static final String PROVIDER_NAME = "com.dipeca.adventurestoriesprovider";
 	// Populate the UriMatcher object, where a URI ending in
 	// ‘elements’ will correspond to a request for all items,
 	// and ‘elements/[rowID]’ represents a single row.

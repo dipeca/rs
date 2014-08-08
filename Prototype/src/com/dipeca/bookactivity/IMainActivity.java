@@ -26,15 +26,11 @@ public interface IMainActivity {
 	
 	void restartLoaderObjects();
 	
-	void setAddPoints(int points);
+	void addPoints(int points);
 	
 	void setPoints(int points);
 	
 	boolean isInObjects(ObjectItem oi);
-	
-	void restartLoaderQuizz();
-	
-	void handleQuizzSubmit();
 	
 	void restartApp();
 }

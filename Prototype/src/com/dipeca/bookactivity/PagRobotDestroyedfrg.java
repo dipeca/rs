@@ -54,7 +54,7 @@ public class PagRobotDestroyedfrg extends Fragment implements IFragmentBook {
 		animation.setOneShot(true);
 		animation.start();
 	} 
- 
+  
 	private void loadText() {
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
 		tv1.setText(R.string.pagRobotDestroyed);

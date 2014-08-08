@@ -48,11 +48,10 @@ public class ObjectItemImageAdapter extends BaseAdapter {
 		ImageView imageView = (ImageView) gridView
 				.findViewById(R.id.grid_item_image);
 
-		String name = list.get(position).getName();
-
-		list.get(position).setBitmap(
-				loadCardImage(list.get(position).getObjectImageType()));
-
+		if (list.get(position).getBitmap() == null) {
+			list.get(position).setBitmap(
+					loadCardImage(list.get(position).getObjectImageType()));
+		}
 		imageView.setImageBitmap(list.get(position).getBitmap());
 
 		return gridView;

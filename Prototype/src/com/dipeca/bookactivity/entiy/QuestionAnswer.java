@@ -44,10 +44,10 @@ public class QuestionAnswer {
 	public static final Uri CONTENT_URI = Uri.parse("content://"
 			+ PrototypeProvider.AUTHORITY + "/" + TABLE_NAME);
 	// MIME TYPE FOR GROUP OF CITIZENS
-	public static final String CONTENT_TYPE = "com.dipeca.prototypeprovider/"
+	public static final String CONTENT_TYPE = "com.dipeca.adventurestoriesprovider/"
 			+ TABLE_NAME;
 	// MIME TYPE FOR SINGLE CITIZEN
-	public static final String CONTENT_ITEM_TYPE = "com.dipeca.prototypeprovider/"
+	public static final String CONTENT_ITEM_TYPE = "com.dipeca.adventurestoriesprovider/"
 			+ TABLE_NAME;
 	// RELATIVE POSITION OF CITIZEN SSID IN URI
 	public static final int SSID_PATH_POSITION = 1;

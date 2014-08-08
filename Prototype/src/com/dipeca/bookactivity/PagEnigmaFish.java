@@ -48,7 +48,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 	private static ImageButton btn = null;
 	private static ImageButton btnHelp = null;
 	private static int marginLeftMenu = 0;
-	
+
 	private boolean isMazeSolved = false;
 
 	public static int NAME = R.string.enigma;
@@ -157,7 +157,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 
 		if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) <= Configuration.SCREENLAYOUT_SIZE_LARGE) {
 			marginLeftMenu = 0;
-		}else{
+		} else {
 			marginLeftMenu = 160;
 		}
 		return layout;
@@ -186,7 +186,9 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 					toastObject = Toast.makeText(getActivity(),
 							getString(R.string.solveEnigmaFirst),
 							Toast.LENGTH_SHORT);
-					toastObject.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL, marginLeftMenu * Math.round(density), 0);
+					toastObject.setGravity(Gravity.CENTER_HORIZONTAL
+							| Gravity.CENTER_VERTICAL,
+							marginLeftMenu * Math.round(density), 0);
 					toastObject.show();
 				}
 			}
@@ -220,14 +222,13 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 
 							// For each line we take 2 points
 							// and we take 3 more because we are in a help state
-							onChoice.setAddPoints(-2);
-							onChoice.setAddPoints(-3);
-							
+							onChoice.addPoints(-2);
+							onChoice.addPoints(-3);
+
 							break;
 
 						}
 					}
-
 
 					imageView.invalidate();
 				}
@@ -259,7 +260,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 						lgToBeErased.setDrawn(false);
 
 						imageView.invalidate();
-						
+
 						lockHelp = false;
 					}
 				});
@@ -281,11 +282,12 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 		txt.setBackgroundResource(R.drawable.container_dropshadow);
 		txt.setTextAppearance(getActivity().getApplicationContext(),
 				R.style.StoryBlock);
-		int pad = Math.round(16 * density);
+		int pad = Math.round(12 * density);
 		txt.setPadding(pad, pad, pad, pad);
-		LayoutParams lpTxt = new LayoutParams(Math.round(240 * density),
-				LayoutParams.WRAP_CONTENT);
-		lpTxt.setMargins((int) (8 * density), (int) (8 * density), 0, 0);
+		RelativeLayout.LayoutParams lpTxt = new RelativeLayout.LayoutParams(
+				Math.round(240 * density), LayoutParams.WRAP_CONTENT);
+		lpTxt.setMargins(pad, pad, 0, 0);
+		
 		layout.addView(txt, lpTxt);
 	}
 
@@ -318,8 +320,8 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		params2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		params2.setMargins(0, 0, (int) Math.ceil(12 * density),
-				(int) Math.ceil(12 * density));
+		params2.setMargins(0, (int) Math.ceil(12 * density),
+				(int) Math.ceil(12 * density), 0);
 
 		layout.addView(btnHelp, params2);
 
@@ -678,14 +680,14 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 			// drawer layout we have to
 			// account for the 240dp = 320 px from the menu hided
 			if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) <= Configuration.SCREENLAYOUT_SIZE_LARGE) {
-				//x = x - (240 * density);
+				// x = x - (240 * density);
 
 			}
 
 			// Add the space occupied by the menus
-			//x = x + (240 * density);
-			
-			//y += (80 * density);
+			// x = x + (240 * density);
+
+			// y += (80 * density);
 
 			Log.d("OnTouch after correction", "x: " + x + " y:" + y);
 
@@ -780,49 +782,53 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 						toastObject = Toast.makeText(this.getActivity(),
 								getString(R.string.removeLineFirst),
 								Toast.LENGTH_SHORT);
-						toastObject.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL, marginLeftMenu * Math.round(density), 0);
+						toastObject.setGravity(Gravity.CENTER_HORIZONTAL
+								| Gravity.CENTER_VERTICAL, marginLeftMenu
+								* Math.round(density), 0);
 						toastObject.show();
 					}
 				}
 			}
-			
+
 			imageView.invalidate();
 			isMazeSolved = checkMazeDone();
-			
+
 			// remove 2 points for each move
-			onChoice.setAddPoints(-2);
+			onChoice.addPoints(-2);
 
 			if (isMazeSolved) {
 				cancelToast();
-				
+
 				toastObject = Toast.makeText(this.getActivity(),
 						getString(R.string.youHaveDoneIt), Toast.LENGTH_LONG);
-				toastObject.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL, marginLeftMenu * Math.round(density), 0);
+				toastObject.setGravity(Gravity.CENTER_HORIZONTAL
+						| Gravity.CENTER_VERTICAL,
+						marginLeftMenu * Math.round(density), 0);
 				toastObject.show();
-				
+
 			}
 		}
 
 		return true;
 	}
 
-	
-	private int getStatusBarHeight() { 
-	      int result = 0;
-	      int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-	      if (resourceId > 0) {
-	          result = getResources().getDimensionPixelSize(resourceId);
-	      } 
-	      return result;
-	} 
-	
+	private int getStatusBarHeight() {
+		int result = 0;
+		int resourceId = getResources().getIdentifier("status_bar_height",
+				"dimen", "android");
+		if (resourceId > 0) {
+			result = getResources().getDimensionPixelSize(resourceId);
+		}
+		return result;
+	}
+
 	private boolean checkMazeDone() {
-		
-		//If we have any help line drawn then it's not done 
-		if(lockHelp){
+
+		// If we have any help line drawn then it's not done
+		if (lockHelp) {
 			return false;
 		}
-		
+
 		// Check if all correct lines are Ok
 		for (LineSegment lg : secondFishLines) {
 			if (!lg.isDrawn()) {
@@ -835,7 +841,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 		}
 
 		// For the correct answer we add 30 points,
-		onChoice.setAddPoints(30);
+		onChoice.addPoints(30);
 		return true;
 	}
 

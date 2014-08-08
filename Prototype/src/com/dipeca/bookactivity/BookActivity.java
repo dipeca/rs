@@ -50,32 +50,11 @@ import com.dipeca.bookactivity.entiy.QuestionAnswer;
 import com.dipeca.bookactivity.entiy.Status;
 import com.dipeca.bookactivity.entiy.User;
 import com.dipeca.buildstoryactivity.BuildPageActivity;
+import com.dipeca.buildstoryactivity.ReadStoryActivity;
 import com.dipeca.prototype.R;
 
 public class BookActivity extends Activity implements IMainActivity,
 		LoaderManager.LoaderCallbacks<Cursor> {
-
-	private static boolean isMusicMuted = false;
-
-	@Override
-	public void restartApp() {
-
-		ContentResolver cr = getContentResolver();
-
-		// Delete all rows
-		points = 80;
-		cr.delete(PrototypeProvider.CONTENT_URI_CHAPTERS, null, null);
-
-		if (journeyItemList == null) {
-			journeyItemList = new ArrayList<JourneyItem>();
-		} else {
-			journeyItemList.clear();
-		}
-		journeyArrayAdapter.notifyDataSetChanged();
-
-		cr.delete(PrototypeProvider.CONTENT_URI_OBJECTS, null, null);
-		restartLoaderObjects();
-	}
 
 	// mediaPlayer-object will not we cleaned away since someone holds a
 	// reference to it!
@@ -85,7 +64,7 @@ public class BookActivity extends Activity implements IMainActivity,
 	public static int playIcon;
 	public static ImageButton stopButton;
 	private static InputMethodManager imm = null;
-	private ArrayList<JourneyItem> journeyItemList;
+	private ArrayList<IListItem> journeyItemList;
 	private JourneyListAdapter journeyArrayAdapter;
 
 	private ArrayList<ObjectItem> objectItemList;
@@ -112,6 +91,24 @@ public class BookActivity extends Activity implements IMainActivity,
 	// Menu Points
 	public static int points = 100;
 	private TextView pointsText = null;
+	private static boolean isMusicMuted = false;
+
+	@Override
+	public void restartApp() {
+
+		ContentResolver cr = getContentResolver();
+
+		// Delete all rows
+		points = 80;
+		cr.delete(PrototypeProvider.CONTENT_URI_CHAPTERS, null, null);
+
+		restartItemJourneyList();
+		journeyArrayAdapter.notifyDataSetChanged();
+
+		cr.delete(PrototypeProvider.CONTENT_URI_OBJECTS, null, null);
+		restartLoaderObjects();
+	}
+
 
 	@Override
 	protected void onPause() {
@@ -138,7 +135,7 @@ public class BookActivity extends Activity implements IMainActivity,
 				.findFragmentById(R.id.journey);
 
 		// Create the array list of to do items
-		journeyItemList = new ArrayList<JourneyItem>();
+		restartItemJourneyList();
 
 		// Create the array adapter to bind the array to the listview
 		int resID = R.layout.journey_so_far;
@@ -161,7 +158,6 @@ public class BookActivity extends Activity implements IMainActivity,
 					public void onItemClick(AdapterView<?> arg0, View arg1,
 							int arg2, long arg3) {
 
-						Log.d("bookactivity", "OnItemClick");
 						if (ivObjects != null) {
 							((ViewGroup) ivObjects.getParent())
 									.removeView(ivObjects);
@@ -193,7 +189,10 @@ public class BookActivity extends Activity implements IMainActivity,
 					}
 				});
 
+		//setPoints text
 		pointsText = (TextView) findViewById(R.id.pointsValue);
+		addPoints(0);
+		
 		// configure the toggle menu
 		configureDrawerMenu();
 
@@ -368,13 +367,36 @@ public class BookActivity extends Activity implements IMainActivity,
 	        case R.id.action_build_story:
 	        	callActivityBuildStory();
 	            return true;
-	        case R.id.action_settings:
+	        case R.id.action_read_story:
+	        	callActivityReadStory();
+	            return true;
+	        case R.id.action_gui_story:
+	        	callActivityGui();
 	            return true;
 	    }
 	    
 		return super.onOptionsItemSelected(item);
 	}
 	
+	/**
+	 * Loads the activity to read our own stories
+	 */
+	private void callActivityReadStory(){
+		Intent intent = new Intent(this, ReadStoryActivity.class);
+	    startActivity(intent);
+	}
+
+	/**
+	 * Loads the activity to read our own stories
+	 */
+	private void callActivityGui(){
+		Intent intent = new Intent(this, BookActivity.class);
+	    startActivity(intent);
+	}
+	
+	/**
+	 * Loads the activity to build our own stories
+	 */
 	private void callActivityBuildStory(){
 		Intent intent = new Intent(this, BuildPageActivity.class);
 	    startActivity(intent);
@@ -586,17 +608,13 @@ public class BookActivity extends Activity implements IMainActivity,
 				getPackageName());
 		ji.setIcon(getResources().getDrawable(iconId));
 
-		if (journeyItemList == null) {
-			journeyItemList = new ArrayList<JourneyItem>();
-		}
-
 		// if not already on journey path
 		if (!isInJourney(chapterName)) {
 			journeyItemList.add(0, ji);
 			persistJourney(chapterName);
 
 			// handle Points; We only add points if we didn't passe here already
-			setAddPoints(20);
+			addPoints(20);
 		}
 		journeyArrayAdapter.notifyDataSetChanged();
 	}
@@ -606,7 +624,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			return false;
 		}
 
-		for (JourneyItem ji : journeyItemList) {
+		for (IListItem ji : journeyItemList) {
 			if (ji.getCurrent().equals(chapterName)) {
 				return true;
 			}
@@ -777,12 +795,9 @@ public class BookActivity extends Activity implements IMainActivity,
 		boolean isFirst = true;
 
 		JourneyItem ji = null;
-		if (journeyItemList == null) {
-			journeyItemList = new ArrayList<JourneyItem>();
-		}
-
-		journeyItemList.clear();
-
+		restartItemJourneyList();
+		int iconID;
+		String iconName;
 		while (data.moveToNext()) {
 			String dateStr = data.getString(date);
 			Date dateDt;
@@ -793,8 +808,8 @@ public class BookActivity extends Activity implements IMainActivity,
 				dateDt = null;
 			}
 
-			String iconName = data.getString(icon);
-			int iconID = getResources().getIdentifier(iconName, "drawable",
+			iconName = data.getString(icon);
+			iconID = getResources().getIdentifier(iconName, "drawable",
 					getPackageName());
 
 			Drawable iconDr = getResources().getDrawable(iconID);
@@ -824,16 +839,13 @@ public class BookActivity extends Activity implements IMainActivity,
 		case PrototypeProvider.STATUS_ALLROWS:
 			handleStatusCursor(loader, data);
 
-			// Initiate quizz Loading
+			// Initiate chapter Loading
 			restartLoaderChapter();
 
 			break;
 		case PrototypeProvider.CHAPTER_ALLROWS:
 			handleChapterCursor(loader, data);
-
-			// Initiate quizz Loading
-			restartLoaderQuizz();
-
+			restartLoaderObjects();
 			break;
 		case PrototypeProvider.OBJECT_ALLROWS:
 			handleObjectCursor(loader, data);
@@ -841,7 +853,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			break;
 
 		case PrototypeProvider.QUIZZ_ALLROWS:
-			handleQuizzCursor(loader, data);
+			//handleQuizzCursor(loader, data);
 
 			// Initiate Objects Loading
 			restartLoaderObjects();
@@ -865,25 +877,9 @@ public class BookActivity extends Activity implements IMainActivity,
 		getLoaderManager().restartLoader(0, myBundle, BookActivity.this);
 	}
 
-	/**
-	 * Set the Quizz table as main cursor again
-	 */
-	public void restartLoaderQuizz() {
-		String[] projection = null;
-		projection = new String[] { QuestionAnswer.ID, QuestionAnswer.DRAW,
-				QuestionAnswer.ENIGMA_DISLIKE, QuestionAnswer.ENIGMA_LIKE,
-				QuestionAnswer.LIKEIT, QuestionAnswer.PATH,
-				QuestionAnswer.POINTS, QuestionAnswer.READS,
-				QuestionAnswer.TEXT, QuestionAnswer.TYPE, };
-
-		makeProviderBundle(projection, null, null, null,
-				QuestionAnswer.CONTENT_URI.toString());
-		tableLoaded = PrototypeProvider.QUIZZ_ALLROWS;
-		getLoaderManager().restartLoader(0, myBundle, BookActivity.this);
-	}
 
 	/**
-	 * Set the Chapter table as main cursor again
+	 * Set the Page table as main cursor again
 	 */
 	private void restartLoaderChapter() {
 		String[] projection = null;
@@ -986,7 +982,7 @@ public class BookActivity extends Activity implements IMainActivity,
 	}
 
 	@Override
-	public void setAddPoints(int points) {
+	public void addPoints(int points) {
 
 		if (BookActivity.points >= 0 || points > 0) {
 			BookActivity.points += points;
@@ -1379,6 +1375,14 @@ public class BookActivity extends Activity implements IMainActivity,
 						QuestionAnswer.READ_NOT);
 			}
 			break;
+		}
+	}
+	
+	private void restartItemJourneyList(){
+		if (journeyItemList == null) {
+			journeyItemList = new ArrayList<IListItem>();
+		} else {
+			journeyItemList.clear();
 		}
 	}
 

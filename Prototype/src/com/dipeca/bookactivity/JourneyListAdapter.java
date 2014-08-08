@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.dipeca.prototype.R;
 
+import android.app.LauncherActivity.ListItem;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -14,11 +15,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class JourneyListAdapter extends ArrayAdapter<JourneyItem> {
+public class JourneyListAdapter extends ArrayAdapter<IListItem> {
 
 	int resource;
 	
-	public JourneyListAdapter(Context context, int resource, List<JourneyItem> items) {
+	public JourneyListAdapter(Context context, int resource, List<IListItem> items) {
 		super(context, resource, items);
 		this.resource = resource;
 	}
@@ -27,7 +28,7 @@ public class JourneyListAdapter extends ArrayAdapter<JourneyItem> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LinearLayout todoView;
 
-		JourneyItem item = getItem(position);
+		IListItem item = getItem(position);
 		String chapterString = item.getCurrent();
 		Drawable iconDrawable = item.getIcon();
 //		Date createdDate = item.getCreated();

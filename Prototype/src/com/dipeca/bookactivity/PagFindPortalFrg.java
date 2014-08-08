@@ -186,8 +186,7 @@ public class PagFindPortalFrg extends Fragment implements IFragmentBook {
 		@Override
 		public boolean onDrag(View v, DragEvent event) {
 			Log.d("onDrag", event.getAction() + "");
-			int touchColor = Utils.getHotspotColor(R.id.clickable,
-					(int) event.getX(), (int) event.getY(), view);
+			int touchColor = Utils.getHotspotColor(event, ivClickable);
 			int tolerance = 25;
 			switch (event.getAction()) {
 			case DragEvent.ACTION_DRAG_STARTED: 

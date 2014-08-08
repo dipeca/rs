@@ -191,12 +191,17 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 		txt.setBackgroundResource(R.drawable.container_dropshadow);
 		txt.setTextAppearance(getActivity().getApplicationContext(),
 				R.style.StoryBlock);
-		int pad = Math.round(16 * density);
-		txt.setPadding(pad, pad, pad, pad);
-		LayoutParams lpTxt = new LayoutParams(Math.round(240 * density),
+		int pad = (int) Math.ceil(Double.valueOf(12 * density));
+		
+		RelativeLayout.LayoutParams lpTxt = new RelativeLayout.LayoutParams(Math.round(240 * density),
 				LayoutParams.WRAP_CONTENT);
-		lpTxt.setMargins((int) (16 * density), (int) (16 * density),
-				(int) (16 * density), (int) (16 * density));
+		
+		lpTxt.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+		lpTxt.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+		
+		lpTxt.setMargins(pad, pad, 0, 0);
+		txt.setPadding(pad, pad, pad, pad);
+		
 		layout.addView(txt, lpTxt);
 	}
 
@@ -222,8 +227,8 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		params2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		params2.setMargins(0, 0, (int) Math.ceil(12 * density),
-				(int) Math.ceil(12 * density));
+		params2.setMargins(0, (int) Math.ceil(12 * density), (int) Math.ceil(12 * density),
+				0);
 
 		layout.addView(btnHelp, params2);
 	}
@@ -282,8 +287,8 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 							// For each line we take 2 points
 							// and we take 10 more because we are in a help
 							// state
-							onChoice.setAddPoints(-2);
-							onChoice.setAddPoints(-10);
+							onChoice.addPoints(-2);
+							onChoice.addPoints(-10);
 
 							break;
 						}
@@ -308,7 +313,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 				handler.post(new Runnable() {
 					@Override
 					public void run() {
-						onChoice.setAddPoints(-1);
+						onChoice.addPoints(-1);
 
 					}
 				});
@@ -535,7 +540,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 				lg2.setDrawn(true);
 
 				// For each line we take 2 points
-				onChoice.setAddPoints(-2);
+				onChoice.addPoints(-2);
 			} else {
 				paintStroke.setColor(Color.RED);
 				lg2 = getClosestLineIncorrect(p);
@@ -568,7 +573,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 					}
 
 					// For each line we take 2 points
-					onChoice.setAddPoints(-2);
+					onChoice.addPoints(-2);
 				}
 			}
 
@@ -607,7 +612,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 			}
 
 			// For the correct answer we add 30 points,
-			onChoice.setAddPoints(30);
+			onChoice.addPoints(30);
 
 			isMazeSolved = true;
 			BookActivity.stopMusic();

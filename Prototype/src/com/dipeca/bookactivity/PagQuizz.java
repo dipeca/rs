@@ -58,8 +58,8 @@ public class PagQuizz extends Fragment {
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				onChoice.handleQuizzSubmit();
-				onChoice.restartLoaderQuizz();
+				//onChoice.handleQuizzSubmit();
+				//onChoice.restartLoaderQuizz();
 				
 				PagTheEnd fb = new PagTheEnd();
 

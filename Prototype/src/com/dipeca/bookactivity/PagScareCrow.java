@@ -290,7 +290,7 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 				image1.setImageBitmap(warningBitmap);
 
 				// Each time we touch the scarecrow we loose 5points
-				onChoice.setAddPoints(-5);
+				onChoice.addPoints(-5);
 
 				// run the start() method later on the UI thread
 				view.postDelayed(mUpdateTimeTask, 1000);
@@ -302,7 +302,7 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 				image1.setImageBitmap(wakedBitmap);
 
 				// Each time we touch the scarecrow we loose 5points
-				onChoice.setAddPoints(-10);
+				onChoice.addPoints(-10);
 
 				// run the start() method later on the UI thread
 				view.postDelayed(mUpdateTimeTask, 1000);
@@ -320,7 +320,7 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 				// 10 points for the curiosity ;)
 				checkObjectsAlreadyFound();
 				if(!isCornInObjects){
-					onChoice.setAddPoints(10);
+					onChoice.addPoints(10);
 					persistCorn();
 				}
 				
@@ -414,7 +414,7 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 					if(!isBottleInObjects && !lockPersistBottle){
 						
 						lockPersistBottle = true;
-						onChoice.setAddPoints(40);
+						onChoice.addPoints(40);
 						view.postDelayed(persistBottle, 1);
 					}
 

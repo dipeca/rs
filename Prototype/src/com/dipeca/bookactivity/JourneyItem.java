@@ -4,7 +4,7 @@ import java.util.Date;
 
 import android.graphics.drawable.Drawable;
 
-public class JourneyItem {
+public class JourneyItem implements IListItem{
 	private Long id;
 	private String current;
 	private String currentClass;
@@ -83,6 +83,49 @@ public class JourneyItem {
 
 	public void setIconName(String iconName) {
 		this.iconName = iconName;
+	}
+	
+	
+	public int getDrawable1Id(){
+		return -1;
+	}
+	public int getDrawable2Id(){
+		return -1;
+	}
+	
+	public void setDrawable1Id(int drawable1Id) {
+	}
+	public void setDrawable2Id(int drawable1Id) {
+	}
+
+	@Override
+	public int getType() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String getLegend1Id() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getLegend2Id() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setLegend1Id(String var) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setLegend2Id(String var) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

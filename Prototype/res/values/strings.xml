@@ -3,7 +3,12 @@
 
     <string name="app_name">Reading Adventures</string>
     <string name="menu">Menu</string>
-     <string name="legend1">Legenda 1</string>
+    <string name="legend1">Legenda 1</string>
+    <string name="legend2">Legenda 2</string>
+    <string name="story">Story</string>
+    <string name="pageType">Page type</string>
+    <string name="pageTitle">Page title </string>
+    <string name="library">Library</string>
     <string name="adventureRule">Regras da aventura</string>
     <string name="objectsHelp">1 - A tua fotografia \n\n2 - Podes desligar o som da aventura e podes mudar a tua fotografia \n\n3 - A lista dos capítulos e desafios que já leste e venceste\n\n4 - A tua pontuação \n\n5 - Ao longo da aventura encontrarás objetos que te ajudarão e te darão pontos</string>
     <string name="wood">Madeira</string>
@@ -32,9 +37,11 @@
     <string name="bedroom">Quarto</string>
     <string name="bookOfSpells">Livro dos feitiços</string>
     <string name="TheAmulet">O amuleto</string>
+   	<string name="gui_adventures">As aventuras de Gui</string>
     <string name="solveEnigmaFirst">Resolve o enigma primeiro antes de avançar.</string>
     <string name="action_settings">Settings</string>
     <string name="action_build_story">Criar história</string>
+    <string name="action_read_story">Ler as minhas história</string>
     <string name="next">Próxima pág.</string>
     <string name="didnotopen">O cadeado não abriu, será que te enganaste?</string>
     <string name="solvefirst">Resolve o enigma antes de submeter.</string>

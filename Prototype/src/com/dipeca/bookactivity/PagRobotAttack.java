@@ -1,13 +1,15 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
+import android.R.array;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ClipData;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
@@ -21,6 +23,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.dipeca.prototype.R;
 
 public class PagRobotAttack extends Fragment implements IFragmentBook{
 	View view = null;
@@ -177,8 +181,8 @@ public class PagRobotAttack extends Fragment implements IFragmentBook{
 		@Override
 		public boolean onDrag(View v, DragEvent event) {
 			Log.d("onDrag", event.getAction() + "");
-			int touchColor = Utils.getHotspotColor(R.id.clickable,
-					(int) event.getX(), (int) event.getY(), view);
+			
+			int touchColor = Utils.getHotspotColor(event, iv2);
 			int tolerance = 25;
 			switch (event.getAction()) {
 			case DragEvent.ACTION_DRAG_STARTED:
@@ -243,4 +247,5 @@ public class PagRobotAttack extends Fragment implements IFragmentBook{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
 }
