@@ -1,10 +1,19 @@
 package com.dipeca.bookactivity;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -17,18 +26,29 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.Signature;
 import android.content.res.Configuration;
+import android.content.res.Resources.Theme;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
+import android.provider.MediaStore.Images;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -42,7 +62,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dipeca.bookactivity.entiy.Chapter;
 import com.dipeca.bookactivity.entiy.Objects;
@@ -52,7 +75,23 @@ import com.dipeca.bookactivity.entiy.User;
 import com.dipeca.buildstoryactivity.BuildPageActivity;
 import com.dipeca.buildstoryactivity.ReadStoryActivity;
 import com.dipeca.prototype.R;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.Session.NewPermissionsRequest;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.widget.FacebookDialog;
+import com.google.android.gms.plus.PlusShare;
 
+/**
+ * @author dipeca
+ *
+ */
+/**
+ * @author dipeca
+ *
+ */
 public class BookActivity extends Activity implements IMainActivity,
 		LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -63,12 +102,14 @@ public class BookActivity extends Activity implements IMainActivity,
 	private static int idToPlay = -1;
 	public static int playIcon;
 	public static ImageButton stopButton;
+	private float density = 1;
 	private static InputMethodManager imm = null;
 	private ArrayList<IListItem> journeyItemList;
 	private JourneyListAdapter journeyArrayAdapter;
 
 	private ArrayList<ObjectItem> objectItemList;
 	private ObjectItemImageAdapter objectsAdapter;
+	private ShareActionProvider mShareActionProvider;
 
 	private ActionBarDrawerToggle mDrawerToggle;
 
@@ -93,6 +134,30 @@ public class BookActivity extends Activity implements IMainActivity,
 	private TextView pointsText = null;
 	private static boolean isMusicMuted = false;
 
+	// facebook helper
+	private UiLifecycleHelper uiFacebookHelper;
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		uiFacebookHelper.onActivityResult(requestCode, resultCode, data,
+				new FacebookDialog.Callback() {
+					@Override
+					public void onError(FacebookDialog.PendingCall pendingCall,
+							Exception error, Bundle data) {
+						Log.e("Activity",
+								String.format("Error: %s", error.toString()));
+					}
+
+					@Override
+					public void onComplete(
+							FacebookDialog.PendingCall pendingCall, Bundle data) {
+						Log.i("Activity", "Success!");
+					}
+				});
+	}
+
 	@Override
 	public void restartApp() {
 
@@ -109,12 +174,13 @@ public class BookActivity extends Activity implements IMainActivity,
 		restartLoaderObjects();
 	}
 
-
 	@Override
 	protected void onPause() {
 		super.onPause();
 
 		releaseMusic();
+
+		uiFacebookHelper.onPause();
 	}
 
 	@Override
@@ -123,11 +189,11 @@ public class BookActivity extends Activity implements IMainActivity,
 		setContentView(R.layout.activity_book);
 
 		imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		density = (float) getResources().getDisplayMetrics().density;
 
 		display = getWindowManager().getDefaultDisplay();
 		display.getSize(sizeofDisplay);
 		Log.d("SIZE: ", " " + sizeofDisplay.x + "x" + sizeofDisplay.y);
-
 
 		// Get references to the Fragments
 		FragmentManager fm = getFragmentManager();
@@ -168,7 +234,8 @@ public class BookActivity extends Activity implements IMainActivity,
 						RelativeLayout layout = (RelativeLayout) nextPage
 								.getView();
 						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-								256, 256);
+								LayoutParams.WRAP_CONTENT,
+								LayoutParams.WRAP_CONTENT);
 						params.addRule(RelativeLayout.CENTER_IN_PARENT);
 
 						layout.addView(ivObjects, params);
@@ -189,17 +256,100 @@ public class BookActivity extends Activity implements IMainActivity,
 					}
 				});
 
-		//setPoints text
+		// setPoints text
 		pointsText = (TextView) findViewById(R.id.pointsValue);
 		addPoints(0);
-		
+
 		// configure the toggle menu
 		configureDrawerMenu();
 
 		context = getApplicationContext();
 
 		loadDataBase();
+
+		try {
+			Log.d("package name", this.getPackageName());
+			PackageInfo info = getPackageManager().getPackageInfo(
+					this.getPackageName(), PackageManager.GET_SIGNATURES);
+			for (Signature signature : info.signatures) {
+				MessageDigest md = MessageDigest.getInstance("SHA");
+				md.update(signature.toByteArray());
+				Log.d("KeyHash:",
+						Base64.encodeToString(md.digest(), Base64.DEFAULT));
+			}
+		} catch (NameNotFoundException e) {
+			Log.d("NameNotFoundException:", e.getMessage());
+		} catch (NoSuchAlgorithmException e) {
+			Log.d("NoSuchAlgorithmException:", e.getMessage());
+		}
+
+		// Facebook helper instance
+		uiFacebookHelper = new UiLifecycleHelper(this, null);
+		uiFacebookHelper.onCreate(savedInstanceState);
+
+		// }
+
+		// Pinterest
+
+		// PinItButton.setDebugMode(true);
+		// PinItButton.setPartnerId(getString(R.string.pinterest_id));
+		//
+		// pinIt = (PinItButton) findViewById(R.id.pin_it);
+		//
+		// Uri uriImage = Uri.parse("android.resource://" + getPackageName()
+		// + "/drawable/companheira_presa2");
+		// pinIt.setImageUri(uriImage);
+		// pinIt.setUrl("http://diamcam.com"); // optional
+		// pinIt.setDescription(getString(R.string.social_brand_title) + " - "
+		// + getString(R.string.social_action_desc)); // optional
+		// pinIt.setListener(_listener);
+
+		// Google Plus
+		// Button shareButton = (Button) findViewById(R.id.share_button);
+		// shareButton.setOnClickListener(new View.OnClickListener() {
+		// @Override
+		// public void onClick(View v) {
+		// // Abra a caixa de diálogo de compartilhamento do Google+ com
+		// // atribuição para seu aplicativo.
+		// Intent shareIntent = new PlusShare.Builder(BookActivity.this)
+		// .setType("text/plain")
+		// .setText("Welcome to the Google+ platform.")
+		// .setContentUrl(Uri.parse("http://diamcam.com"))
+		// .addStream(streamUri)
+		// .getIntent();
+		//
+		// startActivityForResult(shareIntent, 0);
+		// }
+		// });
+
 	}
+
+	//
+	// PinItButton pinIt;
+	// PinItListener _listener = new PinItListener() {
+	//
+	// @Override
+	// public void onStart() {
+	// super.onStart();
+	// Log.i("PIN", "PinItListener.onStart");
+	// }
+	//
+	// @Override
+	// public void onComplete(boolean completed) {
+	// super.onComplete(completed);
+	// Log.i("PIN", "PinItListener.onComplete");
+	// }
+	//
+	// @Override
+	// public void onException(Exception e) {
+	// super.onException(e);
+	// pinIt.setVisibility(PinItButton.GONE);
+	// Toast.makeText(BookActivity.this,
+	// "Pinterest not installed on device", Toast.LENGTH_SHORT)
+	// .show();
+	// }
+	//
+	// };
 
 	private static ImageView ivObjects = null;
 
@@ -232,13 +382,13 @@ public class BookActivity extends Activity implements IMainActivity,
 
 	private static void createMP(int id) {
 		if (id > -1) {
-			
+
 			releaseMusic();
-			
+
 			idToPlay = id;
-			
+
 			mediaPlayer = MediaPlayer.create(context, id);
-		}  
+		}
 	}
 
 	private static void play() {
@@ -248,26 +398,26 @@ public class BookActivity extends Activity implements IMainActivity,
 		}
 	}
 
-	private static void pauseMusic(){
+	private static void pauseMusic() {
 		if (mediaPlayer != null) {
 			mediaPlayer.pause();
 		}
 	}
-	
+
 	public static void stopMusic() {
 		if (mediaPlayer != null) {
 			mediaPlayer.stop();
 		}
 	}
-	
-	private static void releaseMusic(){
-		if(mediaPlayer != null){
+
+	private static void releaseMusic() {
+		if (mediaPlayer != null) {
 			stopMusic();
-			
+
 			mediaPlayer.release();
 			mediaPlayer = null;
 		}
-		
+
 	}
 
 	public static void setMuted() {
@@ -363,43 +513,43 @@ public class BookActivity extends Activity implements IMainActivity,
 		}
 		// Handle your other action bar items...
 		// Handle item selection
-	    switch (item.getItemId()) {
-	        case R.id.action_build_story:
-	        	callActivityBuildStory();
-	            return true;
-	        case R.id.action_read_story:
-	        	callActivityReadStory();
-	            return true;
-	        case R.id.action_gui_story:
-	        	callActivityGui();
-	            return true;
-	    }
-	    
+		switch (item.getItemId()) {
+		case R.id.action_build_story:
+			callActivityBuildStory();
+			return true;
+		case R.id.action_read_story:
+			callActivityReadStory();
+			return true;
+		case R.id.action_gui_story:
+			callActivityGui();
+			return true;
+		}
+
 		return super.onOptionsItemSelected(item);
-	}
-	
-	/**
-	 * Loads the activity to read our own stories
-	 */
-	private void callActivityReadStory(){
-		Intent intent = new Intent(this, ReadStoryActivity.class);
-	    startActivity(intent);
 	}
 
 	/**
 	 * Loads the activity to read our own stories
 	 */
-	private void callActivityGui(){
-		Intent intent = new Intent(this, BookActivity.class);
-	    startActivity(intent);
+	private void callActivityReadStory() {
+		Intent intent = new Intent(this, ReadStoryActivity.class);
+		startActivity(intent);
 	}
-	
+
+	/**
+	 * Loads the activity to read our own stories
+	 */
+	private void callActivityGui() {
+		Intent intent = new Intent(this, BookActivity.class);
+		startActivity(intent);
+	}
+
 	/**
 	 * Loads the activity to build our own stories
 	 */
-	private void callActivityBuildStory(){
+	private void callActivityBuildStory() {
 		Intent intent = new Intent(this, BuildPageActivity.class);
-	    startActivity(intent);
+		startActivity(intent);
 	}
 
 	public void makeProviderBundle(String[] projection, String selection,
@@ -422,7 +572,50 @@ public class BookActivity extends Activity implements IMainActivity,
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
+		// Locate MenuItem with ShareActionProvider
+		MenuItem item = menu.findItem(R.id.menu_item_share);
+
+		// Fetch and store ShareActionProvider
+		mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+
+		// Return true to display menu
 		return true;
+	}
+
+	@Override
+	public Intent createShareIntent(String title, String desc, Bitmap bitmap) {
+		Intent shareIntent = null;
+		Uri imageUri = null;
+
+		// check if special messages have been sent
+		if (title == null || title == "") {
+			title = getString(R.string.social_brand_title);
+		}
+		if (desc == null || desc == "") {
+			desc = getString(R.string.social_action_desc);
+		}
+
+		try {
+			imageUri = Uri.parse(MediaStore.Images.Media.insertImage(
+					this.getContentResolver(), bitmap, null, null));
+		} catch (NullPointerException e) {
+			Log.e("Create intent to share image", "Image not found.");
+		}
+
+		shareIntent = new Intent(Intent.ACTION_SEND);
+		shareIntent.setType("image/*");
+		shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+		shareIntent.putExtra(Intent.EXTRA_TITLE, title);
+		shareIntent.putExtra(Intent.EXTRA_TEXT, desc);
+
+		return shareIntent;
+	}
+
+	@Override
+	public void setShareIntent(Intent shareIntent) {
+		if (mShareActionProvider != null) {
+			mShareActionProvider.setShareIntent(shareIntent);
+		}
 	}
 
 	private Fragment nextPage = null;
@@ -484,6 +677,212 @@ public class BookActivity extends Activity implements IMainActivity,
 		}
 	}
 
+	private String SCREENSHOTS_LOCATIONS = Environment
+			.getExternalStorageDirectory().getPath() + "/";
+	private Bitmap bitmap;
+
+	private Bitmap getPrintScreenFromScreen() {
+		// Get device dimensions
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+
+		// Get root view
+		View view = getWindow().getDecorView().findViewById(
+				android.R.id.content);
+
+		// Create the bitmap to use to draw the screenshot
+		bitmap = Bitmap.createBitmap(size.x, size.y, Bitmap.Config.ARGB_4444);
+		final Canvas canvas = new Canvas(bitmap);
+
+		// Get current theme to know which background to use
+		final Activity activity = this;
+		final Theme theme = activity.getTheme();
+		final TypedArray ta = theme
+				.obtainStyledAttributes(new int[] { android.R.attr.windowBackground });
+		final int res = ta.getResourceId(0, 0);
+		final Drawable background = activity.getResources().getDrawable(res);
+
+		// Draw background
+		background.draw(canvas);
+
+		// Draw views
+		view.draw(canvas);
+
+		// Save the screenshot to the file system
+		FileOutputStream fos = null;
+		String imageName = "";
+		try {
+			final File sddir = new File(SCREENSHOTS_LOCATIONS);
+			if (!sddir.exists()) {
+				sddir.mkdirs();
+			}
+			imageName = SCREENSHOTS_LOCATIONS + System.currentTimeMillis()
+					+ ".jpg";
+
+			fos = new FileOutputStream(imageName);
+			if (fos != null) {
+				if (!bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos)) {
+					Log.d("booakactivity", "Compress/Write failed");
+				}
+				fos.flush();
+				fos.close();
+			}
+
+		} catch (FileNotFoundException e) {
+			Toast.makeText(context, getString(R.string.errorSocialPicture),
+					Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+		} catch (IOException e) {
+			Toast.makeText(context, getString(R.string.errorSocialPicture),
+					Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+		}
+
+		return bitmap;
+	}
+
+	@Override
+	public void askForHelpOnGooglePlus() {
+
+		if (isGooglePlusInstalled()) {
+
+			Bitmap bitmap = getPrintScreenFromScreen();
+
+			List<Bitmap> photos = new ArrayList<Bitmap>();
+			photos.add(bitmap);
+
+			// Abra a caixa de diálogo de compartilhamento do Google+ com
+			// atribuição para seu aplicativo.
+			Intent shareIntent = new PlusShare.Builder(BookActivity.this)
+					.setType("text/plain")
+					.setText(
+							getString(R.string.social_help) + " "
+									+ getString(R.string.social_brand_title))
+					.setContentUrl(
+							Uri.parse("https://play.google.com/store/apps/details?id=com.endomondo.android"))
+					.addStream(getImageUri(this, bitmap)).getIntent();
+
+			startActivityForResult(shareIntent, 0);
+		} else {
+			Toast.makeText(context, getString(R.string.social_app_not_found),
+					Toast.LENGTH_LONG).show();
+		}
+
+	}
+
+	public boolean isGooglePlusInstalled() {
+		try {
+			getPackageManager().getApplicationInfo(
+					"com.google.android.apps.plus", 0);
+			return true;
+		} catch (PackageManager.NameNotFoundException e) {
+			return false;
+		}
+	}
+
+	@Override
+	public void askForHelpOnFacebook() {
+		if (Session.getActiveSession().isOpened()) {
+			// If the user has a supported version of Facebook and if the
+			// session is
+			// open
+			if (FacebookDialog.canPresentShareDialog(getApplicationContext(),
+					FacebookDialog.ShareDialogFeature.SHARE_DIALOG)) {
+
+				Bitmap bitmap = getPrintScreenFromScreen();
+
+				List<Bitmap> photos = new ArrayList<Bitmap>();
+				photos.add(bitmap);
+
+				// Publish the post using the Share Dialog
+				FacebookDialog shareDialog = new FacebookDialog.PhotoShareDialogBuilder(
+						this).addPhotos(photos).build();
+				uiFacebookHelper.trackPendingDialogCall(shareDialog.present());
+			} else {
+				publishFeedDialog();
+			}
+			
+		} else {
+			// Fallback. Try to login
+			facebookLogin();
+		}
+
+	}
+
+	/**
+	 *  Publish on Facebook when the user doesn't have the facebook app installed
+	 */
+	private void publishFeedDialog() {
+		Bitmap bitmap = getPrintScreenFromScreen();
+		Request.Callback callback = new Request.Callback() {
+
+			@Override
+			public void onCompleted(Response response) {
+				if (response.getError() != null) {
+					Toast.makeText(
+							context,
+							"COMPLETE: "
+									+ response.getError().getErrorMessage(),
+							Toast.LENGTH_LONG).show();
+				}
+
+			}
+		};
+		//We need this permission so that we can publish to the user feed
+		NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(
+				this, Arrays.asList("publish_actions", "publish_stream"));
+		Session.getActiveSession().requestNewPublishPermissions(
+				newPermissionsRequest);
+
+		Request request = Request.newUploadPhotoRequest(
+				Session.getActiveSession(), bitmap, callback);
+		Bundle parameters = request.getParameters(); 
+		parameters.putString("message", getString(R.string.social_help));
+		request.executeAsync();
+	}
+
+	public Uri getImageUri(Context inContext, Bitmap inImage) {
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+		String path = Images.Media.insertImage(inContext.getContentResolver(),
+				inImage, "Title", null);
+		return Uri.parse(path);
+	}
+
+	public void facebookLogin() {
+		Session session = Session.getActiveSession();
+		if (!session.isOpened() && !session.isClosed()) {
+			session.openForRead(new Session.OpenRequest(this)
+					.setCallback(statusCallback));
+		} else {
+			Session.openActiveSession(this, true, statusCallback);
+		}
+	}
+
+	SessionStatusCallback statusCallback = new SessionStatusCallback();
+
+	private class SessionStatusCallback implements Session.StatusCallback {
+		@Override
+		public void call(Session session, SessionState state,
+				Exception exception) {
+			Log.d("SessionStatusCallback", " SessionStatusCallback");
+			if (exception != null) {
+				Log.d("FaceBOOM", exception.getMessage());
+				Toast.makeText(context, getString(R.string.socialMediaError),
+						Toast.LENGTH_SHORT).show();
+			}
+			if (state.isOpened()) {
+				Log.i("isOpened", "after Login");
+				askForHelpOnFacebook();
+			} else if (state.isClosed()) {
+				Toast.makeText(context,
+						getString(R.string.socialMediaSessionClosed),
+						Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -491,6 +890,7 @@ public class BookActivity extends Activity implements IMainActivity,
 		releaseMusic();
 
 		Log.d("bookactivity", "onDestroy");
+		uiFacebookHelper.onDestroy();
 	}
 
 	@Override
@@ -504,6 +904,18 @@ public class BookActivity extends Activity implements IMainActivity,
 				addItemToJourney(nextPageName);
 			}
 		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		uiFacebookHelper.onResume();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		uiFacebookHelper.onSaveInstanceState(outState);
 	}
 
 	@Override
@@ -741,7 +1153,7 @@ public class BookActivity extends Activity implements IMainActivity,
 		while (data.moveToNext()) {
 			Fragment current = getFragmentFromClassname(data
 					.getString(currentChapter));
-			
+
 			if (current != null) {
 				name = getAttrValueFromFragment(current, "NAME");
 				// Go to next page
@@ -828,9 +1240,9 @@ public class BookActivity extends Activity implements IMainActivity,
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
- 
+
 		switch (tableLoaded) {
-		case PrototypeProvider.USER_ALLROWS: 
+		case PrototypeProvider.USER_ALLROWS:
 
 			// Initiate status loading
 			restartLoaderStatus();
@@ -853,7 +1265,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			break;
 
 		case PrototypeProvider.QUIZZ_ALLROWS:
-			//handleQuizzCursor(loader, data);
+			// handleQuizzCursor(loader, data);
 
 			// Initiate Objects Loading
 			restartLoaderObjects();
@@ -876,7 +1288,6 @@ public class BookActivity extends Activity implements IMainActivity,
 		tableLoaded = PrototypeProvider.OBJECT_ALLROWS;
 		getLoaderManager().restartLoader(0, myBundle, BookActivity.this);
 	}
-
 
 	/**
 	 * Set the Page table as main cursor again
@@ -1377,8 +1788,8 @@ public class BookActivity extends Activity implements IMainActivity,
 			break;
 		}
 	}
-	
-	private void restartItemJourneyList(){
+
+	private void restartItemJourneyList() {
 		if (journeyItemList == null) {
 			journeyItemList = new ArrayList<IListItem>();
 		} else {
