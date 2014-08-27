@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.dipeca.prototype.R;
-
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.Fragment;
@@ -17,7 +15,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -28,12 +25,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.dipeca.prototype.R;
 
 public class PagEnigmaFish extends Fragment implements OnTouchListener {
 
@@ -48,6 +48,11 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 	private static ImageButton btn = null;
 	private static ImageButton btnHelp = null;
 	private static int marginLeftMenu = 0;
+
+	private ImageButton btnOpenPopup = null;
+	private PopupWindow popupWindow = null;
+	private static ImageButton btnFacebookHelp = null;
+	private static ImageButton btnGPlusHelp = null;
 
 	private boolean isMazeSolved = false;
 
@@ -100,7 +105,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 		// Create a bitmap with the dimensions we defined above, and with a
 		// 16-bit pixel format. We'll
 		// get a little more in depth with pixel formats in a later post.
-		bitmap = Bitmap.createBitmap(width + 1, height + 1, Config.RGB_565);
+		bitmap = Bitmap.createBitmap(width, height, Config.RGB_565);
 
 		// Create a paint object for us to draw with, and set our drawing color
 		// to blue.
@@ -160,6 +165,85 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 		} else {
 			marginLeftMenu = 160;
 		}
+
+		btnOpenPopup = new ImageButton(getActivity());
+		btnOpenPopup.setImageResource(R.drawable.ic_action_social_help);
+		btnOpenPopup.setBackgroundResource(R.drawable.button_back);
+
+		RelativeLayout.LayoutParams paramsSocialBtn = new RelativeLayout.LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		paramsSocialBtn.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+		paramsSocialBtn.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		// paramsSocialBtn.addRule(RelativeLayout.LEFT_OF, btnHelp.getId());
+		paramsSocialBtn.setMargins(0, (int) Math.ceil(12 * density),
+				(int) Math.ceil(72 * density), 0);
+
+		layout.addView(btnOpenPopup, paramsSocialBtn);
+
+		btnOpenPopup.setOnClickListener(new Button.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				if (popupWindow == null || !popupWindow.isShowing()) {
+
+					LayoutInflater layoutInflater = (LayoutInflater) getActivity()
+							.getBaseContext().getSystemService(
+									BookActivity.LAYOUT_INFLATER_SERVICE);
+					View popupView = layoutInflater.inflate(
+							R.layout.social_popup, null);
+					popupWindow = new PopupWindow(popupView, (int) Math
+							.ceil(164 * density), (int) Math
+							.ceil(198 * density));
+
+					popupView.setOnClickListener(new View.OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							popupWindow.dismiss();
+
+						}
+					});
+
+					popupWindow.showAsDropDown(btnOpenPopup,
+							-(int) Math.ceil(32 * density),
+							(int) Math.ceil(0 * density));
+
+					// FaceBook button
+					btnFacebookHelp = (ImageButton) popupView
+							.findViewById(R.id.facebook_button);
+					btnFacebookHelp.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							onChoice.askForHelpOnFacebook();
+						}
+					});
+
+					// Google Plus button
+					btnGPlusHelp = (ImageButton) popupView
+							.findViewById(R.id.gplus_button);
+					btnGPlusHelp.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							onChoice.askForHelpOnGooglePlus();
+						}
+					});
+				}
+			}
+		});
+
+		layout.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (popupWindow != null && popupWindow.isShowing()) {
+					popupWindow.dismiss();
+				}
+
+			}
+		});
+
 		return layout;
 	}
 
@@ -287,7 +371,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 		RelativeLayout.LayoutParams lpTxt = new RelativeLayout.LayoutParams(
 				Math.round(240 * density), LayoutParams.WRAP_CONTENT);
 		lpTxt.setMargins(pad, pad, 0, 0);
-		
+
 		layout.addView(txt, lpTxt);
 	}
 
