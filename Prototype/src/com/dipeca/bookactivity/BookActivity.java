@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -31,6 +33,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.database.Cursor;
@@ -86,11 +89,7 @@ import com.google.android.gms.plus.PlusShare;
 
 /**
  * @author dipeca
- *
- */
-/**
- * @author dipeca
- *
+ * 
  */
 public class BookActivity extends Activity implements IMainActivity,
 		LoaderManager.LoaderCallbacks<Cursor> {
@@ -122,6 +121,9 @@ public class BookActivity extends Activity implements IMainActivity,
 	public static Bitmap bitmap2;
 	public static Bitmap bitmapTalisma;
 
+	private static ImageButton iBtnMap = null;
+	private static ImageView ivObjects = null;
+
 	private Bundle myBundle = null;
 
 	private DrawerLayout mDrawerLayout;
@@ -130,12 +132,15 @@ public class BookActivity extends Activity implements IMainActivity,
 	Point sizeofDisplay = new Point();
 
 	// Menu Points
-	public static int points = 100;
+	public static int points = 80;
 	private TextView pointsText = null;
 	private static boolean isMusicMuted = false;
 
 	// facebook helper
 	private UiLifecycleHelper uiFacebookHelper;
+
+	private String currentMapPosition = null;
+	private Drawable map;
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -224,35 +229,11 @@ public class BookActivity extends Activity implements IMainActivity,
 					public void onItemClick(AdapterView<?> arg0, View arg1,
 							int arg2, long arg3) {
 
-						if (ivObjects != null) {
-							((ViewGroup) ivObjects.getParent())
-									.removeView(ivObjects);
-						}
-						ivObjects = new ImageView(arg1.getContext());
-						ivObjects.setBackgroundResource(R.drawable.back);
-
-						RelativeLayout layout = (RelativeLayout) nextPage
-								.getView();
-						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-								LayoutParams.WRAP_CONTENT,
-								LayoutParams.WRAP_CONTENT);
-						params.addRule(RelativeLayout.CENTER_IN_PARENT);
-
-						layout.addView(ivObjects, params);
-
+						addViewToScreen();
 						ObjectItem oi = (ObjectItem) objectsAdapter
 								.getItem(arg2);
 						ivObjects.setImageBitmap(oi.getBitmap());
 
-						ivObjects
-								.setOnClickListener(new View.OnClickListener() {
-
-									@Override
-									public void onClick(View arg0) {
-										arg0.setVisibility(View.GONE);
-
-									}
-								});
 					}
 				});
 
@@ -264,8 +245,6 @@ public class BookActivity extends Activity implements IMainActivity,
 		configureDrawerMenu();
 
 		context = getApplicationContext();
-
-		loadDataBase();
 
 		try {
 			Log.d("package name", this.getPackageName());
@@ -287,71 +266,134 @@ public class BookActivity extends Activity implements IMainActivity,
 		uiFacebookHelper = new UiLifecycleHelper(this, null);
 		uiFacebookHelper.onCreate(savedInstanceState);
 
-		// }
+	}
 
-		// Pinterest
+	private void addViewToScreen(boolean isFullScreen) {
 
-		// PinItButton.setDebugMode(true);
-		// PinItButton.setPartnerId(getString(R.string.pinterest_id));
-		//
-		// pinIt = (PinItButton) findViewById(R.id.pin_it);
-		//
-		// Uri uriImage = Uri.parse("android.resource://" + getPackageName()
-		// + "/drawable/companheira_presa2");
-		// pinIt.setImageUri(uriImage);
-		// pinIt.setUrl("http://diamcam.com"); // optional
-		// pinIt.setDescription(getString(R.string.social_brand_title) + " - "
-		// + getString(R.string.social_action_desc)); // optional
-		// pinIt.setListener(_listener);
+		if (ivObjects != null) {
+			((ViewGroup) ivObjects.getParent()).removeView(ivObjects);
+		}
 
-		// Google Plus
-		// Button shareButton = (Button) findViewById(R.id.share_button);
-		// shareButton.setOnClickListener(new View.OnClickListener() {
-		// @Override
-		// public void onClick(View v) {
-		// // Abra a caixa de di‡logo de compartilhamento do Google+ com
-		// // atribui‹o para seu aplicativo.
-		// Intent shareIntent = new PlusShare.Builder(BookActivity.this)
-		// .setType("text/plain")
-		// .setText("Welcome to the Google+ platform.")
-		// .setContentUrl(Uri.parse("http://diamcam.com"))
-		// .addStream(streamUri)
-		// .getIntent();
-		//
-		// startActivityForResult(shareIntent, 0);
-		// }
-		// });
+		if (isFullScreen) {
+
+			ivObjects = new ImageView(this);
+			ivObjects.setBackgroundResource(R.drawable.back);
+
+			RelativeLayout layout = (RelativeLayout) nextPage.getView();
+			RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+					nextPage.getView().getWidth(), nextPage.getView()
+							.getHeight());
+			params.addRule(RelativeLayout.CENTER_IN_PARENT);
+
+			layout.addView(ivObjects, params);
+
+			ivObjects.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View arg0) {
+					arg0.setVisibility(View.GONE);
+
+				}
+			});
+		}
 
 	}
 
-	//
-	// PinItButton pinIt;
-	// PinItListener _listener = new PinItListener() {
-	//
-	// @Override
-	// public void onStart() {
-	// super.onStart();
-	// Log.i("PIN", "PinItListener.onStart");
-	// }
-	//
-	// @Override
-	// public void onComplete(boolean completed) {
-	// super.onComplete(completed);
-	// Log.i("PIN", "PinItListener.onComplete");
-	// }
-	//
-	// @Override
-	// public void onException(Exception e) {
-	// super.onException(e);
-	// pinIt.setVisibility(PinItButton.GONE);
-	// Toast.makeText(BookActivity.this,
-	// "Pinterest not installed on device", Toast.LENGTH_SHORT)
-	// .show();
-	// }
-	//
-	// };
+	private void addViewToScreen() {
+		if (ivObjects != null) {
+			((ViewGroup) ivObjects.getParent()).removeView(ivObjects);
+		}
+		ivObjects = new ImageView(this);
+		ivObjects.setBackgroundResource(R.drawable.back);
 
-	private static ImageView ivObjects = null;
+		RelativeLayout layout = (RelativeLayout) nextPage.getView();
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		params.addRule(RelativeLayout.CENTER_IN_PARENT);
+
+		layout.addView(ivObjects, params);
+
+		ivObjects.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				arg0.setVisibility(View.GONE);
+
+			}
+		});
+
+	}
+
+	private boolean isShowed = false;
+
+	@SuppressLint("NewApi")
+	@Override
+	public void addMapButtonToScreen(RelativeLayout layout) {
+
+		if (nextPage != null) {
+
+			// remove previously added button
+			if (iBtnMap != null && iBtnMap.getParent() != null) {
+				((ViewGroup) iBtnMap.getParent()).removeView(iBtnMap);
+			}
+
+			iBtnMap = new ImageButton(this);
+			iBtnMap.setBackgroundResource(R.drawable.button_map);
+
+			RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+					(int) Math.ceil(96 * density),
+					(int) Math.ceil(96 * density));
+			params.addRule(RelativeLayout.CENTER_VERTICAL);
+			params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
+			params.setMargins((int) Math.ceil(-62 * density),
+					(int) Math.ceil(12 * density),
+					(int) Math.ceil(12 * density),
+					(int) Math.ceil(12 * density));
+
+			layout.addView(iBtnMap, params);
+
+			isShowed = false;
+			iBtnMap.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+
+					if (!isShowed) {
+						ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(
+								iBtnMap, "translationX", 54 * density);
+						objectAnimator.setDuration(500);
+						objectAnimator.start();
+
+						isShowed = true;
+					} else {
+						addViewToScreen(true);
+						int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+						if (currentapiVersion > android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+							ivObjects.setBackground(map);
+						} else {
+							ivObjects.setImageDrawable(map);
+						}
+
+						ivObjects
+								.setOnClickListener(new View.OnClickListener() {
+
+									@Override
+									public void onClick(View arg0) {
+										arg0.setVisibility(View.GONE);
+
+									}
+								});
+
+						iBtnMap.setX(-62 * density);
+						isShowed = false;
+					}
+
+				}
+			});
+		}
+
+	}
 
 	private void loadDataBase() {
 		String[] projection = new String[] { User.ID, User.NAME, User.AGE };
@@ -532,6 +574,7 @@ public class BookActivity extends Activity implements IMainActivity,
 	 * Loads the activity to read our own stories
 	 */
 	private void callActivityReadStory() {
+		persistStatusGame();
 		Intent intent = new Intent(this, ReadStoryActivity.class);
 		startActivity(intent);
 	}
@@ -548,6 +591,7 @@ public class BookActivity extends Activity implements IMainActivity,
 	 * Loads the activity to build our own stories
 	 */
 	private void callActivityBuildStory() {
+		persistStatusGame();
 		Intent intent = new Intent(this, BuildPageActivity.class);
 		startActivity(intent);
 	}
@@ -598,15 +642,14 @@ public class BookActivity extends Activity implements IMainActivity,
 		try {
 			imageUri = Uri.parse(MediaStore.Images.Media.insertImage(
 					this.getContentResolver(), bitmap, null, null));
+			shareIntent = new Intent(Intent.ACTION_SEND);
+			shareIntent.setType("image/*");
+			shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+			shareIntent.putExtra(Intent.EXTRA_TITLE, title);
+			shareIntent.putExtra(Intent.EXTRA_TEXT, desc);
 		} catch (NullPointerException e) {
 			Log.e("Create intent to share image", "Image not found.");
 		}
-
-		shareIntent = new Intent(Intent.ACTION_SEND);
-		shareIntent.setType("image/*");
-		shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-		shareIntent.putExtra(Intent.EXTRA_TITLE, title);
-		shareIntent.putExtra(Intent.EXTRA_TEXT, desc);
 
 		return shareIntent;
 	}
@@ -640,6 +683,7 @@ public class BookActivity extends Activity implements IMainActivity,
 
 	@Override
 	public void onChoiceMade(Fragment frg, String currentPage) {
+		Log.d("Bookac", "onChoiceMade");
 		nextPage = frg;
 		nextPageName = currentPage;
 		nextPageClass = frg.getClass().getName();
@@ -659,7 +703,8 @@ public class BookActivity extends Activity implements IMainActivity,
 	/**
 	 * Persist current game status
 	 */
-	private void persistStatusGame() {
+	@Override
+	public void persistStatusGame() {
 		// If we are navigating then we must persist data to DataBase
 		// Create a new row of values to insert.
 
@@ -671,6 +716,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			newValues.put(Status.POINTS, points);
 			newValues.put(Status.CURRENTCHAPTER, nextPageClass);
 			newValues.put(Status.GAME_ID, 1);
+			newValues.put(Status.CURRENTMAPTOSHOW, currentMapPosition);
 			// Insert the row
 			Uri myRowUri = cr.insert(PrototypeProvider.CONTENT_URI_STATUS,
 					newValues);
@@ -747,6 +793,9 @@ public class BookActivity extends Activity implements IMainActivity,
 
 		if (isGooglePlusInstalled()) {
 
+			// persist game status
+			persistStatusGame();
+
 			Bitmap bitmap = getPrintScreenFromScreen();
 
 			List<Bitmap> photos = new ArrayList<Bitmap>();
@@ -783,6 +832,10 @@ public class BookActivity extends Activity implements IMainActivity,
 
 	@Override
 	public void askForHelpOnFacebook() {
+
+		// persist game status
+		persistStatusGame();
+
 		if (Session.getActiveSession().isOpened()) {
 			// If the user has a supported version of Facebook and if the
 			// session is
@@ -802,7 +855,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			} else {
 				publishFeedDialog();
 			}
-			
+
 		} else {
 			// Fallback. Try to login
 			facebookLogin();
@@ -811,7 +864,7 @@ public class BookActivity extends Activity implements IMainActivity,
 	}
 
 	/**
-	 *  Publish on Facebook when the user doesn't have the facebook app installed
+	 * Publish on Facebook when the user doesn't have the facebook app installed
 	 */
 	private void publishFeedDialog() {
 		Bitmap bitmap = getPrintScreenFromScreen();
@@ -829,7 +882,7 @@ public class BookActivity extends Activity implements IMainActivity,
 
 			}
 		};
-		//We need this permission so that we can publish to the user feed
+		// We need this permission so that we can publish to the user feed
 		NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(
 				this, Arrays.asList("publish_actions", "publish_stream"));
 		Session.getActiveSession().requestNewPublishPermissions(
@@ -837,7 +890,7 @@ public class BookActivity extends Activity implements IMainActivity,
 
 		Request request = Request.newUploadPhotoRequest(
 				Session.getActiveSession(), bitmap, callback);
-		Bundle parameters = request.getParameters(); 
+		Bundle parameters = request.getParameters();
 		parameters.putString("message", getString(R.string.social_help));
 		request.executeAsync();
 	}
@@ -910,6 +963,8 @@ public class BookActivity extends Activity implements IMainActivity,
 	protected void onResume() {
 		super.onResume();
 		uiFacebookHelper.onResume();
+
+		loadDataBase();
 	}
 
 	@Override
@@ -928,6 +983,7 @@ public class BookActivity extends Activity implements IMainActivity,
 
 	@Override
 	public void onChoiceMadeCommit(String namePreviousPage, Boolean isToPersist) {
+		Log.d("Bookactivity", "onChoiceMadeCommit");
 		if (nextPage != null) {
 
 			imm.hideSoftInputFromWindow(pointsText.getWindowToken(), 0);
@@ -990,7 +1046,7 @@ public class BookActivity extends Activity implements IMainActivity,
 	 */
 	private void loadNextPage() {
 		if (nextPage != null) {
-
+			Log.d("Bookactivity", "loadNextPage");
 			releaseMusic();
 
 			FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -1003,6 +1059,7 @@ public class BookActivity extends Activity implements IMainActivity,
 			// the fragment destroy method to be called
 			// ft.addToBackStack("previousPag");
 			ft.commitAllowingStateLoss();
+
 		}
 	}
 
@@ -1095,6 +1152,7 @@ public class BookActivity extends Activity implements IMainActivity,
 		objectsGridView.invalidateViews();
 
 		objectsGridView.setAdapter(objectsAdapter);
+
 	}
 
 	private void handleQuizzCursor(Loader<Cursor> loader, Cursor data) {
@@ -1148,6 +1206,7 @@ public class BookActivity extends Activity implements IMainActivity,
 		int gameId = data.getColumnIndex(Status.GAME_ID);
 		int points = data.getColumnIndex(Status.POINTS);
 		int currentChapter = data.getColumnIndex(Status.CURRENTCHAPTER);
+		int currentMapIdx = data.getColumnIndex(Status.CURRENTMAPTOSHOW);
 
 		String name = null;
 		while (data.moveToNext()) {
@@ -1165,6 +1224,16 @@ public class BookActivity extends Activity implements IMainActivity,
 				int currentPoints = data.getInt(points);
 				setPoints(currentPoints);
 			}
+
+			// Add action for map
+			if (data.getString(currentMapIdx) != null) {
+				Resources resources = context.getResources();
+				final int resourceId = resources.getIdentifier(
+						data.getString(currentMapIdx), "drawable",
+						context.getPackageName());
+
+				setCurrentMapPosition(resourceId);
+			}
 		}
 
 		if (name == null || "".equals(name)) {
@@ -1181,9 +1250,8 @@ public class BookActivity extends Activity implements IMainActivity,
 			if (findViewById(R.id.detailFragment) != null) {
 
 				// Create a new Fragment to be placed in the activity layout
-				// PagBedRoomfrg firstFragment = new PagBedRoomfrg();
 				PagBedRoomDarkfrg firstFragment = new PagBedRoomDarkfrg();
-
+				nextPage = firstFragment;
 				// In case this activity was started with special instructions
 				// from
 				// an Intent, pass the Intent's extras to the fragment as
@@ -1244,31 +1312,30 @@ public class BookActivity extends Activity implements IMainActivity,
 		switch (tableLoaded) {
 		case PrototypeProvider.USER_ALLROWS:
 
-			// Initiate status loading
-			restartLoaderStatus();
+			// Initiate chapter loading
+			restartLoaderChapter();
 
 			break;
 		case PrototypeProvider.STATUS_ALLROWS:
 			handleStatusCursor(loader, data);
 
-			// Initiate chapter Loading
-			restartLoaderChapter();
-
+			// Initiate Objects Loading
+			restartLoaderObjects();
 			break;
 		case PrototypeProvider.CHAPTER_ALLROWS:
 			handleChapterCursor(loader, data);
-			restartLoaderObjects();
+			// Initiate status Loading
+			restartLoaderStatus();
 			break;
 		case PrototypeProvider.OBJECT_ALLROWS:
 			handleObjectCursor(loader, data);
-			// aa.notifyDataSetChanged();
+
 			break;
 
 		case PrototypeProvider.QUIZZ_ALLROWS:
 			// handleQuizzCursor(loader, data);
 
 			// Initiate Objects Loading
-			restartLoaderObjects();
 
 		}
 
@@ -1312,7 +1379,7 @@ public class BookActivity extends Activity implements IMainActivity,
 		String[] projection = null;
 
 		projection = new String[] { Status.ID, Status.GAME_ID, Status.POINTS,
-				Status.CURRENTCHAPTER };
+				Status.CURRENTCHAPTER, Status.CURRENTMAPTOSHOW };
 		makeProviderBundle(projection, null, null, Status.ID + " DESC",
 				PrototypeProvider.CONTENT_URI_STATUS.toString());
 		tableLoaded = PrototypeProvider.STATUS_ALLROWS;
@@ -1328,27 +1395,27 @@ public class BookActivity extends Activity implements IMainActivity,
 
 	private Fragment getFragmentFromClassname(String className) {
 		Fragment frg = null;
-
-		Class c = null;
-		try {
-			c = Class.forName(className);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (className != null && className != "") {
+			Class c = null;
+			try {
+				c = Class.forName(className);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				frg = (Fragment) c.newInstance();
+			} catch (java.lang.InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+				Log.d("Class instantiation of", "currentClass: " + className);
+			}
 		}
-		try {
-			frg = (Fragment) c.newInstance();
-		} catch (java.lang.InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-			Log.d("Class instantiation of", "currentClass: " + className);
-		}
-
 		return frg;
 
 	}
@@ -1385,10 +1452,6 @@ public class BookActivity extends Activity implements IMainActivity,
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		// TODO Auto-generated method stub
-
-	}
-
-	private void updateStatus(Status status) {
 
 	}
 
@@ -1856,11 +1919,10 @@ public class BookActivity extends Activity implements IMainActivity,
 	@Override
 	public void onBackPressed() {
 
-		if (nextPage != null && nextPage != null) {
+		if (prevPageClass != null && prevPageClass != "") {
 
 			try {
-				IFragmentBook current = (IFragmentBook) nextPage;
-				Fragment prev = getFragmentFromClassname(current.getPrevPage());
+				Fragment prev = getFragmentFromClassname(prevPageClass);
 
 				if (prev != null) {
 					String name = getAttrValueFromFragment(prev, "NAME");
@@ -1878,6 +1940,19 @@ public class BookActivity extends Activity implements IMainActivity,
 			}
 
 		}
+	}
+
+	@Override
+	public void setCurrentMapPosition(int idResource) {
+		currentMapPosition = getResources().getResourceEntryName(idResource);
+		map = getResources().getDrawable(idResource);
+
+	}
+
+	@Override
+	public String getCurrentMapPosition() {
+
+		return currentMapPosition;
 	}
 
 }
