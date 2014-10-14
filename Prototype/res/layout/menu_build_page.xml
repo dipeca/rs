@@ -1,0 +1,54 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/backoldpaper"
+    android:orientation="vertical"
+    android:padding="8dp" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/storyTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans"
+            android:paddingLeft="2dp"
+            android:paddingTop="4dp"
+            android:textColor="#444444"
+            android:textSize="20sp"
+            android:textStyle="bold|italic" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:background="@drawable/old_paper_torn" >
+
+            <TextView
+                android:id="@+id/textPag1"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:layout_marginLeft="8dp"
+                android:fontFamily="sans"
+                android:text="@string/pages"
+                android:textColor="#444444"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <fragment
+                android:id="@+id/journey"
+                android:name="com.dipeca.buildstoryactivity.StoryPagesListFrg"
+                android:layout_width="198dp"
+                android:layout_height="fill_parent"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="34dp" />
+        </FrameLayout>
+
+       
+    </LinearLayout>
+
+</LinearLayout>
