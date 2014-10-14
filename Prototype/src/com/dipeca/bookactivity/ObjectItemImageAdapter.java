@@ -2,8 +2,6 @@ package com.dipeca.bookactivity;
 
 import java.util.ArrayList;
 
-import com.dipeca.prototype.R;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -12,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.dipeca.prototype.R;
 
 public class ObjectItemImageAdapter extends BaseAdapter {
 	private Context context;
@@ -42,8 +42,8 @@ public class ObjectItemImageAdapter extends BaseAdapter {
 		// set value into textview
 		TextView textView = (TextView) gridView
 				.findViewById(R.id.grid_item_label);
-		textView.setText(list.get(position).getName());
-
+		textView.setText(" " + list.get(position).getName());
+		
 		// set image based on selected text
 		ImageView imageView = (ImageView) gridView
 				.findViewById(R.id.grid_item_image);
@@ -57,174 +57,59 @@ public class ObjectItemImageAdapter extends BaseAdapter {
 		return gridView;
 	}
 
-	int density = 1;
+	private float density = 1;
 
 	private Bitmap loadCardImage(int type) {
-		density = (int) gridView.getResources().getDisplayMetrics().density;
+		density = (int) Math.ceil(gridView.getResources().getDisplayMetrics().density);
 		Bitmap bitmap1 = null;
 		switch (type) {
-		case ObjectItem.TYPE_BOOK_OF_SPELS:
+		case ObjectItem.TYPE_KEY:
 
 			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.book_spells,
-					256 * density, 256 * density);
+					gridView.getResources(), R.drawable.chave,
+					(int)Math.ceil(256 * density), (int)Math.ceil(256 * density));
 
 			return bitmap1;
 
 		case ObjectItem.TYPE_ROPE:
 			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.rope, 256 * density,
-					256 * density);
+					gridView.getResources(), R.drawable.rope, (int)Math.ceil(256 * density),
+					(int)Math.ceil(256 * density));
 
 			return bitmap1;
 
 		case ObjectItem.TYPE_PLANK:
 			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.plank, 256 * density,
-					256 * density);
+					gridView.getResources(), R.drawable.plank, (int)Math.ceil(256 * density),
+							(int)Math.ceil(256 * density));
 
 			return bitmap1;
 
 		case ObjectItem.TYPE_AMULET:
 			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.talisma, 256 * density,
-					256 * density);
+					gridView.getResources(), R.drawable.talisma, (int)Math.ceil(256 * density),
+							(int)Math.ceil(256 * density));
 
 			return bitmap1;
 
 		case ObjectItem.TYPE_BOTTLE:
 			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.frasco, 256 * density,
-					256 * density);
+					gridView.getResources(), R.drawable.frasco, (int)Math.ceil(256 * density),
+					(int)Math.ceil(256 * density));
 
 			return bitmap1;
 
 		case ObjectItem.TYPE_CORN:
 			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.milho, 256 * density,
-					256 * density);
+					gridView.getResources(), R.drawable.milho, (int)Math.ceil(256 * density),
+							(int)Math.ceil(256 * density));
 
 			return bitmap1;
 
-		case ObjectItem.TYPE_PAGE_VILLAGE:
+		case ObjectItem.TYPE_MAP:
 			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.village, 128 * density,
-					128 * density);
-
-			return bitmap1;
-		case ObjectItem.TYPE_PAGE_BEDROOM:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.quarto, 128 * density,
-					128 * density);
-
-			return bitmap1;
-		case ObjectItem.TYPE_PAGE_KINGDOM:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.kingdom, 128 * density,
-					128 * density);
-
-			return bitmap1;
-		case ObjectItem.TYPE_PAGE_LAKE:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.lagoteste2,
-					128 * density, 128 * density);
-
-			return bitmap1;
-		case ObjectItem.TYPE_PAGE_WALK:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.caminho_dia,
-					128 * density, 128 * density);
-
-			return bitmap1;
-
-		case ObjectItem.TYPE_PAGE_SOMETHING_MOVING:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.algo_a_mexer_1,
-					128 * density, 128 * density);
-
-			return bitmap1;
-		case ObjectItem.TYPE_PAGE_PATH_WATCHING:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.caminho_dia_watching,
-					128 * density, 128 * density);
-
-			return bitmap1;
-		case ObjectItem.TYPE_PAGE_PATH:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.caminho_dia_scarecrow,
-					128 * density, 128 * density);
-
-			return bitmap1;
-		case ObjectItem.TYPE_PAGE_CHOICE:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.choice, 128 * density,
-					128 * density);
-
-			return bitmap1;
-		case ObjectItem.TYPE_PAGE_VAULT_OPEN:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.cofre_aberto,
-					128 * density, 128 * density);
-
-			return bitmap1;
-		case ObjectItem.TYPE_PAGE_VAULT_CLOSED:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.cofre_fechado,
-					128 * density, 128 * density);
-
-			return bitmap1;
-		case ObjectItem.TYPE_PAGE_FIND_FRIEND:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.companheira_presa,
-					128 * density, 128 * density);
-
-			return bitmap1;
-		case ObjectItem.TYPE_PAGE_GATE:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.gate, 128 * density,
-					128 * density);
-
-			return bitmap1;
-		case ObjectItem.TYPE_PAGE_SCARECROW:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.espantalho1_1,
-					128 * density, 128 * density);
-
-			return bitmap1;
-		case ObjectItem.TYPE_PAGE_BEDROOM_DARK:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.quarto_vazio_escuro,
-					128 * density, 128 * density);
-
-			return bitmap1;
-		case ObjectItem.TYPE_PAGE_BEDROOM_EMPTY:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.quarto_vazio,
-					128 * density, 128 * density);
-
-			return bitmap1;
-		case ObjectItem.TYPE_PAGE_ROBOT:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.robot, 128 * density,
-					128 * density);
-
-			return bitmap1;
-		case ObjectItem.TYPE_PAGE_ROBOT_ATTACK:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.robot_attack1_scal,
-					128 * density, 128 * density);
-
-			return bitmap1;
-		case ObjectItem.TYPE_PAGE_LOPO:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.robot_destroyed1234,
-					128 * density, 128 * density);
-
-			return bitmap1;
-		case ObjectItem.TYPE_PAGE_BEDROOM_AMULET:
-			bitmap1 = Utils.decodeSampledBitmapFromResource(
-					gridView.getResources(), R.drawable.quarto_olhar_talisma,
-					128 * density, 128 * density);
+					gridView.getResources(), R.drawable.mapa_primeiro, (int)Math.ceil(354 * density),
+							(int)Math.ceil(354 * density));
 
 			return bitmap1;
 		}

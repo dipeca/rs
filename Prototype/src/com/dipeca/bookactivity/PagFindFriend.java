@@ -1,7 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -17,9 +15,13 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class PagFindFriend extends Fragment implements OnTouchListener, IFragmentBook {
+import com.dipeca.prototype.R;
+
+public class PagFindFriend extends Fragment implements OnTouchListener,
+		IFragmentBook {
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.foundFriend;
@@ -44,7 +46,7 @@ public class PagFindFriend extends Fragment implements OnTouchListener, IFragmen
 	private ImageView iv1;
 	private ImageView iv2;
 
-	private int density;
+	private float density;
 
 	private void loadImages() {
 		Log.d(getString(NAME), "loadImages()");
@@ -64,6 +66,10 @@ public class PagFindFriend extends Fragment implements OnTouchListener, IFragmen
 				R.drawable.encontrar_companheira_cli, 50, 25);
 		iv2.setImageBitmap(bitmap2);
 
+		// set current mapImage
+		onChoice.setCurrentMapPosition(R.drawable.mapa_friend);
+		// Add button to screen
+		onChoice.addMapButtonToScreen((RelativeLayout) view);
 	}
 
 	ImageButton button = null;
@@ -73,7 +79,8 @@ public class PagFindFriend extends Fragment implements OnTouchListener, IFragmen
 			Bundle savedInstanceState) {
 
 		long startTime = System.currentTimeMillis();
-		view = inflater.inflate(R.layout.pag_one_image_clickable, container, false);
+		view = inflater.inflate(R.layout.pag_one_image_clickable, container,
+				false);
 		long endTime = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
 		Log.d(getString(NAME), "onCreateView after inflate time =" + totalTime);
@@ -82,9 +89,15 @@ public class PagFindFriend extends Fragment implements OnTouchListener, IFragmen
 		tv1.setText(R.string.pagFoundFriend);
 
 		loadImages();
-		
+
 		view.setOnTouchListener(this);
 
+		// Set image and text to share intent
+		onChoice.setShareIntent(onChoice.createShareIntent(
+				getString(R.string.social_action_desc),
+				getString(R.string.pagSomethingMoving), Utils
+						.decodeSampledBitmapFromResource(getResources(),
+								R.drawable.companheira_presa, 600, 300)));
 		return view;
 	}
 
@@ -114,26 +127,15 @@ public class PagFindFriend extends Fragment implements OnTouchListener, IFragmen
 
 		case MotionEvent.ACTION_UP:
 
-			int touchColor = Utils.getHotspotColor(R.id.page3ImageClick, evX,
-					evY, view);
+			int touchColor = Utils.getHotspotColor(ev, iv2);
 
 			int tolerance = 25;
 			if (Utils.closeMatch(Color.RED, touchColor, tolerance)) {
 				// Do the action associated with the RED region
-				PagLockMaths frg = new PagLockMaths();
-
-				onChoice.onChoiceMade(frg, PagLockMaths.NAME, PagLockMaths.icon);
-				
-				FragmentTransaction ft = getFragmentManager()
-						.beginTransaction();
-				ft.setTransition(R.animator.right_to_left);
-
-				PagLockMaths fb = new PagLockMaths();
-				fb.isVaultPage(false);
-				
-				ft.replace(R.id.detailFragment, fb);
-				//ft.addToBackStack(getString(NAME));
-				ft.commit();
+				PagFindFriendZoom fb = new PagFindFriendZoom();
+				onChoice.onChoiceMade(fb, getString(PagFindFriendZoom.NAME),
+						getResources().getResourceName(PagFindFriendZoom.icon));
+				onChoice.onChoiceMadeCommit(getString(NAME), true);
 			} else {
 				Log.d("PagFindFriend", "Resto da imagem clicada");
 			}

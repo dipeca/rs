@@ -1,7 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -14,7 +12,6 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
-import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
@@ -22,6 +19,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.dipeca.prototype.R;
 
 public class PagKingDomfrg extends Fragment implements IFragmentBook{
 	View view = null;
@@ -60,7 +59,7 @@ public class PagKingDomfrg extends Fragment implements IFragmentBook{
 
 		image2.setImageResource(R.anim.crow);
 		
-		int density = (int) getResources().getDisplayMetrics().density;
+		float density = (float) getResources().getDisplayMetrics().density;
 		Animation animation = new TranslateAnimation(1000 * density, -400
 				* density, density * 200, density * 64); 
 		animation.setDuration(6000); 
@@ -135,22 +134,22 @@ public class PagKingDomfrg extends Fragment implements IFragmentBook{
 		tv3 = (TextView) view.findViewById(R.id.textPag1_2);
 		tv3.setVisibility(View.GONE);
 
-		// loadImages()
+		// loadImages
 		loadImages();
 
 		tv1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				int density = (int) getResources().getDisplayMetrics().density;
+				float density = (float) getResources().getDisplayMetrics().density;
 				int height1 = 0;
 				int width3 = 0;
 				int multiplier = 7;
 				if (isTextHide) {
-					height1 = tv1.getHeight() * multiplier - (8 * density);
-					width3 = tv3.getWidth() * multiplier - (8 * density);
+					height1 = tv1.getHeight() * multiplier - ((int)Math.ceil(8 * density));
+					width3 = tv3.getWidth() * multiplier - ((int)Math.ceil(8 * density));
 					isTextHide = false;
 				} else {
-					height1 = tv1.getHeight() / multiplier + (8 * density);
-					width3 = tv3.getWidth() / multiplier + (8 * density);
+					height1 = tv1.getHeight() / multiplier + ((int)Math.ceil(8 * density));
+					width3 = tv3.getWidth() / multiplier + ((int)Math.ceil(8 * density));
 					isTextHide = true;
 				}
 
@@ -187,6 +186,11 @@ public class PagKingDomfrg extends Fragment implements IFragmentBook{
 			}
 		});
 
+		// Set image and text to share intent
+		onChoice.setShareIntent(onChoice.createShareIntent(
+				getString(R.string.social_action_desc),
+				getString(R.string.pag2_1), bitmap1));
+		
 		return view;
 	}
 

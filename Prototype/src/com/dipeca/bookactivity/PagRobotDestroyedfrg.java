@@ -1,7 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -14,8 +12,10 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.RelativeLayout.LayoutParams;
+import android.widget.TextView;
+
+import com.dipeca.prototype.R;
 
 public class PagRobotDestroyedfrg extends Fragment implements IFragmentBook {
 	View view = null;
@@ -100,7 +100,7 @@ public class PagRobotDestroyedfrg extends Fragment implements IFragmentBook {
 		
 		tv1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				int density = (int) getResources().getDisplayMetrics().density;
+				float density = (float) getResources().getDisplayMetrics().density;
 				int height1 = 0; 
 				int width3 = 0; 
 				int multiplier = 7;

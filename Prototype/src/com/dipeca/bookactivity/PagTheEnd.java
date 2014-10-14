@@ -1,10 +1,7 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
-import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +13,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.dipeca.prototype.R;
 
 public class PagTheEnd extends Fragment {
 	private IMainActivity onChoice;
@@ -49,7 +48,7 @@ public class PagTheEnd extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		view = inflater.inflate(R.layout.pag_two_images, container, false);
+		view = inflater.inflate(R.layout.pag_two_images, container, false); 
 
 		final ImageButton button = (ImageButton) view
 				.findViewById(R.id.goToNextPage);
@@ -98,7 +97,7 @@ public class PagTheEnd extends Fragment {
 	private void loadImages() {
 		Log.d(getString(NAME), "loadImages()"); 
 
-		int density = (int) getResources().getDisplayMetrics().density;
+		float density = (float) getResources().getDisplayMetrics().density;
 
 		iv1 = (ImageView) view.findViewById(R.id.page2Image);
 		iv2 = (ImageView) view.findViewById(R.id.page2Image2);

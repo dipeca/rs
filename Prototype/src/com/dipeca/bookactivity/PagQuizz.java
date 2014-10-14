@@ -1,7 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
@@ -11,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+
+import com.dipeca.prototype.R;
 
 /**
  * @author dipeca

@@ -32,12 +32,12 @@
                 android:id="@+id/btnIntendS"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
         </LinearLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="140dp"
             android:background="@drawable/old_paper_torn" >
 
             <TextView
@@ -61,50 +61,63 @@
                 android:layout_marginTop="34dp" />
         </FrameLayout>
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:orientation="horizontal" >
+            android:layout_marginTop="2dp" >
 
-            <ImageView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_action_star" />
+                android:layout_marginTop="2dp"
+                android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/pointsValue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans"
-                android:paddingLeft="2dp"
-                android:paddingTop="4dp"
-                android:textColor="#444444"
-                android:textSize="20sp"
-                android:textStyle="bold|italic" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:orientation="horizontal" >
 
-        </LinearLayout>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_action_star" />
 
-        <TextView
-            android:id="@+id/textPag2"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:fontFamily="sans"
-            android:text="@string/objects"
-            android:textColor="#444444"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/pointsValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans"
+                        android:paddingLeft="2dp"
+                        android:paddingTop="4dp"
+                        android:textColor="#444444"
+                        android:textSize="20sp"
+                        android:textStyle="bold|italic" />
 
-        <GridView
-            android:id="@+id/gridView1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:columnWidth="100dp"
-            android:gravity="center"
-            android:numColumns="auto_fit"
-            android:stretchMode="columnWidth" >
-        </GridView>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textPag2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:fontFamily="sans"
+                    android:text="@string/objects"
+                    android:textColor="#444444"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <GridView
+                    android:id="@+id/gridView1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:columnWidth="100dp"
+                    android:gravity="center"
+                    android:numColumns="auto_fit"
+                    android:stretchMode="columnWidth" >
+                </GridView>
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 
 </LinearLayout>

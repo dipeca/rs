@@ -1,8 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
-import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ClipData;
@@ -15,18 +12,16 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
-import android.view.View.OnClickListener;
 import android.view.View.OnDragListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.dipeca.prototype.R;
 
 /**
  * @author dipeca
@@ -57,7 +52,6 @@ public class MathMentalPyramidFrg extends Fragment {
 	private TextView tvSolution7;
 
 	private LinearLayout solutionLayout;
-	private LinearLayout layout = null;
 	private Toast toast = null;
 
 	private float density = 1;
@@ -87,8 +81,6 @@ public class MathMentalPyramidFrg extends Fragment {
 		solutionLayout = (LinearLayout) view.findViewById(R.id.solutionLL);
 		solutionLayout.setVisibility(View.INVISIBLE);
 
-		layout = (LinearLayout) view.findViewById(R.id.helpBtnLayout);
-
 		randomizeSolutionBoxes();
 
 		generatePyramid();
@@ -108,14 +100,14 @@ public class MathMentalPyramidFrg extends Fragment {
 		return view;
 	}
 
-	public void setHelpVisible() {
+	public void setHelpVisible() { 
 		solutionLayout.setVisibility(View.VISIBLE);
-	}
-
+	}  
+ 
 	private void randomizeSolutionBoxes() {
 		double randomNum = 0;
 		randomNum = Math.random() * (10 * Math.random());
-
+ 
 		if (randomNum > 0 && randomNum <= 2) {
 			if (randomNum > 1) {
 				tvSolution1 = (TextView) view.findViewById(R.id.solution1);

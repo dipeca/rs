@@ -2,8 +2,6 @@ package com.dipeca.bookactivity;
 
 import java.net.URL;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -18,7 +16,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class PagBedRoomfrg extends Fragment implements IFragmentBook{
+import com.dipeca.prototype.R;
+
+public class PagBedRoomfrg extends Fragment implements IFragmentBook {
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.bedroom;
@@ -30,7 +30,7 @@ public class PagBedRoomfrg extends Fragment implements IFragmentBook{
 	ImageView amuleto = null;
 	private static Bitmap bitmap1;
 	private static Bitmap bitmap2;
-	
+
 	public static String nextPage = PagBedRoomfAmuletfrg.class.getName();
 	public static String prevPage = PagBedRoomDarkfrg.class.getName();
 
@@ -47,12 +47,12 @@ public class PagBedRoomfrg extends Fragment implements IFragmentBook{
 
 	private ImageView iv1;
 	private ImageView iv2;
-	private int density = 1;
+	private float density = 1;
 
 	private int tv1OriginalSize;
 	private int tv2OriginalSize;
 	private int tv3OriginalSize;
-	
+
 	private void loadText() {
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
 		tv2 = (DialogBox) view.findViewById(R.id.dialog);
@@ -68,23 +68,26 @@ public class PagBedRoomfrg extends Fragment implements IFragmentBook{
 				int width3 = 0;
 				int multiplier = 6;
 				if (isTextHide) {
-					
-					height1 = tv1OriginalSize;//tv1.getHeight() * multiplier + (4 * density);
-					height2 = tv2OriginalSize;//tv2.getHeight() * multiplier + (4 * density);
-					width3 = tv3OriginalSize;//tv3.getWidth() * multiplier + (4 * density);
-					
+
+					height1 = tv1OriginalSize;// tv1.getHeight() * multiplier +
+												// (4 * density);
+					height2 = tv2OriginalSize;// tv2.getHeight() * multiplier +
+												// (4 * density);
+					width3 = tv3OriginalSize;// tv3.getWidth() * multiplier + (4
+												// * density);
+
 					isTextHide = false;
 				} else {
 					tv1OriginalSize = tv1.getHeight();
 					tv2OriginalSize = tv2.getHeight();
 					tv3OriginalSize = tv3.getWidth();
-					
+
 					height1 = Math.max(tv1.getHeight() / multiplier,
-							(10 * density));
+							((int)Math.ceil(10 * density)));
 					height2 = Math.max(tv2.getHeight() / multiplier,
-							(10 * density));
+							((int)Math.ceil(10 * density)));
 					width3 = Math.max(tv3.getWidth() / multiplier,
-							(10 * density));
+							((int)Math.ceil(10 * density)));
 					isTextHide = true;
 				}
 
@@ -171,24 +174,22 @@ public class PagBedRoomfrg extends Fragment implements IFragmentBook{
 			}
 		});
 
-	
 		loadText();
 		// loadImages()
 		loadImages();
-		 
-		BookActivity.playMusic(R.raw.bedroom);
+
+		//BookActivity.playMusic(R.raw.bedroom);
 
 		button = (ImageButton) view.findViewById(R.id.goToNextPage);
 		// button.setVisibility(View.INVISIBLE);
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
- 
+
 				Class c = null;
 				Fragment fb = null;
 
 				try {
-					c = Class
-							.forName(nextPage);
+					c = Class.forName(nextPage);
 				} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -204,24 +205,31 @@ public class PagBedRoomfrg extends Fragment implements IFragmentBook{
 					e.printStackTrace();
 				}
 
-				onChoice.onChoiceMade(fb, PagBedRoomfAmuletfrg.NAME, PagBedRoomfAmuletfrg.icon);
+				onChoice.onChoiceMade(fb, PagBedRoomfAmuletfrg.NAME,
+						PagBedRoomfAmuletfrg.icon);
 				onChoice.onChoiceMadeCommit(NAME, true);
 			}
 		});
-		
+
 		buttonPrev = (ImageButton) view.findViewById(R.id.goToPrevPage);
 		buttonPrev.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
 				PagBedRoomDarkfrg fb = new PagBedRoomDarkfrg();
 
-				onChoice.onChoiceMade(fb, PagBedRoomDarkfrg.NAME, PagBedRoomfAmuletfrg.icon);
+				onChoice.onChoiceMade(fb, PagBedRoomDarkfrg.NAME,
+						PagBedRoomfAmuletfrg.icon);
 				onChoice.onChoiceMadeCommit(NAME, false);
 			}
 		});
 
 		// run the start() method later on the UI thread
 		view.postDelayed(mUpdateTimeTask, 1000);
+
+		// Set image and text to share intent
+		onChoice.setShareIntent(onChoice.createShareIntent(
+				getString(R.string.social_action_desc),
+				getString(R.string.pag1), bitmap1));
 
 		return view;
 	}

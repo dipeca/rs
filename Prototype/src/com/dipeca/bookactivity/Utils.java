@@ -159,7 +159,7 @@ public class Utils {
 	}
 	
 	public static int getHotspotColor(int hotspotId, int x, int y, View view) {
-		try {
+//		try {
 			ImageView img = (ImageView) view.findViewById(hotspotId);
 			img.setDrawingCacheEnabled(true);
 			Bitmap hotspots = Bitmap.createBitmap(img.getDrawingCache());
@@ -190,10 +190,10 @@ public class Utils {
 			}
 
 			return hotspots.getPixel(1, 1);
-		} catch (Exception e) {
-			Log.d("java null", "null");
-			return -1;
-		}
+//		} catch (Exception e) {
+//			Log.d("java null", "null");
+//			return -1;
+//		}
 	}
 
 	public static boolean closeMatch(int color1, int color2, int tolerance) {

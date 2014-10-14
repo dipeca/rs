@@ -1,10 +1,5 @@
 package com.dipeca.bookactivity;
 
-import java.util.Date;
-
-import com.dipeca.bookactivity.entiy.Objects;
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -17,6 +12,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.dipeca.prototype.R;
 
 public class PagChestOpen extends Fragment implements IFragmentBook {
 	View view = null;
@@ -55,6 +52,9 @@ public class PagChestOpen extends Fragment implements IFragmentBook {
 				R.drawable.cofre_aberto, 600, 300);
 		image1.setImageBitmap(bitmap1);
 		
+		// Add button to screen
+		onChoice.addMapButtonToScreen((RelativeLayout) view);
+		
 	}
 
 	@Override
@@ -79,17 +79,17 @@ public class PagChestOpen extends Fragment implements IFragmentBook {
 
 		tv1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				int density = (int) getResources().getDisplayMetrics().density;
+				float density = (float) getResources().getDisplayMetrics().density;
 				int height1 = 0;
 				int width3 = 0;
 				int multiplier = 7;
 				if (isTextHide) {
-					height1 = tv1.getHeight() * multiplier - (8 * density);
-					width3 = tv3.getWidth() * multiplier - (8 * density);
+					height1 = tv1.getHeight() * multiplier - ((int)Math.ceil(8 * density));
+					width3 = tv3.getWidth() * multiplier - ((int)Math.ceil(8 * density));
 					isTextHide = false;
 				} else {
-					height1 = tv1.getHeight() / multiplier + (8 * density);
-					width3 = tv3.getWidth() / multiplier + (8 * density);
+					height1 = tv1.getHeight() / multiplier + ((int)Math.ceil(8 * density));
+					width3 = tv3.getWidth() / multiplier + ((int)Math.ceil(8 * density));
 					isTextHide = true;
 				}
 
@@ -110,13 +110,13 @@ public class PagChestOpen extends Fragment implements IFragmentBook {
 
 				//Persist object
 				oi = new ObjectItem();
-				oi.setObjectImageType(ObjectItem.TYPE_BOOK_OF_SPELS);
-				oi.setName(getString(R.string.bedroom));
+				oi.setObjectImageType(ObjectItem.TYPE_KEY);
+				oi.setName(getString(R.string.key));
 				
 				onChoice.objectFoundPersist(oi);
 				
-				PagAfterLake fb = new PagAfterLake();
-				onChoice.onChoiceMade(fb, PagAfterLake.NAME, PagAfterLake.icon);
+				PagAfterChestOpen fb = new PagAfterChestOpen();
+				onChoice.onChoiceMade(fb, PagAfterChestOpen.NAME, PagAfterChestOpen.icon);
 
 				onChoice.onChoiceMadeCommit(NAME, true);
 			}
@@ -126,8 +126,8 @@ public class PagChestOpen extends Fragment implements IFragmentBook {
 		buttonPrev.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				PagLakeToCrossFindObjects fb = new PagLakeToCrossFindObjects();
-				onChoice.onChoiceMade(fb, PagLakeToCrossFindObjects.NAME, PagLakeToCrossFindObjects.icon);
+				PagChest fb = new PagChest();
+				onChoice.onChoiceMade(fb, PagChest.NAME, PagChest.icon);
 
 				onChoice.onChoiceMadeCommit(NAME, true);
 			}

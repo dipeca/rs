@@ -1,7 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.Fragment;
@@ -14,7 +12,6 @@ import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.DragShadowBuilder;
 import android.view.View.OnDragListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
@@ -23,8 +20,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class PagScareCrow extends Fragment implements OnTouchListener, IFragmentBook {
-	View view = null; 
+import com.dipeca.prototype.R;
+
+public class PagScareCrow extends Fragment implements OnTouchListener,
+		IFragmentBook {
+	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.scarecrow;
 	public static int icon = R.drawable.espantalho_mexer_icon;
@@ -50,7 +50,7 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 	private static boolean lockPersistBottle = false;
 	private ImageView image1;
 	private ImageView image2;
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -62,26 +62,26 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 		}
 	}
 
-	private boolean checkObjectsAlreadyFound(){
-		ObjectItem oiCorn  = new ObjectItem();
+	private boolean checkObjectsAlreadyFound() {
+		ObjectItem oiCorn = new ObjectItem();
 		ObjectItem oiBottle = new ObjectItem();
-		
+
 		oiCorn.setObjectImageType(ObjectItem.TYPE_CORN);
 		oiBottle.setObjectImageType(ObjectItem.TYPE_BOTTLE);
-		
+
 		isCornInObjects = onChoice.isInObjects(oiCorn);
 		isBottleInObjects = onChoice.isInObjects(oiBottle);
-		
-		if (isCornInObjects && isBottleInObjects){
+
+		if (isCornInObjects && isBottleInObjects) {
 			isObjectsFound = isBottleInObjects;
 		}
-		
+
 		return isObjectsFound;
 	}
-	
+
 	private void loadImages() {
 
-		if (isAdded()) { 
+		if (isAdded()) {
 
 			Log.d("PagScareCrow ", "loadImages()");
 			image2 = (ImageView) view.findViewById(R.id.clickable);
@@ -91,7 +91,7 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 						R.drawable.espantalho1_1, 600, 300);
 			}
 			image1.setImageBitmap(bitmap1);
-			
+
 			if (bitmap2 == null) {
 				bitmap2 = Utils.decodeSampledBitmapFromResource(getResources(),
 						R.drawable.espantalho_click, 50, 25);
@@ -101,7 +101,7 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 
 			if (cornBitmap == null) {
 				cornBitmap = Utils.decodeSampledBitmapFromResource(
-						getResources(), R.drawable.milho, 360, 180);
+						getResources(), R.drawable.milho, 280, 196);
 
 				ivCorn = new ImageView(getActivity());
 				ivCorn.setImageBitmap(cornBitmap);
@@ -117,7 +117,7 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 
 			if (bottleBitmap == null) {
 				bottleBitmap = Utils.decodeSampledBitmapFromResource(
-						getResources(), R.drawable.frasco, 160, 80);
+						getResources(), R.drawable.frasco, 120, 64);
 
 				ivBottle = new ImageView(getActivity());
 				ivBottle.setImageBitmap(bottleBitmap);
@@ -149,11 +149,13 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 			ivBottle.setVisibility(View.GONE);
 
 		}
+		
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+
 
 		long startTime = System.currentTimeMillis();
 		view = inflater.inflate(R.layout.scarecrow, container, false);
@@ -164,34 +166,34 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
 		tv1.setText(R.string.pagScareCrowTitle);
-		//tv1.setWidth(tv1.getWidth() - 20);
+		// tv1.setWidth(tv1.getWidth() - 20);
 		tv3 = (TextView) view.findViewById(R.id.textPag1_2);
 		tv3.setVisibility(View.GONE);
 
 		// Postpone image loading
 		view.postDelayed(mUpdateTimeTask, 500);
-		
-		//We must still load the first image
+
+		// We must still load the first image
 		image1 = (ImageView) view.findViewById(R.id.pag1ImageView);
 		if (bitmap1 == null) {
 			bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
 					R.drawable.espantalho1_1, 600, 300);
 		}
 		image1.setImageBitmap(bitmap1);
-		
+
 		tv1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				int density = (int) getResources().getDisplayMetrics().density;
+				float density = (float) getResources().getDisplayMetrics().density;
 				int height1 = 0;
 				int width3 = 0;
 				int multiplier = 7;
 				if (isTextHide) {
-					height1 = tv1.getHeight() * multiplier - (8 * density);
-					width3 = tv3.getWidth() * multiplier - (8 * density);
+					height1 = tv1.getHeight() * multiplier - ((int)Math.ceil(8 * density));
+					width3 = tv3.getWidth() * multiplier - ((int)Math.ceil(8 * density));
 					isTextHide = false;
 				} else {
-					height1 = tv1.getHeight() / multiplier + (8 * density);
-					width3 = tv3.getWidth() / multiplier + (8 * density);
+					height1 = tv1.getHeight() / multiplier + ((int)Math.ceil(8 * density));
+					width3 = tv3.getWidth() / multiplier + ((int)Math.ceil(8 * density));
 					isTextHide = true;
 				}
 
@@ -213,16 +215,32 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 		buttonPrev.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				PagPathChoiceFrg fb = new PagPathChoiceFrg();
+				PageScareCrowField fb = new PageScareCrowField();
 
-				onChoice.onChoiceMade(fb, getString( PagPathChoiceFrg.NAME));
-				onChoice.onChoiceMadeCommit(getString( NAME), true);
+				onChoice.onChoiceMade(fb, getString(PageScareCrowField.NAME));
+				onChoice.onChoiceMadeCommit(getString(NAME), true);
 			}
 		});
 
 		view.setOnTouchListener(this);
 		view.setOnDragListener(new MyDragListener());
 		// BookActivity.playMusic(R.raw.village);
+		
+		//Check if we already have traveled to the lake
+		ObjectItem oi = new ObjectItem();
+		oi.setObjectImageType(ObjectItem.TYPE_KEY);
+
+		if (onChoice.isInObjects(oi)) {
+			// set current mapImage
+			onChoice.setCurrentMapPosition(R.drawable.mapa_ambos);
+		} else {
+			// set current mapImage
+			onChoice.setCurrentMapPosition(R.drawable.mapa_espantalho);
+		}
+		// Add button to screen
+		onChoice.addMapButtonToScreen((RelativeLayout) view);
+		
+		
 		return view;
 	}
 
@@ -253,7 +271,7 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 	private Runnable mUpdateTimeTask = new Runnable() {
 		public void run() {
 			Log.d("PagScareCrow ", "mUpdateTimeTask");
-			
+
 			tv1.setText(R.string.pagScareCrowTitle);
 
 			loadImages();
@@ -263,13 +281,13 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 	private Runnable persistBottle = new Runnable() {
 		public void run() {
 			Log.d("PagScareCrow ", "persistBottle");
-			
+
 			persistBottle();
 		}
 	};
-	
+
 	private boolean isBottleDragging = false;
-	
+
 	@Override
 	public boolean onTouch(View arg0, MotionEvent ev) {
 		final int action = ev.getAction();
@@ -280,12 +298,12 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 
 		case MotionEvent.ACTION_DOWN:
 
-			int touchColor = Utils.getHotspotColor(R.id.clickable, evX, evY,
-					view);
+			int touchColor = Utils.getHotspotColor(ev, image2);
 
 			int tolerance = 25;
 			if (Utils.closeMatch(Color.RED, touchColor, tolerance)) {
 				tv1.setText(R.string.pagScareCrowWarning);
+				tv1.setBackgroundResource(R.drawable.container_dropshadow);
 				// Do the action associated with the white region
 				image1.setImageBitmap(warningBitmap);
 
@@ -298,19 +316,19 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 			} else if (Utils.closeMatch(Color.BLUE, touchColor, tolerance)) {
 
 				tv1.setText(R.string.pagScareCrowDontTouchThere);
+				tv1.setBackgroundResource(R.drawable.container_dropshadow);
 				// Do the action associated with the white region
 				image1.setImageBitmap(wakedBitmap);
 
 				// Each time we touch the scarecrow we loose 5points
 				onChoice.addPoints(-10);
-
 				// run the start() method later on the UI thread
 				view.postDelayed(mUpdateTimeTask, 1000);
 			} else if (Utils.closeMatch(Color.GREEN, touchColor, tolerance)) {
 
 				isBottleDragging = false;
 				tv1.setText(R.string.pagScareCrowThisIsNotABottle);
-				// ivCorn.setVisibility(View.VISIBLE);
+				tv1.setBackgroundResource(R.drawable.container_dropshadow);
 
 				ClipData data = ClipData.newPlainText("", "");
 				View.DragShadowBuilder shadowBuilder = ImageDragShadowBuilder
@@ -319,14 +337,15 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 
 				// 10 points for the curiosity ;)
 				checkObjectsAlreadyFound();
-				if(!isCornInObjects){
+				if (!isCornInObjects) {
 					onChoice.addPoints(10);
 					persistCorn();
 				}
-				
+
 			} else if (Utils.closeMatch(Color.WHITE, touchColor, tolerance)) {
 				isBottleDragging = true;
 				tv1.setText(R.string.pagScareCrowSaveBottle);
+				tv1.setBackgroundResource(R.drawable.container_dropshadow_red);
 
 				// Start dragging
 				ClipData data = ClipData.newPlainText("", "");
@@ -374,14 +393,13 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 		onChoice.objectFoundPersist(oi);
 
 	}
-	
+
 	class MyDragListener implements OnDragListener {
 
 		@Override
 		public boolean onDrag(View v, DragEvent event) {
 			Log.d("onDrag", event.getAction() + "");
-			int touchColor = Utils.getHotspotColor(R.id.clickable,
-					(int) event.getX(), (int) event.getY(), view);
+			int touchColor = Utils.getHotspotColor(event, image2);
 			int tolerance = 25;
 
 			ivCorn.setVisibility(View.GONE);
@@ -407,12 +425,13 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 				break;
 			case DragEvent.ACTION_DROP:
 				Log.d("onDrag", event.getAction() + " ACTION_DROP");
-				if (Utils.closeMatch(Color.YELLOW, touchColor, tolerance) && isBottleDragging) {
+				if (Utils.closeMatch(Color.YELLOW, touchColor, tolerance)
+						&& isBottleDragging) {
 					Log.d("color", "YELLOW");
 
 					checkObjectsAlreadyFound();
-					if(!isBottleInObjects && !lockPersistBottle){
-						
+					if (!isBottleInObjects && !lockPersistBottle) {
+
 						lockPersistBottle = true;
 						onChoice.addPoints(40);
 						view.postDelayed(persistBottle, 1);
@@ -420,8 +439,9 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 
 					PagAfterChallengeScareCrow fb = new PagAfterChallengeScareCrow();
 
-					onChoice.onChoiceMade(fb, getString( PagAfterChallengeScareCrow.NAME));
-					onChoice.onChoiceMadeCommit(getString( NAME), true);
+					onChoice.onChoiceMade(fb,
+							getString(PagAfterChallengeScareCrow.NAME));
+					onChoice.onChoiceMadeCommit(getString(NAME), true);
 				}
 
 				break;
@@ -439,7 +459,7 @@ public class PagScareCrow extends Fragment implements OnTouchListener, IFragment
 
 	@Override
 	public String getPrevPage() {
-		return PagPathChoiceFrg.class.getName();
+		return PageScareCrowField.class.getName();
 	}
 
 	@Override

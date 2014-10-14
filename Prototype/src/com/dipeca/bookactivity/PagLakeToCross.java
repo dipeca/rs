@@ -1,7 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -14,6 +12,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.dipeca.prototype.R;
 
 public class PagLakeToCross extends Fragment implements IFragmentBook{
 	View view = null;
@@ -46,13 +46,28 @@ public class PagLakeToCross extends Fragment implements IFragmentBook{
 	private ImageView ivClickable;
 
 	private void loadImages() {
+		
+		//Check if we already have traveled to the lake
+		ObjectItem oi = new ObjectItem();
+		oi.setObjectImageType(ObjectItem.TYPE_BOTTLE);
+
+		if (onChoice.isInObjects(oi)) {
+			// set current mapImage
+			onChoice.setCurrentMapPosition(R.drawable.mapa_ambos);
+		} else {
+			// set current mapImage
+			onChoice.setCurrentMapPosition(R.drawable.mapa_lago);
+		}
+		// Add button to screen
+		onChoice.addMapButtonToScreen((RelativeLayout) view);
+		
 		Log.d("KingDom ", "loadImages()");
 		image1 = (ImageView) view.findViewById(R.id.ivMain);
 		image2 = (ImageView) view.findViewById(R.id.ivSmall);
 		ivClickable = (ImageView) view.findViewById(R.id.clickable);
 
 		bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.lagoteste2, 600, 300);
+				R.drawable.lagozoomout, 600, 300);
 		image1.setImageBitmap(bitmap1);
 		
 		bitmap2 = Utils.decodeSampledBitmapFromResource(getResources(),
@@ -83,17 +98,17 @@ public class PagLakeToCross extends Fragment implements IFragmentBook{
 
 		tv1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				int density = (int) getResources().getDisplayMetrics().density;
+				float density = (int) getResources().getDisplayMetrics().density;
 				int height1 = 0;
 				int width3 = 0;
 				int multiplier = 7;
 				if (isTextHide) {
-					height1 = tv1.getHeight() * multiplier - (8 * density);
-					width3 = tv3.getWidth() * multiplier - (8 * density);
+					height1 = tv1.getHeight() * multiplier - ((int)Math.ceil(8 * density));
+					width3 = tv3.getWidth() * multiplier - ((int)Math.ceil(8 * density));
 					isTextHide = false;
 				} else {
-					height1 = tv1.getHeight() / multiplier + (8 * density);
-					width3 = tv3.getWidth() / multiplier + (8 * density);
+					height1 = tv1.getHeight() / multiplier + ((int)Math.ceil(8 * density));
+					width3 = tv3.getWidth() / multiplier + ((int)Math.ceil(8 * density));
 					isTextHide = true;
 				}
 

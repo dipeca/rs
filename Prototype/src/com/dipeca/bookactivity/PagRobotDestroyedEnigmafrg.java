@@ -1,7 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -14,8 +12,10 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.RelativeLayout.LayoutParams;
+import android.widget.TextView;
+
+import com.dipeca.prototype.R;
 
 public class PagRobotDestroyedEnigmafrg extends Fragment implements IFragmentBook {
 	View view = null;
@@ -59,7 +59,7 @@ public class PagRobotDestroyedEnigmafrg extends Fragment implements IFragmentBoo
 		
 
 		dialog = (DialogBox) view.findViewById(R.id.dialog);
-		dialog.setTextDialog(getString(R.string.pagRobotDestroyedDialog2));
+		dialog.setTextDialog(getString(R.string.pagRobotDestroyedEnigma));
 		dialog.setImg1Id(getResources().getDrawable(R.anim.gui_anim_left));
 		dialog.setImg2Id(getResources().getDrawable(R.anim.lopo_anim));
 		
@@ -68,7 +68,7 @@ public class PagRobotDestroyedEnigmafrg extends Fragment implements IFragmentBoo
 		rl.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
 
 		Utils.removeRule(rl, RelativeLayout.LEFT_OF);
-		Utils.removeRule(rl, RelativeLayout.ALIGN_LEFT);
+		Utils.removeRule(rl, RelativeLayout.ALIGN_LEFT); 
 		Utils.removeRule(rl, RelativeLayout.ALIGN_PARENT_BOTTOM);
 	}
 	

@@ -1,31 +1,20 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
-import android.graphics.Bitmap;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.AnticipateOvershootInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.dipeca.prototype.R;
 
 public class PageHelp extends Fragment implements IFragmentBook {
 	private IMainActivity onChoice;
 	public static int NAME = R.string.adventureRule;
-	public static int icon = R.drawable.caminho_somebody_icon;
+	public static int icon = R.drawable.help_icon;
 
 	private TextView tv1 = null;
 	private TextView tv2 = null;
@@ -42,7 +31,7 @@ public class PageHelp extends Fragment implements IFragmentBook {
 		}
 
 	}
-
+ 
 	View view = null;
 
 	@Override
@@ -66,10 +55,10 @@ public class PageHelp extends Fragment implements IFragmentBook {
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				PagEnigmaFrg fb = new PagEnigmaFrg();
+				PagVillageAfterHelpFrg fb = new PagVillageAfterHelpFrg();
 
-				onChoice.onChoiceMade(fb, getString(PagEnigmaFrg.NAME),
-						getResources().getResourceName(PagEnigmaFrg.icon));
+				onChoice.onChoiceMade(fb, getString(PagVillageAfterHelpFrg.NAME),
+						getResources().getResourceName(PagVillageAfterHelpFrg.icon));
 				onChoice.onChoiceMadeCommit(getString(NAME), true);
 
 			}

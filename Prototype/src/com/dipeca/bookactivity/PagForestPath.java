@@ -1,24 +1,19 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
-import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.animation.Animation;
-import android.view.animation.AnticipateOvershootInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.dipeca.prototype.R;
 
 public class PagForestPath extends Fragment {
 	private IMainActivity onChoice;
@@ -98,7 +93,7 @@ public class PagForestPath extends Fragment {
 
 	private void loadImages() {
 
-		int density = (int) getResources().getDisplayMetrics().density;
+		float density = (float) getResources().getDisplayMetrics().density;
 
 		iv1 = (ImageView) view.findViewById(R.id.page2Image);
 		iv2 = (ImageView) view.findViewById(R.id.page2Image2);

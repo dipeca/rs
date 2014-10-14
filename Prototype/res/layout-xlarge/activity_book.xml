@@ -20,8 +20,7 @@
     <FrameLayout
         android:id="@+id/detailFragment"
         android:layout_width="1040dp"
-        android:layout_height="fill_parent"
-        class="com.dipeca.prototype.Pag1frg" >
+        android:layout_height="fill_parent" >
     </FrameLayout>
 
     

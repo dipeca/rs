@@ -1,7 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -12,15 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.animation.Animation;
-import android.view.animation.AnticipateOvershootInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class PagAfterLake extends Fragment {
+import com.dipeca.prototype.R;
+
+public class PagAfterLake extends Fragment implements IFragmentBook {
 	private IMainActivity onChoice;
 	public static int NAME = R.string.afterLakeTitle;
 	public static int icon = R.drawable.caminho_dia_fim_icon;
@@ -74,10 +71,21 @@ public class PagAfterLake extends Fragment {
 		buttonNext.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				PagRobot fb = new PagRobot();
+				//Check if we already have traveled to the scarecrow
+				ObjectItem oi = new ObjectItem();
+				oi.setObjectImageType(ObjectItem.TYPE_BOTTLE);
 
-				onChoice.onChoiceMade(fb, PagRobot.NAME, PagRobot.icon);
+				if (onChoice.isInObjects(oi)) {
+					PagRobot fb = new PagRobot();
+
+					onChoice.onChoiceMade(fb, PagRobot.NAME, PagRobot.icon);
+				}else{
+					PagPathChoiceFrg fb = new PagPathChoiceFrg();
+
+					onChoice.onChoiceMade(fb, PagPathChoiceFrg.NAME, PagPathChoiceFrg.icon);
+				}
 				onChoice.onChoiceMadeCommit(NAME, true);
+				
 			}
 		});
 		
@@ -87,9 +95,9 @@ public class PagAfterLake extends Fragment {
 		buttonPrev.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				PagScareCrow fb = new PagScareCrow();
+				PagAfterChestOpen fb = new PagAfterChestOpen();
 
-				onChoice.onChoiceMade(fb, PagScareCrow.NAME, PagScareCrow.icon);
+				onChoice.onChoiceMade(fb, PagAfterChestOpen.NAME, PagAfterChestOpen.icon);
 				onChoice.onChoiceMadeCommit(NAME, false);
 			}
 		});
@@ -114,8 +122,20 @@ public class PagAfterLake extends Fragment {
  
 		iv2.setVisibility(View.GONE);
 
+		// Add button to screen
+		onChoice.addMapButtonToScreen((RelativeLayout) view);
 	}
 	
 	AnimationDrawable backGroundChangeAnim;
+
+	@Override
+	public String getPrevPage() {
+		return PagAfterChestOpen.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		return null;
+	}
 
 }

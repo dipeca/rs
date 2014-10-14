@@ -35,7 +35,7 @@ import android.widget.Toast;
 
 import com.dipeca.prototype.R;
 
-public class PagEnigmaFish extends Fragment implements OnTouchListener {
+public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmentBook {
 
 	private IMainActivity onChoice;
 	ImageView imageView = null;
@@ -216,6 +216,11 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 						@Override
 						public void onClick(View v) {
 							onChoice.askForHelpOnFacebook();
+							
+							if (popupWindow != null && popupWindow.isShowing()) {
+								popupWindow.dismiss();
+							}
+
 						}
 					});
 
@@ -227,6 +232,11 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 						@Override
 						public void onClick(View v) {
 							onChoice.askForHelpOnGooglePlus();
+							
+							if (popupWindow != null && popupWindow.isShowing()) {
+								popupWindow.dismiss();
+							}
+
 						}
 					});
 				}
@@ -254,7 +264,11 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 			@Override
 			public void onClick(View v) {
 				if (isMazeSolved) {
-
+					
+					if (popupWindow != null && popupWindow.isShowing()) {
+						popupWindow.dismiss();
+					}
+					
 					PagEnterGateThiefsLand fb = new PagEnterGateThiefsLand();
 					stopTimer();
 
@@ -1007,6 +1021,18 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener {
 			}
 		}
 
+		return null;
+	}
+
+	@Override
+	public String getPrevPage() {
+		
+		return PagRobotDestroyedEnigmafrg.class.getName();
+	}
+
+	@Override
+	public String getNextPage() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -1,8 +1,8 @@
 package com.dipeca.bookactivity.entiy;
 
-import com.dipeca.bookactivity.PrototypeProvider;
-
 import android.net.Uri;
+
+import com.dipeca.bookactivity.PrototypeProvider;
 
 public class User {
 	// EACH STUDENT HAS UNIQUE ID

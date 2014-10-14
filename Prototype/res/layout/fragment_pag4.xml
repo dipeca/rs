@@ -53,6 +53,17 @@
         android:src="@drawable/ic_action_help" />
 
     <ImageButton
+        android:id="@+id/btnSocialHelp"
+        style="@style/ButtonText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_margin="12dp"
+        android:layout_toLeftOf="@+id/btnHelp"
+        android:background="@drawable/button_back"
+        android:src="@drawable/ic_action_social_help" />
+
+    <ImageButton
         android:id="@+id/goToNextPage"
         style="@style/ButtonText"
         android:layout_width="wrap_content"

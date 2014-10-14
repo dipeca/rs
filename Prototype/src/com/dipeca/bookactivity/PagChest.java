@@ -1,7 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -16,7 +14,10 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.dipeca.prototype.R;
 
 public class PagChest extends Fragment implements OnTouchListener, IFragmentBook {
 	View view = null;
@@ -43,7 +44,7 @@ public class PagChest extends Fragment implements OnTouchListener, IFragmentBook
 	private static ImageView iv1;
 	private static ImageView iv2;
 
-	private int density;
+	private float density;
 
 	private void loadImages() {
 		Log.d(getString(NAME), "loadImages()");
@@ -61,6 +62,19 @@ public class PagChest extends Fragment implements OnTouchListener, IFragmentBook
 				R.drawable.cofre_fechado_cli, 50, 25);
 		iv2.setImageBitmap(bitmap2);
 
+		//Check if we already have traveled to the lake
+		ObjectItem oi = new ObjectItem();
+		oi.setObjectImageType(ObjectItem.TYPE_BOTTLE);
+
+		if (onChoice.isInObjects(oi)) {
+			// set current mapImage
+			onChoice.setCurrentMapPosition(R.drawable.mapa_ambos);
+		} else {
+			// set current mapImage
+			onChoice.setCurrentMapPosition(R.drawable.mapa_lago);
+		}
+		// Add button to screen
+		onChoice.addMapButtonToScreen((RelativeLayout) view);
 	}
 
 	ImageButton button = null;
@@ -106,15 +120,12 @@ public class PagChest extends Fragment implements OnTouchListener, IFragmentBook
 	@Override
 	public boolean onTouch(View v, MotionEvent ev) {
 		final int action = ev.getAction();
-		// (1)
-		final int evX = (int) ev.getX();
-		final int evY = (int) ev.getY();
+
 		switch (action) {
 
 		case MotionEvent.ACTION_UP:
 
-			int touchColor = Utils.getHotspotColor(R.id.page3ImageClick, evX,
-					evY, view);
+			int touchColor = Utils.getHotspotColor(ev, iv2);
 
 			int tolerance = 25;
 			if (Utils.closeMatch(Color.WHITE, touchColor, tolerance)) {

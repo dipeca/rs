@@ -1,7 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -17,6 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
+import com.dipeca.prototype.R;
+
 public class PagRobot extends Fragment implements IFragmentBook {
 	View view = null;
 	private IMainActivity onChoice;
@@ -29,7 +29,7 @@ public class PagRobot extends Fragment implements IFragmentBook {
 
 	private static Bitmap bitmap1;
 
-	private int density = 1;
+	private float density = 1;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -78,7 +78,9 @@ public class PagRobot extends Fragment implements IFragmentBook {
 				.getLayoutParams();
 		rl.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
 		rl.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-		rl.setMargins(16 * density, 16 * density, 16 * density, 16 * density);
+		rl.setMargins((int) Math.ceil(16 * density),
+				(int) Math.ceil(16 * density), (int) Math.ceil(16 * density),
+				(int) Math.ceil(16 * density));
 		// rl.removeRule(RelativeLayout.ALIGN_LEFT);
 		// rl.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		Utils.removeRule(rl, RelativeLayout.ALIGN_LEFT);
@@ -96,13 +98,13 @@ public class PagRobot extends Fragment implements IFragmentBook {
 						getResources(), R.drawable.robot3, 600, 300);
 				BookActivity.bitmap2 = Utils.decodeSampledBitmapFromResource(
 						getResources(), R.drawable.robot_click_scal, 50, 25);
-				
+
 				// if the talisman was cleaned after portal page
 				if (BookActivity.bitmapTalisma == null) {
-  
+
 					BookActivity.bitmapTalisma = Utils
 							.decodeSampledBitmapFromResource(getResources(),
-									R.drawable.talisma, 162, 162);  
+									R.drawable.talisma, 104, 104);
 				}
 			}
 			long endTime = System.currentTimeMillis();
@@ -125,7 +127,7 @@ public class PagRobot extends Fragment implements IFragmentBook {
 		Log.d("Total time kingdom", "onCreateView after inflate time ="
 				+ totalTime);
 
-//		BookActivity.playMusic(R.raw.robot_page);
+		// BookActivity.playMusic(R.raw.robot_page);
 
 		density = (int) getResources().getDisplayMetrics().density;
 
@@ -135,17 +137,17 @@ public class PagRobot extends Fragment implements IFragmentBook {
 
 		tv1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				int density = (int) getResources().getDisplayMetrics().density;
+				float density = (float) getResources().getDisplayMetrics().density;
 				int height1 = 0;
 				int width3 = 0;
 				int multiplier = 7;
 				if (isTextHide) {
-					height1 = tv1.getHeight() * multiplier - (8 * density);
-					width3 = tv3.getWidth() * multiplier - (8 * density);
+					height1 = tv1.getHeight() * multiplier - ((int)Math.ceil(8 * density));
+					width3 = tv3.getWidth() * multiplier - ((int)Math.ceil(8 * density));
 					isTextHide = false;
 				} else {
-					height1 = tv1.getHeight() / multiplier + (8 * density);
-					width3 = tv3.getWidth() / multiplier + (8 * density);
+					height1 = tv1.getHeight() / multiplier + ((int)Math.ceil(8 * density));
+					width3 = tv3.getWidth() / multiplier + ((int)Math.ceil(8 * density));
 					isTextHide = true;
 				}
 
@@ -166,7 +168,8 @@ public class PagRobot extends Fragment implements IFragmentBook {
 
 				PagRobotAttack fb = new PagRobotAttack();
 
-				onChoice.onChoiceMade(fb, PagRobotAttack.NAME, PagRobotAttack.icon);
+				onChoice.onChoiceMade(fb, PagRobotAttack.NAME,
+						PagRobotAttack.icon);
 				onChoice.onChoiceMadeCommit(NAME, true);
 			}
 		});
@@ -179,7 +182,8 @@ public class PagRobot extends Fragment implements IFragmentBook {
 
 				PagPathChoiceFrg fb = new PagPathChoiceFrg();
 
-				onChoice.onChoiceMade(fb, PagPathChoiceFrg.NAME, PagPathChoiceFrg.icon);
+				onChoice.onChoiceMade(fb, PagPathChoiceFrg.NAME,
+						PagPathChoiceFrg.icon);
 				onChoice.onChoiceMadeCommit(NAME, false);
 			}
 		});

@@ -6,8 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import com.dipeca.prototype.R;
-
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +25,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+
+import com.dipeca.prototype.R;
 
 public class MenuFrg extends Fragment {
 
@@ -60,7 +60,7 @@ public class MenuFrg extends Fragment {
 		ImageButton picSBtn = (ImageButton) view.findViewById(R.id.btnIntendS);
 		picSBtn.setImageResource(R.drawable.ic_action_camera);
 		setBtnListenerOrDisable(picSBtn, mTakePicSOnClickListener,
-				MediaStore.ACTION_IMAGE_CAPTURE);
+				MediaStore.ACTION_IMAGE_CAPTURE); 
 
 		BookActivity.stopButton = (ImageButton) view.findViewById(R.id.stopSound);
 		BookActivity.stopButton.setImageResource(R.drawable.ic_action_volume_on);

@@ -1,7 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -13,9 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class PagSomethingMoving extends Fragment implements IFragmentBook{
+import com.dipeca.prototype.R;
+
+public class PagSomethingMoving extends Fragment implements IFragmentBook {
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.somethingMoving;
@@ -25,7 +26,7 @@ public class PagSomethingMoving extends Fragment implements IFragmentBook{
 	private TextView tv2 = null;
 
 	private ImageView iv1;
-	private int density;
+	private float density;
 
 	private static Bitmap bitmap1;
 	private static Bitmap bitmap2;
@@ -44,22 +45,26 @@ public class PagSomethingMoving extends Fragment implements IFragmentBook{
 	private void loadText() {
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
 		tv2 = (TextView) view.findViewById(R.id.textPag1_2);
-	//	tv1.setBackgroundResource(R.drawable.container_dropshadow_red);
-	//	tv1.setPadding(density * 16, density * 16, density * 16, density * 16);
-		
+		// tv1.setBackgroundResource(R.drawable.container_dropshadow_red);
+		// tv1.setPadding(density * 16, density * 16, density * 16, density *
+		// 16);
+
 		tv2.setVisibility(View.GONE);
 		tv1.setText(R.string.pagSomethingMoving);
 	}
-	
+
 	private void loadImages() {
 		Log.d(getString(NAME), "loadImages()");
 		iv1 = (ImageView) view.findViewById(R.id.pag1ImageView);
-		//iv2 = (ImageView) view.findViewById(R.id.clickable);
+		// iv2 = (ImageView) view.findViewById(R.id.clickable);
 
 		density = (int) getResources().getDisplayMetrics().density;
 
 		iv1.setImageDrawable(getResources().getDrawable(R.anim.grass));
 		((AnimationDrawable) iv1.getDrawable()).start();
+		
+		// Add button to screen
+		onChoice.addMapButtonToScreen((RelativeLayout) view);
 
 	}
 
@@ -79,33 +84,45 @@ public class PagSomethingMoving extends Fragment implements IFragmentBook{
 		loadImages();
 		loadText();
 
-		//BookActivity.playMusic(R.raw.robot_in_front);
+		// BookActivity.playMusic(R.raw.robot_in_front);
 		final ImageButton buttonNext = (ImageButton) view
 				.findViewById(R.id.goToNextPage);
-		
-				buttonNext.setOnClickListener(new View.OnClickListener() {
+
+		buttonNext.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
 				PagFindFriend fb = new PagFindFriend();
 
-				onChoice.onChoiceMade(fb, getString(PagFindFriend.NAME), getResources().getResourceName(PagFindFriend.icon));
+				onChoice.onChoiceMade(fb, getString(PagFindFriend.NAME),
+						getResources().getResourceName(PagFindFriend.icon));
 				onChoice.onChoiceMadeCommit(getString(NAME), false);
 			}
 		});
-		
+
 		final ImageButton buttonPrev = (ImageButton) view
 				.findViewById(R.id.goToPrevPage);
-		
+
 		buttonPrev.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
 				PagVillageAfterEnigmaFrg fb = new PagVillageAfterEnigmaFrg();
 
-				onChoice.onChoiceMade(fb, getString(PagVillageAfterEnigmaFrg.NAME), getResources().getResourceName(PagVillageAfterEnigmaFrg.icon));
+				onChoice.onChoiceMade(
+						fb,
+						getString(PagVillageAfterEnigmaFrg.NAME),
+						getResources().getResourceName(
+								PagVillageAfterEnigmaFrg.icon));
 				onChoice.onChoiceMadeCommit(getString(NAME), false);
 			}
 		});
-		
+
+		// Set image and text to share intent
+		onChoice.setShareIntent(onChoice.createShareIntent(
+				getString(R.string.social_action_desc),
+				getString(R.string.pagSomethingMoving), Utils
+						.decodeSampledBitmapFromResource(getResources(),
+								R.drawable.algo_a_mexer_1, 600, 300)));
+
 		return view;
 	}
 
@@ -133,7 +150,7 @@ public class PagSomethingMoving extends Fragment implements IFragmentBook{
 
 	@Override
 	public String getNextPage() {
-		return null;
+		return PagFindFriend.class.getName();
 	}
 
 }

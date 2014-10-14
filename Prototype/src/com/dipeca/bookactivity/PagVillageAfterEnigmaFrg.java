@@ -1,7 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -16,10 +14,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.dipeca.prototype.R;
+
 public class PagVillageAfterEnigmaFrg extends Fragment implements IFragmentBook {
 	private IMainActivity onChoice;
 	public static int NAME = R.string.enigmaSolved;
-	public static int icon = R.drawable.village_icon;
+	public static int icon = R.drawable.desafio_superado_icon;
 
 	private TextView tv1 = null;
 	private TextView tv2 = null;
@@ -29,7 +29,20 @@ public class PagVillageAfterEnigmaFrg extends Fragment implements IFragmentBook 
 	AnimationDrawable backGroundChangeAnimGui;
 
 	private ImageView iv1;
+	private Bitmap bitmapVillage;
+	
+	@Override
+	public void onDetach() {
+		Log.d("Kingdom ", "Kingdom  onDetach()");
+		super.onDetach();
 
+		if(bitmapVillage != null){
+			bitmapVillage.recycle();
+			bitmapVillage = null;
+		}
+
+	}
+	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -102,25 +115,30 @@ public class PagVillageAfterEnigmaFrg extends Fragment implements IFragmentBook 
 		});
 		
 		loadImages();
-
+		
+		// Set image and text to share intent
+		onChoice.setShareIntent(onChoice.createShareIntent(
+				getString(R.string.social_action_desc),
+				getString(R.string.pagVillageChallengeDone), bitmapVillage));
+		
 		return view;
 	} 
   
 	private void loadImages() {
 
-		long startTime = System.currentTimeMillis();
-
 		iv1 = (ImageView) view.findViewById(R.id.pag1ImageView);
 
-		int density = (int) getResources().getDisplayMetrics().density;
+		float density = (float) getResources().getDisplayMetrics().density;
 
-		Bitmap village = Utils.decodeSampledBitmapFromResource(getResources(),
+		bitmapVillage = Utils.decodeSampledBitmapFromResource(getResources(),
 				R.drawable.villageafterchall, 600, 300);
-		iv1.setImageBitmap(village);
-		long endTime = System.currentTimeMillis();
-		long totalTime = endTime - startTime;
-		System.out.println(" Village loadImages Total time: " + totalTime);
+		iv1.setImageBitmap(bitmapVillage);
 	
+		// set current mapImage
+		onChoice.setCurrentMapPosition(R.drawable.mapa_primeiro);
+		// Add button to screen
+		onChoice.addMapButtonToScreen((RelativeLayout) view);
+		
 	}
 
 	@Override
@@ -130,7 +148,7 @@ public class PagVillageAfterEnigmaFrg extends Fragment implements IFragmentBook 
 
 	@Override
 	public String getNextPage() {
-		return null;
+		return PagSomethingMoving.class.getName();
 	} 
 
 }

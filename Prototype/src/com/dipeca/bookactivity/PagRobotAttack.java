@@ -1,15 +1,12 @@
 package com.dipeca.bookactivity;
 
-import android.R.array;
+import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ClipData;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
@@ -17,16 +14,20 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
+import android.view.View.OnClickListener;
 import android.view.View.OnDragListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dipeca.prototype.R;
 
-public class PagRobotAttack extends Fragment implements IFragmentBook{
+public class PagRobotAttack extends Fragment implements IFragmentBook {
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.robotAttacks;
@@ -38,13 +39,17 @@ public class PagRobotAttack extends Fragment implements IFragmentBook{
 	private ImageView iv2;
 	private ImageView ivBattery;
 	private ImageView ivTalisman;
-	private int density;
+	private float density;
 
 	private boolean isTextHide = false;
 
 	private static Bitmap bitmap1;
 	private static Bitmap bitmap2;
-	private static Bitmap bitmap3;
+
+	private ImageButton btnOpenPopup = null;
+	private PopupWindow popupWindow = null;
+	private static ImageButton btnFacebookHelp = null;
+	private static ImageButton btnGPlusHelp = null;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -60,10 +65,12 @@ public class PagRobotAttack extends Fragment implements IFragmentBook{
 	private void loadText() {
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
 		tv1.setBackgroundResource(R.drawable.container_dropshadow_red);
-		tv1.setPadding(density * 16, density * 16, density * 16, density * 16);
+		tv1.setPadding((int) Math.ceil(density * 16),
+				(int) Math.ceil(density * 16), (int) Math.ceil(density * 16),
+				(int) Math.ceil(density * 16));
 		tv1.setText(R.string.pagRobotAttack);
 	}
-	
+
 	private void loadImages() {
 		Log.d(getString(NAME), "loadImages()");
 		iv1 = (ImageView) view.findViewById(R.id.topleft);
@@ -95,7 +102,7 @@ public class PagRobotAttack extends Fragment implements IFragmentBook{
 		if (BookActivity.bitmapTalisma == null) {
 
 			BookActivity.bitmapTalisma = Utils.decodeSampledBitmapFromResource(
-					getResources(), R.drawable.talisma, 162, 162);
+					getResources(), R.drawable.talisma, 104, 104);
 		}
 
 		ivTalisman.setImageBitmap(BookActivity.bitmapTalisma);
@@ -114,15 +121,100 @@ public class PagRobotAttack extends Fragment implements IFragmentBook{
 		long totalTime = endTime - startTime;
 		Log.d(getString(NAME), "onCreateView after inflate time =" + totalTime);
 
-		// loadImages()
 		loadImages();
 		loadText();
 
-//		BookActivity.playMusic(R.raw.robot_in_front);
+		BookActivity.playMusic(R.raw.robot_walk);
 
 		ivTalisman.setOnTouchListener(new MyTouchListener());
 		view.setOnDragListener(new MyDragListener());
 
+		btnOpenPopup = new ImageButton(getActivity());
+		btnOpenPopup.setImageResource(R.drawable.ic_action_social_help);
+		btnOpenPopup.setBackgroundResource(R.drawable.button_back);
+
+		RelativeLayout.LayoutParams paramsSocialBtn = new RelativeLayout.LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		paramsSocialBtn.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+		paramsSocialBtn.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		// paramsSocialBtn.addRule(RelativeLayout.LEFT_OF, btnHelp.getId());
+		paramsSocialBtn.setMargins(0, (int) Math.ceil(12 * density),
+				(int) Math.ceil(12 * density), 0);
+
+		((RelativeLayout) view.getRootView()).addView(btnOpenPopup,
+				paramsSocialBtn);
+
+		btnOpenPopup.setOnClickListener(new Button.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				if (popupWindow == null || !popupWindow.isShowing()) {
+
+					LayoutInflater layoutInflater = (LayoutInflater) getActivity()
+							.getBaseContext().getSystemService(
+									getActivity().LAYOUT_INFLATER_SERVICE);
+					View popupView = layoutInflater.inflate(
+							R.layout.social_popup, null);
+					popupWindow = new PopupWindow(popupView, (int) Math
+							.ceil(164 * density), (int) Math
+							.ceil(198 * density));
+
+					popupView.setOnClickListener(new View.OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							popupWindow.dismiss();
+
+						}
+					});
+
+					popupWindow.showAsDropDown(btnOpenPopup,
+							-(int) Math.ceil(32 * density),
+							(int) Math.ceil(0 * density));
+
+					// FaceBook button
+					btnFacebookHelp = (ImageButton) popupView
+							.findViewById(R.id.facebook_button);
+					btnFacebookHelp.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							onChoice.askForHelpOnFacebook();
+
+							if (popupWindow != null && popupWindow.isShowing()) {
+								popupWindow.dismiss();
+							}
+						}
+					});
+
+					// Google Plus button
+					btnGPlusHelp = (ImageButton) popupView
+							.findViewById(R.id.gplus_button);
+					btnGPlusHelp.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							onChoice.askForHelpOnGooglePlus();
+
+							if (popupWindow != null && popupWindow.isShowing()) {
+								popupWindow.dismiss();
+							}
+						}
+					});
+				}
+			}
+		});
+
+		view.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (popupWindow != null && popupWindow.isShowing()) {
+					popupWindow.dismiss();
+				}
+
+			}
+		});
 		return view;
 	}
 
@@ -181,7 +273,7 @@ public class PagRobotAttack extends Fragment implements IFragmentBook{
 		@Override
 		public boolean onDrag(View v, DragEvent event) {
 			Log.d("onDrag", event.getAction() + "");
-			
+
 			int touchColor = Utils.getHotspotColor(event, iv2);
 			int tolerance = 25;
 			switch (event.getAction()) {
@@ -215,9 +307,17 @@ public class PagRobotAttack extends Fragment implements IFragmentBook{
 			case DragEvent.ACTION_DROP:
 				if (Utils.closeMatch(Color.RED, touchColor, tolerance)) {
 
+					if (popupWindow != null && popupWindow.isShowing()) {
+						popupWindow.dismiss();
+					}
+
 					PagRobotDestroyedfrg fb = new PagRobotDestroyedfrg();
 
-					onChoice.onChoiceMade(fb, getString(PagRobotDestroyedfrg.NAME), getResources().getResourceName(PagRobotDestroyedfrg.icon));
+					onChoice.onChoiceMade(
+							fb,
+							getString(PagRobotDestroyedfrg.NAME),
+							getResources().getResourceName(
+									PagRobotDestroyedfrg.icon));
 					onChoice.onChoiceMadeCommit(getString(NAME), true);
 
 					view.setOnDragListener(null);
@@ -239,7 +339,7 @@ public class PagRobotAttack extends Fragment implements IFragmentBook{
 
 	@Override
 	public String getPrevPage() {
-		return PagRobotAttack.class.getName();
+		return PagRobot.class.getName();
 	}
 
 	@Override
@@ -247,5 +347,5 @@ public class PagRobotAttack extends Fragment implements IFragmentBook{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 }

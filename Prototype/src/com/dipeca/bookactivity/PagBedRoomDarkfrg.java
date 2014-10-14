@@ -1,7 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -14,7 +12,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook{
+import com.dipeca.prototype.R;
+
+public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook {
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.soundInBedRoom;
@@ -27,9 +27,9 @@ public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook{
 
 	public static String nextPage = PagBedRoomfrg.class.getName();
 	public static String prevPage = "";
-	
+
 	@Override
-	public void onAttach(Activity activity) { 
+	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		try {
 			onChoice = (IMainActivity) activity;
@@ -40,12 +40,12 @@ public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook{
 	}
 
 	private ImageView iv1;
-	private int density = 1;
+	private float density = 1;
 
 	private int tv1OriginalSize;
 	private int tv2OriginalSize;
 	private int tv3OriginalSize;
-	
+
 	private void loadText() {
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
 
@@ -64,21 +64,24 @@ public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook{
 				int width3 = 0;
 				int multiplier = 6;
 				if (isTextHide) {
-					height1 = tv1OriginalSize;//tv1.getHeight() * multiplier + (4 * density);
-					height2 = tv2OriginalSize;//tv2.getHeight() * multiplier + (4 * density);
-					width3  = tv3OriginalSize;//tv3.getWidth() * multiplier + (4 * density);
+					height1 = tv1OriginalSize;// tv1.getHeight() * multiplier +
+												// (4 * density);
+					height2 = tv2OriginalSize;// tv2.getHeight() * multiplier +
+												// (4 * density);
+					width3 = tv3OriginalSize;// tv3.getWidth() * multiplier + (4
+												// * density);
 					isTextHide = false;
 				} else {
 					tv1OriginalSize = tv1.getHeight();
 					tv2OriginalSize = tv2.getHeight();
 					tv3OriginalSize = tv3.getHeight();
-					
+
 					height1 = Math.max(tv1.getHeight() / multiplier,
-							(10 * density));
+							((int)Math.ceil(10 * density)));
 					height2 = Math.max(tv2.getHeight() / multiplier,
-							(10 * density));
+							((int)Math.ceil(10 * density)));
 					width3 = Math.max(tv3.getWidth() / multiplier,
-							(10 * density));
+							((int)Math.ceil(10 * density)));
 					isTextHide = true;
 				}
 
@@ -106,7 +109,7 @@ public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook{
 		iv1 = (ImageView) view.findViewById(R.id.pag1ImageView);
 
 		density = (int) getResources().getDisplayMetrics().density;
-		
+
 		bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
 				R.drawable.quarto_vazio_escuro, 600, 300);
 		iv1.setImageBitmap(bitmap1);
@@ -131,7 +134,8 @@ public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook{
 
 			long endTime = System.currentTimeMillis();
 			long totalTime = endTime - startTime;
-			Log.d("Total time mUpdateTimeTask", "mUpdateTimeTask time =" + totalTime);
+			Log.d("Total time mUpdateTimeTask", "mUpdateTimeTask time ="
+					+ totalTime);
 		}
 	};
 
@@ -150,7 +154,6 @@ public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook{
 		Log.d("Total time onCreateView", "onCreateView after inflate time ="
 				+ totalTime);
 
-		
 		loadImages();
 		loadText();
 
@@ -168,7 +171,7 @@ public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-  
+
 				try {
 					fb = (Fragment) c.newInstance();
 				} catch (java.lang.InstantiationException e) {
@@ -179,23 +182,30 @@ public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook{
 					e.printStackTrace();
 				}
 
-				onChoice.onChoiceMade(PagBedRoomDarkfrg.this, PagBedRoomDarkfrg.NAME,
-						PagBedRoomDarkfrg.icon);
+				onChoice.onChoiceMade(PagBedRoomDarkfrg.this,
+						PagBedRoomDarkfrg.NAME, PagBedRoomDarkfrg.icon);
 				// Commit the page to database
-				onChoice.onChoiceMadeCommitFirstPage(getString(PagBedRoomDarkfrg.NAME), true);
-				
-				onChoice.onChoiceMade(fb, PagBedRoomfrg.NAME, PagBedRoomfrg.icon);
+				onChoice.onChoiceMadeCommitFirstPage(
+						getString(PagBedRoomDarkfrg.NAME), true);
+
+				onChoice.onChoiceMade(fb, PagBedRoomfrg.NAME,
+						PagBedRoomfrg.icon);
 				onChoice.onChoiceMadeCommit(PagBedRoomDarkfrg.NAME, true);
 			}
 		});
-		
+
 		buttonPrev = (ImageButton) view.findViewById(R.id.goToPrevPage);
 		buttonPrev.setVisibility(View.INVISIBLE);
 
 		// run the start() method later on the UI thread
 		view.postDelayed(mUpdateTimeTask, 1000);
 
-//		BookActivity.playMusic(R.raw.boxes_moving);
+		// BookActivity.playMusic(R.raw.boxes_moving);
+
+		// Set image and text to share intent
+		onChoice.setShareIntent(onChoice.createShareIntent(
+				getString(R.string.social_action_desc),
+				getString(R.string.soundIntheDark), bitmap1));
 
 		return view;
 	}
@@ -205,8 +215,10 @@ public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook{
 		Log.d("BedRoom ", "BedRoom onDetach()");
 		super.onDetach();
 
-		bitmap1.recycle();
-		bitmap1 = null;
+		if (bitmap1 != null) {
+			bitmap1.recycle();
+			bitmap1 = null;
+		}
 
 	}
 
@@ -217,9 +229,8 @@ public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook{
 
 	@Override
 	public String getNextPage() {
-		
+
 		return nextPage;
 	}
-
 
 }

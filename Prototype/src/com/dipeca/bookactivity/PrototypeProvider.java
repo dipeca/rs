@@ -6,7 +6,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteException;
@@ -28,7 +27,6 @@ import com.dipeca.buildstoryactivity.entity.PageDrawable;
 import com.dipeca.buildstoryactivity.entity.PageStory;
 import com.dipeca.buildstoryactivity.entity.PageType;
 import com.dipeca.buildstoryactivity.entity.Story;
-import com.dipeca.prototype.R;
 
 public class PrototypeProvider extends ContentProvider {
 
@@ -66,7 +64,7 @@ public class PrototypeProvider extends ContentProvider {
 	public static final Uri CONTENT_URI_PAGETYPE = Uri
 			.parse("content://com.dipeca.adventurestoriesprovider/"
 					+ PageType.TABLE_NAME);
-	
+
 	public static final Uri CONTENT_URI_STORY = Uri
 			.parse("content://com.dipeca.adventurestoriesprovider/"
 					+ Story.TABLE_NAME);
@@ -75,7 +73,6 @@ public class PrototypeProvider extends ContentProvider {
 			.parse("content://com.dipeca.adventurestoriesprovider/"
 					+ PageStory.TABLE_NAME);
 
-	
 	public static final String AUTHORITY = "com.dipeca.adventurestoriesprovider";
 
 	SchemaHelper myOpenHelper;
@@ -107,7 +104,7 @@ public class PrototypeProvider extends ContentProvider {
 	public static final int STORY_SINGLE_ROWS = 21;
 	public static final int PAGESTORY_ALLROWS = 22;
 	public static final int PAGESTORY_SINGLE_ROWS = 23;
-	
+
 	private static final UriMatcher uriMatcher;
 
 	private static final String PROVIDER_NAME = "com.dipeca.adventurestoriesprovider";
@@ -153,16 +150,15 @@ public class PrototypeProvider extends ContentProvider {
 		uriMatcher.addURI(PROVIDER_NAME, PageDrawable.TABLE_NAME + "/#",
 				DRAWABLEPAGE_SINGLE_ROWS);
 
-		uriMatcher.addURI(PROVIDER_NAME, Story.TABLE_NAME,
-				STORY_ALLROWS);
+		uriMatcher.addURI(PROVIDER_NAME, Story.TABLE_NAME, STORY_ALLROWS);
 		uriMatcher.addURI(PROVIDER_NAME, Story.TABLE_NAME + "/#",
 				STORY_SINGLE_ROWS);
-		
+
 		uriMatcher.addURI(PROVIDER_NAME, PageStory.TABLE_NAME,
 				PAGESTORY_ALLROWS);
 		uriMatcher.addURI(PROVIDER_NAME, PageStory.TABLE_NAME + "/#",
 				PAGESTORY_SINGLE_ROWS);
-		
+
 		uriMatcher.addURI(PROVIDER_NAME, PageType.TABLE_NAME, PAGETYPE_ALLROWS);
 		uriMatcher.addURI(PROVIDER_NAME, PageType.TABLE_NAME + "/#",
 				PAGETYPE_SINGLE_ROW);
@@ -279,16 +275,17 @@ public class PrototypeProvider extends ContentProvider {
 			break;
 		}
 		Cursor cursor;
-		if(PageStory.TABLE_NAME.equals(tableName) || PageDrawable.TABLE_NAME.equals(tableName)){
+		if (PageStory.TABLE_NAME.equals(tableName)
+				|| PageDrawable.TABLE_NAME.equals(tableName)) {
 			cursor = db.rawQuery(selection, selectionArgs);
-		}else{
+		} else {
 			// Specify the table on which to perform the query. This can
 			// be a specific table or a join as required.
 			queryBuilder.setTables(tableName);
 			// Execute the query.
 			cursor = queryBuilder.query(db, projection, selection,
 					selectionArgs, groupBy, having, sortOrder);
-	
+
 			// Return the result Cursor.
 		}
 		return cursor;
@@ -448,7 +445,7 @@ public class PrototypeProvider extends ContentProvider {
 	private static class SchemaHelper extends SQLiteOpenHelper {
 
 		public static final String DATABASE_NAME = "reading_project.db";
-		public static final int DATABASE_VERSION = 3;
+		public static final int DATABASE_VERSION = 4;
 
 		public SchemaHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -491,7 +488,8 @@ public class PrototypeProvider extends ContentProvider {
 			db.execSQL("CREATE TABLE " + Status.TABLE_NAME + " (" + Status.ID
 					+ " INTEGER PRIMARY KEY AUTOINCREMENT," + Status.ENERGY
 					+ " INTEGER," + Status.GAME_ID + " INTEGER,"
-					+ Status.CURRENTCHAPTER + " TEXT," + Status.POINTS
+					+ Status.CURRENTCHAPTER + " TEXT,"
+					+ Status.CURRENTMAPTOSHOW + " TEXT," + Status.POINTS
 					+ " INTEGER ," + " FOREIGN KEY (" + Status.GAME_ID
 					+ ") REFERENCES " + Game.TABLE_NAME + " (" + Game.ID
 					+ "));");
@@ -506,10 +504,10 @@ public class PrototypeProvider extends ContentProvider {
 					+ Game.TABLE_NAME + " (" + Game.ID + "));");
 
 			// CREATE STORY TABLE
-			db.execSQL("CREATE TABLE " + Story.TABLE_NAME + " ("
-					+ Story.ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-					+ Story.TITLE + " INTEGER,"+ Story.DRAWABLE + " INTEGER);");
-			
+			db.execSQL("CREATE TABLE " + Story.TABLE_NAME + " (" + Story.ID
+					+ " INTEGER PRIMARY KEY AUTOINCREMENT," + Story.TITLE
+					+ " INTEGER," + Story.DRAWABLE + " INTEGER);");
+
 			// CREATE PAGE_TYPE TABLE
 			db.execSQL("CREATE TABLE " + PageType.TABLE_NAME + " ("
 					+ PageType.ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -553,10 +551,9 @@ public class PrototypeProvider extends ContentProvider {
 					+ " INTEGER," + PageStory.STORY_ID + " INTEGER,"
 					+ "FOREIGN KEY (" + PageStory.STORY_ID + ") REFERENCES "
 					+ Story.TABLE_NAME + " (" + Story.ID + "),"
-					+ " FOREIGN KEY (" + PageStory.PAGE_ID
-					+ ") REFERENCES " + Page.TABLE_NAME + " ("
-					+ Page.ID + "));");
-			
+					+ " FOREIGN KEY (" + PageStory.PAGE_ID + ") REFERENCES "
+					+ Page.TABLE_NAME + " (" + Page.ID + "));");
+
 			insertDrawables(db);
 			insertPageTypes(db);
 		}
@@ -609,7 +606,7 @@ public class PrototypeProvider extends ContentProvider {
 			db.execSQL("INSERT INTO " + Drawable.TABLE_NAME
 					+ " VALUES(20,'quarto_olhar_talisma');");
 		}
-		
+
 		/**
 		 * @param db
 		 * 
@@ -641,6 +638,8 @@ public class PrototypeProvider extends ContentProvider {
 			db.execSQL("DROP TABLE IF EXISTS " + Page.TABLE_NAME);
 			db.execSQL("DROP TABLE IF EXISTS " + PageDrawable.TABLE_NAME);
 			db.execSQL("DROP TABLE IF EXISTS " + PageType.TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + Story.TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + PageStory.TABLE_NAME);
 			// CREATE NEW INSTANCE OF SCHEMA
 			onCreate(db);
 

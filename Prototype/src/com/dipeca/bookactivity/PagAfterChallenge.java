@@ -1,7 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -12,16 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.AnticipateOvershootInterpolator;
-import android.view.animation.BounceInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.dipeca.prototype.R;
 
 public class PagAfterChallenge extends Fragment implements IFragmentBook {
 	private IMainActivity onChoice;
@@ -196,10 +192,10 @@ public class PagAfterChallenge extends Fragment implements IFragmentBook {
 		buttonPrev.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				PagFindFriend fb = new PagFindFriend();
+				PagFindFriendZoom fb = new PagFindFriendZoom();
 
-				onChoice.onChoiceMade(fb, PagFindFriend.NAME,
-						PagFindFriend.icon);
+				onChoice.onChoiceMade(fb, PagFindFriendZoom.NAME,
+						PagFindFriendZoom.icon);
 				onChoice.onChoiceMadeCommit(NAME, false);
 			}
 		});
@@ -212,7 +208,7 @@ public class PagAfterChallenge extends Fragment implements IFragmentBook {
 
 	private static Bitmap caminhoSomebodyBm = null;
 	private static Bitmap caminhoBm = null;
-	int density = 1;
+	private float density = 1;
 
 	private void loadImages() {
 		Log.d(getString(NAME), "loadImages()");
@@ -231,13 +227,18 @@ public class PagAfterChallenge extends Fragment implements IFragmentBook {
 		RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 		rlp.addRule(RelativeLayout.BELOW, iv1.getId());
-		rlp.setMargins(0, 16 * density, 0, 0);
+		rlp.setMargins(0, (int) Math.ceil(16 * density), 0, 0);
 		iv2.setLayoutParams(rlp);
 		iv2.setVisibility(View.GONE);
 
 		caminhoBm = Utils.decodeSampledBitmapFromResource(getResources(),
 				R.drawable.caminho_dia_watching, 800, 400);
 		iv2.setImageBitmap(caminhoBm);
+
+		// set current mapImage
+		onChoice.setCurrentMapPosition(R.drawable.mapa_friend);
+		// Add button to screen
+		onChoice.addMapButtonToScreen((RelativeLayout) view);
 
 	}
 
@@ -255,6 +256,7 @@ public class PagAfterChallenge extends Fragment implements IFragmentBook {
 			caminhoBm.recycle();
 			caminhoBm = null;
 		}
+
 	}
 
 	@Override

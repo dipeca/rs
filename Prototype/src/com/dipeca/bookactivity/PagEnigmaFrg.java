@@ -120,11 +120,11 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 		heightDis = size.y;
 
 		// Create a bitmap with the dimensions we defined above, and with a
-		// 16-bit pixel format. We'll
+		// 16-bit pixel format. We'll 
 		// get a little more in depth with pixel formats in a later post.
 		bitmap = Bitmap.createBitmap(width, height, Config.RGB_565); 
-
-		// Create a paint object for us to draw with, and set our drawing color
+ 
+		// Create a paint object for us to draw with, and set our drawing color 
 		// to blue.
 		paintStroke = new Paint();
 		paintFill = new Paint();
@@ -299,6 +299,10 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 						@Override
 						public void onClick(View v) {
 							onChoice.askForHelpOnFacebook();
+							
+							if (popupWindow != null && popupWindow.isShowing()) {
+								popupWindow.dismiss();
+							}
 						}
 					});
 
@@ -310,6 +314,10 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 						@Override
 						public void onClick(View v) {
 							onChoice.askForHelpOnGooglePlus();
+							
+							if (popupWindow != null && popupWindow.isShowing()) {
+								popupWindow.dismiss();
+							}
 						}
 					});
 				}
@@ -337,6 +345,10 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 			public void onClick(View v) {
 				if (isMazeSolved) {
 
+					if (popupWindow != null && popupWindow.isShowing()) {
+						popupWindow.dismiss();
+					}
+					
 					PagVillageAfterEnigmaFrg fb = new PagVillageAfterEnigmaFrg();
 
 					onChoice.onChoiceMade(

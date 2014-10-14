@@ -11,6 +11,8 @@ public class Status {
 	public static final String POINTS = "points";
 	// FOREIGN KEY TO USER
 	public static final String CURRENTCHAPTER = "currentChapter";
+	// Path to MAP
+	public static final String CURRENTMAPTOSHOW = "currentMap";
 	// NAME OF THE TABLE
 	public static final String TABLE_NAME = "status";
 }

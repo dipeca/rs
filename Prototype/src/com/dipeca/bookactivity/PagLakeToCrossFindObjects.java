@@ -1,7 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -20,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.dipeca.prototype.R;
 
 public class PagLakeToCrossFindObjects extends Fragment implements
 		OnTouchListener, IFragmentBook {
@@ -61,12 +61,17 @@ public class PagLakeToCrossFindObjects extends Fragment implements
 	private float density = 1;
 	
 	private void loadImages() {
+		
+		// Add button to screen
+		onChoice.addMapButtonToScreen((RelativeLayout) view);
+		
+		
 		Log.d("KingDom ", "loadImages()");
 		image1 = (ImageView) view.findViewById(R.id.pag1ImageView);
 		ivClickable = (ImageView) view.findViewById(R.id.clickable);
 
 		bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.lagoteste2, 600, 300);
+				R.drawable.lagozoomout, 600, 300);
 		image1.setImageBitmap(bitmap1);
 
 		bitmap3 = Utils.decodeSampledBitmapFromResource(getResources(),
@@ -123,17 +128,17 @@ public class PagLakeToCrossFindObjects extends Fragment implements
 
 		tv1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				int density = (int) getResources().getDisplayMetrics().density;
+				float density = (float) getResources().getDisplayMetrics().density;
 				int height1 = 0;
 				int width3 = 0;
 				int multiplier = 7;
 				if (isTextHide) {
-					height1 = tv1.getHeight() * multiplier - (8 * density);
-					width3 = tv3.getWidth() * multiplier - (8 * density);
+					height1 = tv1.getHeight() * multiplier - ((int)Math.ceil(8 * density));
+					width3 = tv3.getWidth() * multiplier - ((int)Math.ceil(8 * density));
 					isTextHide = false;
 				} else {
-					height1 = tv1.getHeight() / multiplier + (8 * density);
-					width3 = tv3.getWidth() / multiplier + (8 * density);
+					height1 = tv1.getHeight() / multiplier + ((int)Math.ceil(8 * density));
+					width3 = tv3.getWidth() / multiplier + ((int)Math.ceil(8 * density));
 					isTextHide = true;
 				}
 
@@ -225,15 +230,11 @@ public class PagLakeToCrossFindObjects extends Fragment implements
 	@Override
 	public boolean onTouch(View v, MotionEvent ev) {
 		final int action = ev.getAction();
-		// (1)
-		final int evX = (int) ev.getX();
-		final int evY = (int) ev.getY();
 		switch (action) {
 
 		case MotionEvent.ACTION_UP:
 
-			int touchColor = Utils.getHotspotColor(R.id.clickable, evX, evY,
-					view);
+			int touchColor = Utils.getHotspotColor(ev, ivClickable);
 
 			int tolerance = 25;
 			if (Utils.closeMatch(Color.WHITE, touchColor, tolerance)) {

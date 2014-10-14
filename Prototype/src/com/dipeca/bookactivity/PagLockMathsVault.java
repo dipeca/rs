@@ -1,7 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -15,6 +13,9 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+
+import com.dipeca.prototype.R;
 
 public class PagLockMathsVault extends Fragment implements IFragmentBook {
 
@@ -73,6 +74,9 @@ public class PagLockMathsVault extends Fragment implements IFragmentBook {
 		}
 
 		ivBack.setImageBitmap(background);
+		
+		// Add button to screen
+		onChoice.addMapButtonToScreen((RelativeLayout) view);
 		
 	}
 

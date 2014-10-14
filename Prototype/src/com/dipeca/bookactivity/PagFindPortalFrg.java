@@ -1,7 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ClipData;
@@ -19,6 +17,8 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+
+import com.dipeca.prototype.R;
 
 public class PagFindPortalFrg extends Fragment implements IFragmentBook {
 
@@ -42,7 +42,7 @@ public class PagFindPortalFrg extends Fragment implements IFragmentBook {
 	}
 
 	public static int NAME = R.string.findGate;
-	public static int icon = R.drawable.quarto_olhar_talisma_icon;
+	public static int icon = R.drawable.quarto_encontrar_portal_icon;
 
 	// Create a string for the ImageView label
 	View view;
@@ -86,6 +86,11 @@ public class PagFindPortalFrg extends Fragment implements IFragmentBook {
 		totalTime = endTime - startTime;
 		Log.d("Total time", "onCreateView time =" + totalTime);
 
+		// Set image and text to share intent
+		onChoice.setShareIntent(onChoice.createShareIntent(
+				getString(R.string.social_action_desc),
+				getString(R.string.pagFindPortal), BookActivity.bitmapInitial));
+		
 		return view;
 
 	}
@@ -113,7 +118,7 @@ public class PagFindPortalFrg extends Fragment implements IFragmentBook {
 		ivPortal = (ImageView) view.findViewById(R.id.porta);
 		ivClickable = (ImageView) view.findViewById(R.id.clickable);
 
-		int density = (int) getResources().getDisplayMetrics().density;
+		float density = (float) getResources().getDisplayMetrics().density;
 
 		if (BookActivity.bitmapInitial == null) {
 			BookActivity.bitmapInitial = Utils.decodeSampledBitmapFromResource(
@@ -130,16 +135,16 @@ public class PagFindPortalFrg extends Fragment implements IFragmentBook {
 		if (BookActivity.bitmap2 == null) {
 
 			BookActivity.bitmap2 = Utils.decodeSampledBitmapFromResource(
-					getResources(), R.drawable.quarto_cli, 50 * density,
-					25 * density);
+					getResources(), R.drawable.quarto_cli, (int)Math.ceil(50 * density),
+							(int)Math.ceil(25 * density));
 
 		}
 
 		if (BookActivity.bitmapTalisma == null) {
 
 			BookActivity.bitmapTalisma = Utils.decodeSampledBitmapFromResource(
-					getResources(), R.drawable.talisma, 162, 162);
-		}
+					getResources(), R.drawable.talisma, 104, 104);
+		} 
 
 		ivRoom.setImageBitmap(BookActivity.bitmapInitial);
 		ivPortal.setImageBitmap(BookActivity.bitmap1);
@@ -179,7 +184,7 @@ public class PagFindPortalFrg extends Fragment implements IFragmentBook {
 		}
 	}
 
-	private int density;
+	private float density;
 	private boolean isPlayingMagnet = false;
 
 	class MyDragListener implements OnDragListener {
@@ -200,11 +205,10 @@ public class PagFindPortalFrg extends Fragment implements IFragmentBook {
 
 				if (Utils.closeMatch(Color.WHITE, touchColor, tolerance)) {
 					Log.d("color", "WHITE");
-
-					playMagnetMusic();
+ 
 				} else if (Utils.closeMatch(Color.RED, touchColor, tolerance)) {
 					Log.d("color", "RED");
-					
+					 
 					playMagnetMusic();
 					// imgPortaWeek.setVisibility(ImageView.GONE);
 					ivPortal.setVisibility(ImageView.VISIBLE);
@@ -255,15 +259,15 @@ public class PagFindPortalFrg extends Fragment implements IFragmentBook {
 	
 	private void playMagnetMusic(){
 		if (!isPlayingMagnet) {
-			BookActivity.playMusic(R.raw.magnet);
+			BookActivity.playMusic(R.raw.energy_flow);
 			isPlayingMagnet = true;
 		}
-	}
+	} 
 	
 	private void stopMagnetMusic(){
 		BookActivity.stopMusic();
 		isPlayingMagnet = false;
-	}
+	}  
 
 	@Override
 	public String getPrevPage() {

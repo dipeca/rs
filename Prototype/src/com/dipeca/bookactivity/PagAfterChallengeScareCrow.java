@@ -1,7 +1,5 @@
 package com.dipeca.bookactivity;
 
-import com.dipeca.prototype.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
@@ -22,14 +20,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.dipeca.prototype.R;
+
 public class PagAfterChallengeScareCrow extends Fragment implements
 		IFragmentBook {
 	private IMainActivity onChoice;
 	public static int NAME = R.string.adventureGoesOn;
 	public static String icon = "caminho_somebody_icon";
-
-	AnimationDrawable backGroundChangeAnimJake;
-	AnimationDrawable backGroundChangeAnimGui;
 
 	private ImageView ivWalking;
 
@@ -37,7 +34,7 @@ public class PagAfterChallengeScareCrow extends Fragment implements
 	private ImageView iv2;
 	private ImageView iv3;
 
-	int density = 1;
+	private float density = 1;
 
 	private TextView tv1 = null;
 	private TextView tv2 = null;
@@ -55,32 +52,21 @@ public class PagAfterChallengeScareCrow extends Fragment implements
 
 	}
 
-	private boolean isBootleOnObjectList() {
-		ObjectItem oiBottle = new ObjectItem();
-
-		oiBottle.setObjectImageType(ObjectItem.TYPE_BOTTLE);
-
-		boolean isBottleInObjects = onChoice.isInObjects(oiBottle);
-
-		Log.d(getString(NAME), isBottleInObjects + "");
-		return isBottleInObjects;
-	}
-
-	View view = null;
+	private View view = null;
 
 	@Override
 	public void onStart() {
 		super.onStart();
 
 		ivWalking.setBackgroundResource(R.anim.gui_run);
-		ivWalking.getLayoutParams().width = 206 * density;
-		ivWalking.getLayoutParams().height = 380 * density;
+		ivWalking.getLayoutParams().width = (int)Math.ceil(206 * density);
+		ivWalking.getLayoutParams().height = (int)Math.ceil(380 * density);
 		backGroundChangeAnim = (AnimationDrawable) ivWalking.getBackground();
 
 		Animation rotateAnim = new RotateAnimation(0f, 15f);
 		Animation animation = new TranslateAnimation(-240 * density,
-				(getResources().getDisplayMetrics().widthPixels + 40) * density, -8
-						* density, -8 * density);
+				(getResources().getDisplayMetrics().widthPixels + 100)
+						* density, -8 * density, -8 * density);
 		animation.setDuration(5000);
 
 		AnimationSet setAnim = new AnimationSet(true);
@@ -135,36 +121,26 @@ public class PagAfterChallengeScareCrow extends Fragment implements
 
 		final ImageButton button = (ImageButton) view
 				.findViewById(R.id.goToNextPage);
-		iv1 = (ImageView) view.findViewById(R.id.page2Image);
-		iv2 = (ImageView) view.findViewById(R.id.page2Image2);
-		iv3 = (ImageView) view.findViewById(R.id.page2Image3);
-		ivWalking = (ImageView) view.findViewById(R.id.ivWalk);
-
-		tv1 = (TextView) view.findViewById(R.id.textPag1);
-		tv1.setText(R.string.on_the_road_Again);
-
-		tv2 = (TextView) view.findViewById(R.id.textPag2);
-		tv2.setVisibility(View.GONE);
-
-		dialogBox = (DialogBox) view.findViewById(R.id.dialog);
-		dialogBox.setTextDialog(getString(R.string.onTheRoadAgainDialog));
-		dialogBox.setImg1Id(getResources().getDrawable(R.anim.gui_anim));
-		RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(
-				dialogBox.getLayoutParams().width,
-				dialogBox.getLayoutParams().height);
-		params1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		params1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-		params1.addRule(RelativeLayout.ALIGN_TOP, R.id.textPag1);
-		dialogBox.setLayoutParams(params1);
 
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				PagPathChoiceFrg fb = new PagPathChoiceFrg();
-				fb.setScareCrowPathDone(true);
+				Fragment fb = null;
+				// Check if we already have traveled to the scarecrow
+				ObjectItem oi = new ObjectItem();
+				oi.setObjectImageType(ObjectItem.TYPE_KEY);
 
-				onChoice.onChoiceMade(fb, PagPathChoiceFrg.NAME,
-						PagPathChoiceFrg.icon);
+				if (onChoice.isInObjects(oi)) {
+					fb = new PagRobot();
+
+					onChoice.onChoiceMade(fb, PagRobot.NAME, PagRobot.icon);
+				} else {
+					fb = new PagPathChoiceFrg();
+					((PagPathChoiceFrg) fb).setScareCrowPathDone(true);
+					onChoice.onChoiceMade(fb, PagPathChoiceFrg.NAME,
+							PagPathChoiceFrg.icon);
+				}
+
 				onChoice.onChoiceMadeCommit(NAME, true);
 			}
 		});
@@ -183,13 +159,49 @@ public class PagAfterChallengeScareCrow extends Fragment implements
 		});
 
 		loadImages();
+		loadText();
 
 		return view;
+	}
+
+	private void loadText() {
+
+		dialogBox = (DialogBox) view.findViewById(R.id.dialog);
+		
+		tv1 = (TextView) view.findViewById(R.id.textPag1);
+		tv1.setText(R.string.on_the_road_Again);
+
+		tv2 = (TextView) view.findViewById(R.id.textPag2);
+		tv2.setVisibility(View.GONE);
+
+		//The dialogBox about having the corn depends on whatever the player found it or not
+		ObjectItem oiCorn = new ObjectItem();
+		oiCorn.setObjectImageType(ObjectItem.TYPE_CORN);
+		if(onChoice.isInObjects(oiCorn)){
+			
+			dialogBox.setTextDialog(getString(R.string.onTheRoadAgainDialog));
+			dialogBox.setImg1Id(getResources().getDrawable(R.anim.gui_anim));
+			RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(
+					dialogBox.getLayoutParams().width,
+					dialogBox.getLayoutParams().height);
+			params1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+			params1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+			params1.addRule(RelativeLayout.ALIGN_TOP, R.id.textPag1);
+			dialogBox.setLayoutParams(params1);
+		}else{
+			dialogBox.setVisibility(View.GONE);
+		}
+		
 	}
 
 	private void loadImages() {
 		Log.d(getString(NAME), "loadImages()");
 
+		iv1 = (ImageView) view.findViewById(R.id.page2Image);
+		iv2 = (ImageView) view.findViewById(R.id.page2Image2);
+		iv3 = (ImageView) view.findViewById(R.id.page2Image3);
+		ivWalking = (ImageView) view.findViewById(R.id.ivWalk);
+		
 		iv3.setVisibility(View.INVISIBLE);
 
 		iv1.setLayoutParams(new RelativeLayout.LayoutParams(
@@ -201,6 +213,9 @@ public class PagAfterChallengeScareCrow extends Fragment implements
 
 		iv2.setVisibility(View.GONE);
 
+		onChoice.setCurrentMapPosition(R.drawable.mapa_espantalho);
+		// Add button to screen
+		onChoice.addMapButtonToScreen((RelativeLayout) view);
 	}
 
 	AnimationDrawable backGroundChangeAnim;

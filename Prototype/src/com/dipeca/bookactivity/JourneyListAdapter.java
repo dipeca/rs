@@ -2,9 +2,6 @@ package com.dipeca.bookactivity;
 
 import java.util.List;
 
-import com.dipeca.prototype.R;
-
-import android.app.LauncherActivity.ListItem;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -14,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.dipeca.prototype.R;
 
 public class JourneyListAdapter extends ArrayAdapter<IListItem> {
 

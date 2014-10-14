@@ -1,6 +1,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
+        android:id="@+id/menu_item_share"
+        android:actionProviderClass="android.widget.ShareActionProvider"
+        android:showAsAction="ifRoom"
+        android:title="Share">
+<!--         <item -->
+<!--             android:id="@+id/action_gui_story2" -->
+<!--             android:orderInCategory="100" -->
+<!--             android:showAsAction="never" -->
+<!--             android:title="@string/gui_adventures"/> -->
+    </item>
+    <item
         android:id="@+id/action_gui_story"
         android:orderInCategory="100"
         android:showAsAction="never"
@@ -15,4 +26,5 @@
         android:orderInCategory="102"
         android:showAsAction="never"
         android:title="@string/action_read_story"/>
+
 </menu>

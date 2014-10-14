@@ -2,7 +2,6 @@ package com.dipeca.bookactivity;
 
 import android.app.Fragment;
 import android.app.ListFragment;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
