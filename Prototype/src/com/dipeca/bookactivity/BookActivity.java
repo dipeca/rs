@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -38,6 +39,7 @@ import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
@@ -77,6 +79,14 @@ import com.dipeca.bookactivity.entiy.Status;
 import com.dipeca.bookactivity.entiy.User;
 import com.dipeca.buildstoryactivity.BuildPageActivity;
 import com.dipeca.buildstoryactivity.ReadStoryActivity;
+import com.dipeca.item.IListItem;
+import com.dipeca.item.IMainActivity;
+import com.dipeca.item.JourneyItem;
+import com.dipeca.item.JourneyListAdapter;
+import com.dipeca.item.JourneySoFar;
+import com.dipeca.item.ObjectItem;
+import com.dipeca.item.ObjectItemImageAdapter;
+import com.dipeca.item.Utils;
 import com.dipeca.prototype.R;
 import com.facebook.Request;
 import com.facebook.Response;
@@ -141,6 +151,39 @@ public class BookActivity extends Activity implements IMainActivity,
 
 	private String currentMapPosition = null;
 	private Drawable map;
+
+	private BitmapFactory.Options mBitmapOptions;
+	private Bitmap mCurrentBitmap = null;
+
+	@Override
+	public Bitmap decodeSampledBitmapFromResourceBG(Resources res, int resId,
+			int reqWidth, int reqHeight) {
+
+		//resId = R.drawable.ic_launcher;
+		reqWidth = (int) Math.ceil(0.9 * reqWidth);
+		reqHeight = (int) Math.ceil(0.9 * reqHeight);
+
+		// / 
+
+		if (mCurrentBitmap == null) {
+			// Create bitmap to be re-used, based on the size of one of the
+			// bitmaps
+			mBitmapOptions = new BitmapFactory.Options();
+			mBitmapOptions.inJustDecodeBounds = true;
+			BitmapFactory.decodeResource(getResources(), resId, mBitmapOptions);
+			mCurrentBitmap = Bitmap.createBitmap(mBitmapOptions.outWidth,
+					mBitmapOptions.outHeight, Bitmap.Config.ARGB_8888);
+			mBitmapOptions.inJustDecodeBounds = false;
+			mBitmapOptions.inBitmap = mCurrentBitmap;
+			mBitmapOptions.inSampleSize = 1;
+		}  
+
+		mBitmapOptions.inBitmap = mCurrentBitmap;
+		BitmapFactory.decodeResource(getResources(), resId, mBitmapOptions);
+
+		return mCurrentBitmap;
+
+	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -305,8 +348,9 @@ public class BookActivity extends Activity implements IMainActivity,
 		}
 		ivObjects = new ImageView(this);
 		ivObjects.setBackgroundResource(R.drawable.back);
-
-		RelativeLayout layout = (RelativeLayout) nextPage.getView();
+ 
+		
+		ViewGroup layout = (ViewGroup) nextPage.getView();
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		params.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -332,7 +376,7 @@ public class BookActivity extends Activity implements IMainActivity,
 
 		if (nextPage != null) {
 
-			// remove previously added button
+			// remove previously added buttonNext
 			if (iBtnMap != null && iBtnMap.getParent() != null) {
 				((ViewGroup) iBtnMap.getParent()).removeView(iBtnMap);
 			}
@@ -688,6 +732,7 @@ public class BookActivity extends Activity implements IMainActivity,
 		nextPageName = currentPage;
 		nextPageClass = frg.getClass().getName();
 		this.iconPath = "quarto_olhar_talisma_icon";
+
 	}
 
 	@Override
@@ -984,6 +1029,7 @@ public class BookActivity extends Activity implements IMainActivity,
 	@Override
 	public void onChoiceMadeCommit(String namePreviousPage, Boolean isToPersist) {
 		Log.d("Bookactivity", "onChoiceMadeCommit");
+		getActiveFragments();
 		if (nextPage != null) {
 
 			imm.hideSoftInputFromWindow(pointsText.getWindowToken(), 0);
@@ -1088,7 +1134,8 @@ public class BookActivity extends Activity implements IMainActivity,
 		journeyArrayAdapter.notifyDataSetChanged();
 	}
 
-	private boolean isInJourney(String chapterName) {
+	@Override
+	public boolean isInJourney(String chapterName) {
 		if (journeyItemList == null || journeyItemList.size() == 0) {
 			return false;
 		}
@@ -1194,6 +1241,26 @@ public class BookActivity extends Activity implements IMainActivity,
 
 		}
 
+	}
+
+	List<WeakReference<Fragment>> fragList = new ArrayList<WeakReference<Fragment>>();
+
+	@Override
+	public void onAttachFragment(Fragment fragment) {
+		fragList.add(new WeakReference(fragment));
+	}
+
+	public List<Fragment> getActiveFragments() {
+		ArrayList<Fragment> ret = new ArrayList<Fragment>();
+		for (WeakReference<Fragment> ref : fragList) {
+			Fragment f = ref.get();
+			if (f != null) {
+				if (f.isVisible()) {
+					ret.add(f);
+				}
+			}
+		}
+		return ret;
 	}
 
 	@Override
@@ -1473,423 +1540,13 @@ public class BookActivity extends Activity implements IMainActivity,
 		pointsText.setText(BookActivity.points + "");
 
 	}
-
-	// --------------------------
-	// ------ Quizz handler
-	// --------------------------
-	ContentValues newValuesQuizz = new ContentValues();
-
-	/**
-	 * Handle the drawing radio button question
-	 * 
-	 * @param v
-	 */
-	public void onRadioButtonDrawClicked(View v) {
-		// Is the button now checked?
-		boolean checked = ((RadioButton) v).isChecked();
-		// Check which radio button was clicked
-		switch (v.getId()) {
-		case R.id.rb_desenhos_gosto_muito:
-			if (checked) {
-
-				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.DRAW, "Gosto muito");
-
-			}
-			break;
-		case R.id.rb_desenhos_gosto:
-			if (checked) {
-
-				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.DRAW, "Gosto");
-			}
-			break;
-		case R.id.rb_desenhos_adultos:
-			if (checked)
-				if (checked) {
-
-					// Assign values for each row.
-					newValuesQuizz.put(QuestionAnswer.DRAW, "Mto sérios");
-				}
-			break;
-		case R.id.rb_desenhos_crianca:
-			if (checked)
-				if (checked) {
-
-					// Assign values for each row.
-					newValuesQuizz.put(QuestionAnswer.DRAW, "Mto infantis");
-				}
-			break;
-
-		}
-	}
-
-	/**
-	 * Handle the text radio button question
-	 * 
-	 * @param v
-	 */
-	public void onRadioButtonTextClicked(View v) {
-		// Is the button now checked?
-		boolean checked = ((RadioButton) v).isChecked();
-
-		// Check which radio button was clicked
-		switch (v.getId()) {
-		case R.id.rb_text_ok:
-			if (checked) {
-
-				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.TEXT, "Texto OK");
-
-			}
-			break;
-		case R.id.rb_text_not_enough:
-			if (checked) {
-
-				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.TEXT, "Tem pouco");
-
-			}
-			break;
-		case R.id.rb_text_to_much:
-			if (checked) {
-
-				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.TEXT, "Tem mto");
-
-			}
-			break;
-
-		}
-	}
-
-	/**
-	 * Handle the text radio button question
-	 * 
-	 * @param v
-	 */
-	public void onRadioButtonLikeItClicked(View v) {
-		// Is the button now checked?
-		boolean checked = ((RadioButton) v).isChecked();
-
-		// Check which radio button was clicked
-		switch (v.getId()) {
-		case R.id.rb_gosto_mais_ou_menos:
-			if (checked) {
-
-				newValuesQuizz.put(QuestionAnswer.LIKEIT,
-						QuestionAnswer.LIKE_IT_SOSO);
-			}
-			break;
-		case R.id.rb_gosto_no:
-			if (checked) {
-
-				newValuesQuizz.put(QuestionAnswer.LIKEIT,
-						QuestionAnswer.LIKE_IT_NO);
-
-			}
-			break;
-		case R.id.rb_gosto_sim_mto:
-			if (checked) {
-				newValuesQuizz.put(QuestionAnswer.LIKEIT,
-						QuestionAnswer.LIKE_IT_VERY);
-
-			}
-			break;
-
-		}
-	}
-
-	/**
-	 * Handle the riddle radio button question
-	 * 
-	 * @param v
-	 */
-	public void onRadioButtonRiddleLikeClicked(View v) {
-		// Is the button now checked?
-		boolean checked = ((RadioButton) v).isChecked();
-
-		// Check which radio button was clicked
-		switch (v.getId()) {
-		case R.id.rb_enigma_linhas:
-			if (checked) {
-
-				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.ENIGMA_LIKE,
-						"Enigma: gosto linhas");
-
-			}
-			break;
-		case R.id.rb_enigma_maths:
-			if (checked) {
-
-				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.ENIGMA_LIKE,
-						"Enigma: gosto maths");
-
-			}
-			break;
-		case R.id.rb_enigma_screen:
-			if (checked) {
-
-				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.ENIGMA_LIKE,
-						"Enigma: gosto ecran");
-
-			}
-			break;
-		case R.id.rb_enigma_todos:
-			if (checked) {
-
-				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.ENIGMA_LIKE,
-						"Enigma: gosto todos");
-
-			}
-			break;
-		}
-	}
-
-	/**
-	 * Handle the riddle dislike radio button question
-	 * 
-	 * @param v
-	 */
-	public void onRadioButtonRiddleDislikeClicked(View v) {
-		// Is the button now checked?
-		boolean checked = ((RadioButton) v).isChecked();
-
-		// Check which radio button was clicked
-		switch (v.getId()) {
-		case R.id.rb_not_enigma_linhas:
-			if (checked) {
-
-				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.ENIGMA_DISLIKE,
-						"Não gosto linhas");
-
-			}
-			break;
-		case R.id.rb_not_enigma_maths:
-			if (checked) {
-
-				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.ENIGMA_DISLIKE,
-						"Não gosto maths");
-
-			}
-			break;
-		case R.id.rb_not_enigma_screen:
-			if (checked) {
-
-				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.ENIGMA_DISLIKE,
-						"Não gosto ecran");
-
-			}
-			break;
-		}
-	}
-
-	/**
-	 * Handle the points radio button question
-	 * 
-	 * @param v
-	 */
-	public void onRadioButtonPointsClicked(View v) {
-		// Is the button now checked?
-		boolean checked = ((RadioButton) v).isChecked();
-
-		// Check which radio button was clicked
-		switch (v.getId()) {
-		case R.id.rb_points_bad:
-			if (checked) {
-
-				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.POINTS, "Pontos: não gosto");
-
-			}
-			break;
-		case R.id.rb_points_compare:
-			if (checked) {
-
-				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.POINTS, "Pontos: motiva");
-
-			}
-			break;
-		case R.id.rb_points_not_important:
-			if (checked) {
-
-				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.POINTS,
-						"Pontos: nem aquece nem arrefece");
-
-			}
-			break;
-		}
-	}
-
-	/**
-	 * Handle the type of books question
-	 * 
-	 * @param v
-	 */
-	public void onRadioButtonTypeClicked(View v) {
-		// Is the button now checked?
-		boolean checked = ((RadioButton) v).isChecked();
-
-		// Check which radio button was clicked
-		switch (v.getId()) {
-		case R.id.rb_mistery:
-			if (checked) {
-				newValuesQuizz.put(QuestionAnswer.TYPE,
-						QuestionAnswer.TYPE_MISTERY);
-
-			}
-			break;
-		case R.id.rb_aventura:
-			if (checked) {
-				newValuesQuizz.put(QuestionAnswer.TYPE,
-						QuestionAnswer.TYPE_ADVENTURE);
-
-			}
-			break;
-		case R.id.rb_fantasia:
-			if (checked) {
-				newValuesQuizz.put(QuestionAnswer.TYPE,
-						QuestionAnswer.TYPE_FANTASIA);
-
-			}
-			break;
-		case R.id.rb_rir:
-			if (checked) {
-				newValuesQuizz
-						.put(QuestionAnswer.TYPE, QuestionAnswer.TYPE_RIR);
-
-			}
-			break;
-		case R.id.rb_all:
-			if (checked) {
-				newValuesQuizz
-						.put(QuestionAnswer.TYPE, QuestionAnswer.TYPE_ALL);
-
-			}
-			break;
-		}
-	}
-
-	/**
-	 * Handle the path radio button question
-	 * 
-	 * @param v
-	 */
-	public void onRadioButtonPathClicked(View v) {
-		// Is the button now checked?
-		boolean checked = ((RadioButton) v).isChecked();
-
-		// Check which radio button was clicked
-		switch (v.getId()) {
-		case R.id.rb_path_bah:
-			if (checked) {
-
-				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.PATH,
-						"Escolha caminhos: não gosto");
-
-			}
-			break;
-		case R.id.rb_path_not_important:
-			if (checked) {
-
-				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.PATH,
-						"Escolha caminhos: nem aquece nem arrefece");
-
-			}
-			break;
-		case R.id.rb_path_ok:
-			if (checked) {
-
-				// Assign values for each row.
-				newValuesQuizz.put(QuestionAnswer.PATH,
-						"Escolha caminhos: é porreiro");
-
-			}
-			break;
-		}
-	}
-
-	/**
-	 * Handle the quantity of lecture radio button question
-	 * 
-	 * @param v
-	 */
-	public void onRadioButtonReadClicked(View v) {
-		// Is the button now checked?
-		boolean checked = ((RadioButton) v).isChecked();
-
-		// Check which radio button was clicked
-		switch (v.getId()) {
-		case R.id.rb_leio_mto:
-			if (checked) {
-				newValuesQuizz.put(QuestionAnswer.READS,
-						QuestionAnswer.READ_STRONG_READER);
-			}
-			break;
-		case R.id.rb_leio_as_vezes:
-			if (checked) {
-				newValuesQuizz.put(QuestionAnswer.READS,
-						QuestionAnswer.READ_OCASION);
-			}
-			break;
-		case R.id.rb_leio_pouco:
-			if (checked) {
-				newValuesQuizz.put(QuestionAnswer.READS,
-						QuestionAnswer.READ_NOT);
-			}
-			break;
-		}
-	}
-
+	
 	private void restartItemJourneyList() {
 		if (journeyItemList == null) {
 			journeyItemList = new ArrayList<IListItem>();
 		} else {
 			journeyItemList.clear();
 		}
-	}
-
-	/**
-	 * Handle the quantity of lecture radio button question
-	 * 
-	 * @param v
-	 */
-	public void onRadioButtonOwnTabletClicked(View v) {
-		// Is the button now checked?
-		boolean checked = ((RadioButton) v).isChecked();
-
-		// Check which radio button was clicked
-		switch (v.getId()) {
-		case R.id.rb_sim:
-			if (checked) {
-				newValuesQuizz.put(QuestionAnswer.OWN_TABLET, "yes");
-			}
-			break;
-		case R.id.rb_nao:
-			if (checked) {
-				newValuesQuizz.put(QuestionAnswer.OWN_TABLET, "no");
-			}
-			break;
-		}
-	}
-
-	public void handleQuizzSubmit() {
-		ContentResolver cr = getContentResolver();
-
-		// Insert the row
-		cr.insert(QuestionAnswer.CONTENT_URI, newValuesQuizz);
-
 	}
 
 	@Override
