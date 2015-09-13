@@ -17,6 +17,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.dipeca.item.DialogBox;
+import com.dipeca.item.IMainActivity;
+import com.dipeca.item.Utils;
 import com.dipeca.prototype.R;
 
 public class PagAfterChallenge extends Fragment implements IFragmentBook {
@@ -39,6 +42,11 @@ public class PagAfterChallenge extends Fragment implements IFragmentBook {
 	private TextView tv1 = null;
 	private TextView tv2 = null;
 	private DialogBox dialogBox;
+	
+	private Bitmap caminhoSomebodyBm = null;
+	private Bitmap caminhoBm = null;
+	private int density = 1;
+	private ImageButton btnNext;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -107,7 +115,10 @@ public class PagAfterChallenge extends Fragment implements IFragmentBook {
 					@Override
 					public void onAnimationEnd(Animation arg0) {
 						Log.d(NAME + "cat animation", "end");
+						backGroundWalkingCatAnim.stop();
+						
 						ivCatWalking.setVisibility(View.GONE);
+						ivCatWalking.setBackgroundResource(0);
 					}
 				});
 
@@ -130,12 +141,8 @@ public class PagAfterChallenge extends Fragment implements IFragmentBook {
 					public void onAnimationEnd(Animation animation) {
 						Log.d(NAME + "gui animation", "end");
 						backGroundWalkingGuiAnim.stop();
-
-						dialogBox.setVisibility(View.GONE);
 						ivGuiWalking.setVisibility(View.GONE);
-
-						tv2.setText(R.string.on_the_road2);
-						iv1.setImageBitmap(caminhoBm);
+						ivGuiWalking.setBackgroundResource(0);
 					}
 				});
 
@@ -149,7 +156,7 @@ public class PagAfterChallenge extends Fragment implements IFragmentBook {
 
 		view = inflater.inflate(R.layout.pag_two_images, container, false);
 
-		final ImageButton button = (ImageButton) view
+		btnNext = (ImageButton) view
 				.findViewById(R.id.goToNextPage);
 		iv1 = (ImageView) view.findViewById(R.id.page2Image);
 		iv2 = (ImageView) view.findViewById(R.id.page2Image2);
@@ -157,25 +164,9 @@ public class PagAfterChallenge extends Fragment implements IFragmentBook {
 		ivGuiWalking = (ImageView) view.findViewById(R.id.ivWalk);
 		ivCatWalking = (ImageView) view.findViewById(R.id.ivCatWalk);
 
-		tv1 = (TextView) view.findViewById(R.id.textPag1);
-		tv1.setVisibility(View.GONE);
 
-		tv2 = (TextView) view.findViewById(R.id.textPag2);
-		tv2.setText(R.string.on_the_road);
 
-		dialogBox = (DialogBox) view.findViewById(R.id.dialog);
-		dialogBox.setTextDialog(getString(R.string.on_the_roadThought));
-		dialogBox.setImg1Id(null);
-		RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(
-				dialogBox.getLayoutParams().width,
-				dialogBox.getLayoutParams().height);
-		params1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		params1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-		params1.addRule(RelativeLayout.ALIGN_TOP, R.id.textPag1);
-		dialogBox.setLayoutParams(params1);
-		dialogBox.setImg2Id(getResources().getDrawable(R.anim.gui_anim));
-
-		button.setOnClickListener(new View.OnClickListener() {
+		btnNext.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
 				PagPathChoiceFrg fb = new PagPathChoiceFrg();
@@ -200,28 +191,47 @@ public class PagAfterChallenge extends Fragment implements IFragmentBook {
 			}
 		});
 
+		loadText();
 		loadImages();
 
-		// BookActivity.playMusic(R.raw.midnight_walk);
 		return view;
 	}
 
-	private static Bitmap caminhoSomebodyBm = null;
-	private static Bitmap caminhoBm = null;
-	private float density = 1;
+	
+	private void loadText(){
+		tv1 = (TextView) view.findViewById(R.id.textPag1);
+		tv1.setVisibility(View.GONE);
 
+		tv2 = (TextView) view.findViewById(R.id.textPag2);
+		tv2.setText(R.string.on_the_road);
+
+		dialogBox = (DialogBox) view.findViewById(R.id.dialog);
+		dialogBox.setTextDialog(getString(R.string.on_the_roadThought));
+		dialogBox.setImg1Id(null);
+		RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(
+				dialogBox.getLayoutParams().width,
+				dialogBox.getLayoutParams().height);
+		params1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		params1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+		params1.setMargins(0, 0,16 * density,0);
+		params1.addRule(RelativeLayout.ALIGN_TOP, R.id.textPag1);
+		dialogBox.setLayoutParams(params1);
+		dialogBox.setImg2Id(getResources().getDrawable(R.anim.gui_anim));
+		
+	} 
+	
 	private void loadImages() {
 		Log.d(getString(NAME), "loadImages()");
 
-		density = (int) getResources().getDisplayMetrics().density;
+		density = (int) Math.ceil(getResources().getDisplayMetrics().density);
 
 		iv3.setVisibility(View.INVISIBLE);
-
+   
 		iv1.setLayoutParams(new RelativeLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
-		caminhoSomebodyBm = Utils.decodeSampledBitmapFromResource(
-				getResources(), R.drawable.caminho_dia, 600, 300);
+		caminhoSomebodyBm = onChoice.decodeSampledBitmapFromResourceBG(
+				getResources(), R.drawable.caminho_dia, 400 * density, 200 * density);
 		iv1.setImageBitmap(caminhoSomebodyBm);
 
 		RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
@@ -231,27 +241,28 @@ public class PagAfterChallenge extends Fragment implements IFragmentBook {
 		iv2.setLayoutParams(rlp);
 		iv2.setVisibility(View.GONE);
 
-		caminhoBm = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.caminho_dia_watching, 800, 400);
-		iv2.setImageBitmap(caminhoBm);
-
 		// set current mapImage
 		onChoice.setCurrentMapPosition(R.drawable.mapa_friend);
-		// Add button to screen
+		// Add buttonNext to screen
 		onChoice.addMapButtonToScreen((RelativeLayout) view);
 
 	}
 
 	@Override
 	public void onDetach() {
-		Log.d("PagAfterChallenge ", "PagLateToCross  onDetach()");
+		Log.d("PagAfterChallenge ", "  onDetach()");
 		super.onDetach();
 
-		if (caminhoSomebodyBm != null) {
-			caminhoSomebodyBm.recycle();
-			caminhoSomebodyBm = null;
-		}
+//		iv1.setImageBitmap(null);
+//		iv2.setImageBitmap(null);
+//
+//		if (caminhoSomebodyBm != null) {
+//			caminhoSomebodyBm.recycle();
+//			caminhoSomebodyBm = null;
+//		}
 
+		ivGuiWalking = null;
+		ivCatWalking = null;
 		if (caminhoBm != null) {
 			caminhoBm.recycle();
 			caminhoBm = null;

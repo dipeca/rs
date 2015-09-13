@@ -15,20 +15,24 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
+import com.dipeca.item.DialogBox;
+import com.dipeca.item.IMainActivity;
+import com.dipeca.item.Utils;
 import com.dipeca.prototype.R;
 
-public class PagRobotDestroyedEnigmafrg extends Fragment implements IFragmentBook {
+public class PagRobotDestroyedEnigmafrg extends Fragment implements
+		IFragmentBook {
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.robotDestroyedEnigma;
 	public static int icon = R.drawable.robot_destroyed_icon;
-	
+
 	private TextView tv1 = null;
 	private TextView tv3 = null;
 	private DialogBox dialog = null;
 	private boolean isTextHide = false;
 
-	private static Bitmap bitmap1;
+	private Bitmap bitmap1;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -41,67 +45,74 @@ public class PagRobotDestroyedEnigmafrg extends Fragment implements IFragmentBoo
 		}
 	}
 
-	private ImageView image1;
- 
+	private ImageView ivBg;
+
 	private void loadImages() {
 		Log.d(getString(NAME), "loadImages()");
-		image1 = (ImageView) view.findViewById(R.id.pag1ImageView);
+		ivBg = (ImageView) view.findViewById(R.id.pag1ImageView);
 
-		image1.setImageResource(R.drawable.robot_destroyed_enigma); 
-	} 
-  
+		int density = (int) Math
+				.ceil(getResources().getDisplayMetrics().density);
+
+		bitmap1 = onChoice
+				.decodeSampledBitmapFromResourceBG(getResources(),
+						R.drawable.robot_destroyed_enigma, 480 * density,
+						240 * density);
+		ivBg.setImageBitmap(bitmap1);
+	}
+
 	private void loadText() {
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
 		tv1.setVisibility(View.INVISIBLE);
-		
+
 		tv3 = (TextView) view.findViewById(R.id.textPag1_2);
 		tv3.setVisibility(View.INVISIBLE);
-		
 
 		dialog = (DialogBox) view.findViewById(R.id.dialog);
 		dialog.setTextDialog(getString(R.string.pagRobotDestroyedEnigma));
-		dialog.setImg1Id(getResources().getDrawable(R.anim.gui_anim_left));
+		dialog.setImg1Id(getResources().getDrawable(R.anim.gui_talking_left));
 		dialog.setImg2Id(getResources().getDrawable(R.anim.lopo_anim));
-		
-		RelativeLayout.LayoutParams rl = (LayoutParams) dialog.getLayoutParams();
+
+		RelativeLayout.LayoutParams rl = (LayoutParams) dialog
+				.getLayoutParams();
 		rl.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
 		rl.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
 
 		Utils.removeRule(rl, RelativeLayout.LEFT_OF);
-		Utils.removeRule(rl, RelativeLayout.ALIGN_LEFT); 
+		Utils.removeRule(rl, RelativeLayout.ALIGN_LEFT);
 		Utils.removeRule(rl, RelativeLayout.ALIGN_PARENT_BOTTOM);
 	}
-	
-	
+
 	ImageButton btnNext = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) { 
-  
+			Bundle savedInstanceState) {
+
 		long startTime = System.currentTimeMillis();
-		view = inflater.inflate(R.layout.pag_one_image_dialog, container, false);
+		view = inflater
+				.inflate(R.layout.pag_one_image_dialog, container, false);
 		long endTime = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
 		Log.d("Total time " + NAME, "onCreateView after inflate time ="
 				+ totalTime);
 
-		// loadImages()   
-		loadImages();  
+		// loadImages()
+		loadImages();
 		loadText();
-		
+
 		tv1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				int height1 = 0; 
-				int width3 = 0; 
+				int height1 = 0;
+				int width3 = 0;
 				int multiplier = 7;
 				if (isTextHide) {
-					height1 = tv1.getHeight() * multiplier ;
-					width3 = dialog.getWidth() * multiplier ;
+					height1 = tv1.getHeight() * multiplier;
+					width3 = dialog.getWidth() * multiplier;
 					isTextHide = false;
 				} else {
 					height1 = tv1.getHeight() / multiplier;
-					width3 = dialog.getWidth() / multiplier ;
+					width3 = dialog.getWidth() / multiplier;
 					isTextHide = true;
 				}
 
@@ -123,40 +134,38 @@ public class PagRobotDestroyedEnigmafrg extends Fragment implements IFragmentBoo
 				// Do the action associated with the RED region
 				PagEnigmaFish frg = new PagEnigmaFish();
 
-				onChoice.onChoiceMade(frg,PagEnigmaFish.NAME, PagEnigmaFish.icon);
-				onChoice.onChoiceMadeCommit(getString( NAME), true);
+				onChoice.onChoiceMade(frg, PagEnigmaFish.NAME,
+						PagEnigmaFish.icon);
+				onChoice.onChoiceMadeCommit(getString(NAME), true);
 			}
 		});
-		
+
 		final ImageButton buttonPrev = (ImageButton) view
 				.findViewById(R.id.goToPrevPage);
-		
+
 		buttonPrev.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
 				PagRobotDestroyedfrg fb = new PagRobotDestroyedfrg();
 
-				onChoice.onChoiceMade(fb, getString(PagRobotDestroyedfrg.NAME), null);
+				onChoice.onChoiceMade(fb, getString(PagRobotDestroyedfrg.NAME),
+						null);
 				onChoice.onChoiceMadeCommit(getString(NAME), false);
 			}
 		});
+
+		onChoice.setCurrentMapPosition(R.drawable.mapa_robot);
+		onChoice.addMapButtonToScreen((RelativeLayout) view);
 
 		return view;
 	}
 
 	@Override
 	public void onDetach() {
-		Log.d("Kingdom ", "Kingdom  onDetach()");
+		Log.d("PagRobotDestroyed ", "onDetach()");
 		super.onDetach();
 
-		if(bitmap1 != null){
-			bitmap1.recycle();
-			bitmap1 = null;
-		}
-
 	}
-
-	AnimationDrawable backGroundChangeAnim;
 
 	@Override
 	public String getPrevPage() {

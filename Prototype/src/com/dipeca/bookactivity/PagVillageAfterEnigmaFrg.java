@@ -14,6 +14,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.dipeca.item.DialogBox;
+import com.dipeca.item.IMainActivity;
+import com.dipeca.item.Utils;
 import com.dipeca.prototype.R;
 
 public class PagVillageAfterEnigmaFrg extends Fragment implements IFragmentBook {
@@ -107,9 +110,9 @@ public class PagVillageAfterEnigmaFrg extends Fragment implements IFragmentBook 
 		buttonPrev.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				PagVillageFrg fb = new PagVillageFrg();
+				PagEnigmaFrg fb = new PagEnigmaFrg();
 
-				onChoice.onChoiceMade(fb, getString(PagVillageFrg.NAME), getResources().getResourceName(PagVillageFrg.icon));
+				onChoice.onChoiceMade(fb, getString(PagEnigmaFrg.NAME), getResources().getResourceName(PagEnigmaFrg.icon));
 				onChoice.onChoiceMadeCommit(getString(NAME), false);
 			}
 		});
@@ -128,15 +131,15 @@ public class PagVillageAfterEnigmaFrg extends Fragment implements IFragmentBook 
 
 		iv1 = (ImageView) view.findViewById(R.id.pag1ImageView);
 
-		float density = (float) getResources().getDisplayMetrics().density;
+		int density = (int) getResources().getDisplayMetrics().density;
 
 		bitmapVillage = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.villageafterchall, 600, 300);
+				R.drawable.villageafterchall, 540 * density, 270 * density);
 		iv1.setImageBitmap(bitmapVillage);
 	
 		// set current mapImage
 		onChoice.setCurrentMapPosition(R.drawable.mapa_primeiro);
-		// Add button to screen
+		// Add buttonNext to screen
 		onChoice.addMapButtonToScreen((RelativeLayout) view);
 		
 	}

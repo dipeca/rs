@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.dipeca.item.DialogBox;
+import com.dipeca.item.IMainActivity;
 import com.dipeca.prototype.R;
 
 public class PagTheEnd extends Fragment {

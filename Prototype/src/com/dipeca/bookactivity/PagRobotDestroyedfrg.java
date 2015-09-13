@@ -2,7 +2,6 @@ package com.dipeca.bookactivity;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +14,9 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
+import com.dipeca.item.DialogBox;
+import com.dipeca.item.IMainActivity;
+import com.dipeca.item.Utils;
 import com.dipeca.prototype.R;
 
 public class PagRobotDestroyedfrg extends Fragment implements IFragmentBook {
@@ -28,8 +30,6 @@ public class PagRobotDestroyedfrg extends Fragment implements IFragmentBook {
 	private DialogBox dialog = null;
 	private boolean isTextHide = false;
 
-	private static Bitmap bitmap1;
-
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -41,18 +41,18 @@ public class PagRobotDestroyedfrg extends Fragment implements IFragmentBook {
 		}
 	}
 
-	private ImageView image1;
-	private ImageView image2;   
- 
+	private ImageView ivBg;
+  
 	private void loadImages() {
 		Log.d(getString(NAME), "loadImages()");
-		image1 = (ImageView) view.findViewById(R.id.pag1ImageView);
-		image2 = (ImageView) view.findViewById(R.id.pag1ImageViewBirds);
+		ivBg = (ImageView) view.findViewById(R.id.pag1ImageView);
 
-		image1.setImageResource(R.anim.robot_destroyed); 
-		AnimationDrawable animation = (AnimationDrawable) image1.getDrawable();
+		ivBg.setImageResource(R.anim.robot_destroyed); 
+		AnimationDrawable animation = (AnimationDrawable) ivBg.getDrawable();
 		animation.setOneShot(true);
 		animation.start();
+		
+		Log.d("dalvikvm- PagRobotDestr", "R.anim.robot_destroyed");
 	} 
   
 	private void loadText() {
@@ -92,15 +92,14 @@ public class PagRobotDestroyedfrg extends Fragment implements IFragmentBook {
 				+ totalTime);
 
 		//plays the explosion sound
-	//	BookActivity.playMusicOnce(R.raw.robot_destroyed);
-		
+		BookActivity.playMusicOnce(R.raw.explosion);
+		 
 		// loadImages()   
 		loadImages();  
 		loadText();
 		
 		tv1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				float density = (float) getResources().getDisplayMetrics().density;
 				int height1 = 0; 
 				int width3 = 0; 
 				int multiplier = 7;
@@ -158,11 +157,7 @@ public class PagRobotDestroyedfrg extends Fragment implements IFragmentBook {
 		Log.d("Kingdom ", "Kingdom  onDetach()");
 		super.onDetach();
 
-		if(bitmap1 != null){
-			bitmap1.recycle();
-			bitmap1 = null;
-		}
-
+		ivBg.setImageBitmap(null);
 	}
 
 	AnimationDrawable backGroundChangeAnim;

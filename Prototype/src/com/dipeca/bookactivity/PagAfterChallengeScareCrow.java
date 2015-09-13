@@ -20,13 +20,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.dipeca.item.DialogBox;
+import com.dipeca.item.IMainActivity;
+import com.dipeca.item.ObjectItem;
 import com.dipeca.prototype.R;
 
 public class PagAfterChallengeScareCrow extends Fragment implements
 		IFragmentBook {
 	private IMainActivity onChoice;
 	public static int NAME = R.string.adventureGoesOn;
-	public static String icon = "caminho_somebody_icon";
+	public static int icon = R.drawable.caminho_dia_fim_icon;
 
 	private ImageView ivWalking;
 
@@ -34,7 +37,7 @@ public class PagAfterChallengeScareCrow extends Fragment implements
 	private ImageView iv2;
 	private ImageView iv3;
 
-	private float density = 1;
+	private int density = 1;
 
 	private TextView tv1 = null;
 	private TextView tv2 = null;
@@ -58,16 +61,17 @@ public class PagAfterChallengeScareCrow extends Fragment implements
 	public void onStart() {
 		super.onStart();
 
+		density = (int) Math.ceil(getResources().getDisplayMetrics().density);
 		ivWalking.setBackgroundResource(R.anim.gui_run);
-		ivWalking.getLayoutParams().width = (int)Math.ceil(206 * density);
-		ivWalking.getLayoutParams().height = (int)Math.ceil(380 * density);
+		ivWalking.getLayoutParams().width = (int) Math.ceil(206 * density);
+		ivWalking.getLayoutParams().height = (int) Math.ceil(380 * density);
 		backGroundChangeAnim = (AnimationDrawable) ivWalking.getBackground();
 
 		Animation rotateAnim = new RotateAnimation(0f, 15f);
 		Animation animation = new TranslateAnimation(-240 * density,
-				(getResources().getDisplayMetrics().widthPixels + 100)
+				(getResources().getDisplayMetrics().widthPixels + 200)
 						* density, -8 * density, -8 * density);
-		animation.setDuration(5000);
+		animation.setDuration(4500);
 
 		AnimationSet setAnim = new AnimationSet(true);
 
@@ -103,6 +107,9 @@ public class PagAfterChallengeScareCrow extends Fragment implements
 				backGroundChangeAnim.stop();
 
 				ivWalking.setVisibility(View.GONE);
+
+				backGroundChangeAnim.stop();
+				ivWalking.setBackgroundResource(0);
 			}
 		});
 
@@ -119,29 +126,21 @@ public class PagAfterChallengeScareCrow extends Fragment implements
 
 		view = inflater.inflate(R.layout.pag_two_images, container, false);
 
-		final ImageButton button = (ImageButton) view
+		// loadImages
+		loadImages();
+		loadText();
+		
+		final ImageButton btnNext = (ImageButton) view
 				.findViewById(R.id.goToNextPage);
 
-		button.setOnClickListener(new View.OnClickListener() {
+		btnNext.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				Fragment fb = null;
-				// Check if we already have traveled to the scarecrow
-				ObjectItem oi = new ObjectItem();
-				oi.setObjectImageType(ObjectItem.TYPE_KEY);
+				PagDungeon fb = new PagDungeon();
 
-				if (onChoice.isInObjects(oi)) {
-					fb = new PagRobot();
-
-					onChoice.onChoiceMade(fb, PagRobot.NAME, PagRobot.icon);
-				} else {
-					fb = new PagPathChoiceFrg();
-					((PagPathChoiceFrg) fb).setScareCrowPathDone(true);
-					onChoice.onChoiceMade(fb, PagPathChoiceFrg.NAME,
-							PagPathChoiceFrg.icon);
-				}
-
+				onChoice.onChoiceMade(fb, PagDungeon.NAME, PagDungeon.icon);
 				onChoice.onChoiceMadeCommit(NAME, true);
+
 			}
 		});
 
@@ -158,27 +157,25 @@ public class PagAfterChallengeScareCrow extends Fragment implements
 			}
 		});
 
-		loadImages();
-		loadText();
-
 		return view;
 	}
 
 	private void loadText() {
 
 		dialogBox = (DialogBox) view.findViewById(R.id.dialog);
-		
+
 		tv1 = (TextView) view.findViewById(R.id.textPag1);
 		tv1.setText(R.string.on_the_road_Again);
 
 		tv2 = (TextView) view.findViewById(R.id.textPag2);
 		tv2.setVisibility(View.GONE);
 
-		//The dialogBox about having the corn depends on whatever the player found it or not
+		// The dialogBox about having the corn depends on whatever the player
+		// found it or not
 		ObjectItem oiCorn = new ObjectItem();
 		oiCorn.setObjectImageType(ObjectItem.TYPE_CORN);
-		if(onChoice.isInObjects(oiCorn)){
-			
+		if (onChoice.isInObjects(oiCorn)) {
+
 			dialogBox.setTextDialog(getString(R.string.onTheRoadAgainDialog));
 			dialogBox.setImg1Id(getResources().getDrawable(R.anim.gui_anim));
 			RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(
@@ -188,10 +185,10 @@ public class PagAfterChallengeScareCrow extends Fragment implements
 			params1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 			params1.addRule(RelativeLayout.ALIGN_TOP, R.id.textPag1);
 			dialogBox.setLayoutParams(params1);
-		}else{
+		} else {
 			dialogBox.setVisibility(View.GONE);
 		}
-		
+
 	}
 
 	private void loadImages() {
@@ -200,21 +197,22 @@ public class PagAfterChallengeScareCrow extends Fragment implements
 		iv1 = (ImageView) view.findViewById(R.id.page2Image);
 		iv2 = (ImageView) view.findViewById(R.id.page2Image2);
 		iv3 = (ImageView) view.findViewById(R.id.page2Image3);
-		ivWalking = (ImageView) view.findViewById(R.id.ivWalk);
-		
+		ivWalking = (ImageView) view.findViewById(R.id.ivWalk); 
+
 		iv3.setVisibility(View.INVISIBLE);
 
 		iv1.setLayoutParams(new RelativeLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
-		Bitmap caminhoSomebodyBm = Utils.decodeSampledBitmapFromResource(
-				getResources(), R.drawable.caminho_dia_scarecrow, 600, 300);
+		Bitmap caminhoSomebodyBm = onChoice.decodeSampledBitmapFromResourceBG(
+				getResources(), R.drawable.caminho_dia_scarecrow, 400 * density,
+				200 * density);
 		iv1.setImageBitmap(caminhoSomebodyBm);
 
 		iv2.setVisibility(View.GONE);
 
 		onChoice.setCurrentMapPosition(R.drawable.mapa_espantalho);
-		// Add button to screen
+		// Add buttonNext to screen
 		onChoice.addMapButtonToScreen((RelativeLayout) view);
 	}
 
@@ -228,6 +226,16 @@ public class PagAfterChallengeScareCrow extends Fragment implements
 	@Override
 	public String getNextPage() {
 		return null;
+	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+
+		if (backGroundChangeAnim != null) {
+			backGroundChangeAnim.stop();
+			ivWalking.setBackgroundResource(0);
+		}
 	}
 
 }

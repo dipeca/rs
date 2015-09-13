@@ -15,6 +15,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.dipeca.item.IMainActivity;
+import com.dipeca.item.Utils;
 import com.dipeca.prototype.R;
 
 public class PagLockMathsVault extends Fragment implements IFragmentBook {
@@ -22,16 +24,16 @@ public class PagLockMathsVault extends Fragment implements IFragmentBook {
 	private IMainActivity onChoice;
 	public static int NAME = R.string.lock;
 	public static int icon = R.drawable.caminho_somebody_icon;
-	private static ImageButton button;
+	private ImageButton button;
 
-	MathMentalPyramidFrg math = null;
-	View view = null;
-	ImageView iv1;
-	ImageView ivBack;
+	private MathMentalPyramidFrg math = null;
+	private View view = null;
+	private ImageView iv1;
+	private ImageView ivBack;
 	private float density = 1;
-	private static ImageButton btnHelp = null;
-	private static Bitmap lock = null;
-	private static Bitmap background = null;
+	private ImageButton btnHelp = null;
+	private Bitmap lock = null;
+	private Bitmap background = null;
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -65,7 +67,7 @@ public class PagLockMathsVault extends Fragment implements IFragmentBook {
 		
 		if(isVaultPageToShow){
 			background = Utils.decodeSampledBitmapFromResource(getResources(),
-					R.drawable.cofre_fechado_back, 600,
+					R.drawable.cofre_fechado, 600,
 					300);
 		}else{
 			background = Utils.decodeSampledBitmapFromResource(getResources(),
@@ -75,7 +77,7 @@ public class PagLockMathsVault extends Fragment implements IFragmentBook {
 
 		ivBack.setImageBitmap(background);
 		
-		// Add button to screen
+		// Add buttonNext to screen
 		onChoice.addMapButtonToScreen((RelativeLayout) view);
 		
 	}
@@ -138,7 +140,7 @@ public class PagLockMathsVault extends Fragment implements IFragmentBook {
 		        if(w/density > 600 ){ //only adjust for tablets, not for small devices
 			        if (heightDiff > (100 * density)) { // if more than 100 pixels, its probably a keyboard...
 				        Log.d("PagLockMaths", "keyboard visible");
-				        view.findViewById(R.id.mathTr).setPadding(0, (int) (160 * density), 0, 0);
+				        view.findViewById(R.id.mathTr).setPadding(0, (int) (180 * density), 0, 0);
 			        }
 			        else{
 			            view.findViewById(R.id.mathTr).setPadding(0, (int) (232 * density), 0, 0);

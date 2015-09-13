@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dipeca.item.IMainActivity;
 import com.dipeca.prototype.R;
 
 /**
@@ -194,7 +195,6 @@ public class MathMentalPyramidFrg extends Fragment {
 						.getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(base3ET.getWindowToken(), 0);
 
-				//onChoice.onChoiceMadeCommit(R.string.lock, true);
 				return true;
 			} else {
 				toast = Toast.makeText(getActivity(),

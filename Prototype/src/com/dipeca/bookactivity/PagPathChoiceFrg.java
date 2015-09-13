@@ -13,6 +13,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.dipeca.item.IMainActivity;
+import com.dipeca.item.ObjectItem;
+import com.dipeca.item.Utils;
 import com.dipeca.prototype.R;
 
 public class PagPathChoiceFrg extends Fragment implements OnTouchListener,
@@ -63,35 +66,25 @@ public class PagPathChoiceFrg extends Fragment implements OnTouchListener,
 
 		ObjectItem oiLake = new ObjectItem();
 		oiLake.setObjectImageType(ObjectItem.TYPE_KEY);
+		
+		ObjectItem oiSpell = new ObjectItem();
+		oiSpell.setObjectImageType(ObjectItem.TYPE_SPELL);
 
-		if (onChoice.isInObjects(oiSC) && onChoice.isInObjects(oiLake)) {
-			// set current mapImage
-			onChoice.setCurrentMapPosition(R.drawable.mapa_ambos);
-		} else if (onChoice.isInObjects(oiSC)) {
-			// set current mapImage
-			onChoice.setCurrentMapPosition(R.drawable.mapa_espantalho);
-		} else if (onChoice.isInObjects(oiLake)) {
-			// set current mapImage
-			onChoice.setCurrentMapPosition(R.drawable.mapa_lago);
-		} else {
-			// set current mapImage
-			onChoice.setCurrentMapPosition(R.drawable.mapa_escolha);
-		}
-		// Add button to screen
+		// Add buttonNext to screen
 		onChoice.addMapButtonToScreen((RelativeLayout) view);
 
 		return view;
 	}
 
-	private void transitionFragment(boolean isShadowPath) {
+	private void loadNextPageFragment(boolean isShadowPath) {
 		// record the choice on main activity
-		String iconNextPage;
 		if (isShadowPath) {
 			PageScareCrowField frg = new PageScareCrowField();
-			onChoice.onChoiceMade(frg, PageScareCrowField.NAME, PageScareCrowField.icon);
+			onChoice.onChoiceMade(frg, PageScareCrowField.NAME,
+					PageScareCrowField.icon);
 		} else {
-			PagLakeToCross frg = new PagLakeToCross();
-			onChoice.onChoiceMade(frg, PagLakeToCross.NAME, PagLakeToCross.icon);
+			PagSwamp frg = new PagSwamp();
+			onChoice.onChoiceMade(frg, PagSwamp.NAME, PagSwamp.icon);
 
 		}
 
@@ -109,32 +102,30 @@ public class PagPathChoiceFrg extends Fragment implements OnTouchListener,
 		iv1 = (ImageView) view.findViewById(R.id.page3Image);
 		iv2 = (ImageView) view.findViewById(R.id.page3ImageClick);
 
-		ObjectItem oiKey = new ObjectItem();
+		ObjectItem oiRope = new ObjectItem();
 		ObjectItem oiBottle = new ObjectItem();
 
-		oiKey.setObjectImageType(ObjectItem.TYPE_KEY);
+		oiRope.setObjectImageType(ObjectItem.TYPE_ROPE);
 		oiBottle.setObjectImageType(ObjectItem.TYPE_BOTTLE);
 
-		isLakeDone = onChoice.isInObjects(oiKey);
+		isLakeDone = onChoice.isInObjects(oiRope);
 		isScareCrowDone = onChoice.isInObjects(oiBottle);
 
+		int resId = 0;
 		if (isScareCrowDone && isLakeDone) {
+			resId = R.drawable.choice_both_path;
 
-			bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
-					R.drawable.choice_both_path, 600, 300);
 		} else if (isScareCrowDone) {
-
-			bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
-					R.drawable.choice_after_scarecrow, 600, 300);
+			resId = R.drawable.choice_after_scarecrow;
 		} else if (isLakeDone) {
-
-			bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
-					R.drawable.choice_lake, 600, 300);
+			resId = R.drawable.choice_lake;
 		} else {
-
-			bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
-					R.drawable.choice_none, 600, 300);
+			resId = R.drawable.choice_none;
 		}
+
+		int density = (int) Math.ceil(getResources().getDisplayMetrics().density);
+		bitmap1 = onChoice.decodeSampledBitmapFromResourceBG(getResources(), resId,
+				400 * density, 200 * density);
 
 		iv1.setImageBitmap(bitmap1);
 
@@ -144,7 +135,7 @@ public class PagPathChoiceFrg extends Fragment implements OnTouchListener,
 
 		// set current mapImage
 		onChoice.setCurrentMapPosition(R.drawable.mapa_escolha);
-		// Add button to screen
+		// Add Map btn to screen
 		onChoice.addMapButtonToScreen((RelativeLayout) view);
 	}
 
@@ -163,10 +154,10 @@ public class PagPathChoiceFrg extends Fragment implements OnTouchListener,
 			int tolerance = 25;
 			if (Utils.closeMatch(Color.RED, touchColor, tolerance)) {
 				// Do the action associated with the RED region
-				transitionFragment(true);
+				loadNextPageFragment(true);
 			} else if (Utils.closeMatch(Color.WHITE, touchColor, tolerance)) {
 				// Do the action associated with the white region
-				transitionFragment(false);
+				loadNextPageFragment(false);
 			}
 			break;
 		}

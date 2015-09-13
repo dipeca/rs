@@ -1,5 +1,6 @@
 package com.dipeca.bookactivity;
 
+import java.lang.ref.WeakReference;
 import java.util.Date;
 
 import android.app.Activity;
@@ -22,7 +23,12 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dipeca.item.DialogBox;
+import com.dipeca.item.IMainActivity;
+import com.dipeca.item.ObjectItem;
+import com.dipeca.item.Utils;
 import com.dipeca.prototype.R;
+
 public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener,
 		IFragmentBook {
 	View view = null;
@@ -33,9 +39,9 @@ public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener,
 	private DialogBox tv2 = null;
 	private TextView tv3 = null;
 	private boolean isTextHide = false;
-	private static Bitmap bitmap1;
-	private static Bitmap bitmap2;
-	private static Bitmap bitmap3;
+	private Bitmap bitmap1;
+	private Bitmap bitmap2;
+	private Bitmap bitmap3;
 	private boolean isAmuletAcknoledged = false;
 	ImageButton buttonNext = null;
 	ImageButton buttonPrev = null;
@@ -55,27 +61,31 @@ public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener,
 	private ImageView iv1;
 	private ImageView ivClickable;
 	private ImageView ivTalisman;
-	private float density = 1;
+	private int density = 1;
 
 	private void loadImages() {
-		Log.d("Frg Bed Room ", "loadImages()");
+		Log.d("Frg Bed Room amulet", "loadImages()");
 		iv1 = (ImageView) view.findViewById(R.id.pag1ImageView);
 		ivClickable = (ImageView) view.findViewById(R.id.pag1ImageViewAmuleto);
 
-		density = (float) getResources().getDisplayMetrics().density;
-		bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.quarto_olhar_talisma, 600, 300);
+		density = (int) Math.ceil(getResources().getDisplayMetrics().density);
+		bitmap1 = onChoice.decodeSampledBitmapFromResourceBG(getResources(),
+				R.drawable.quarto_olhar_talisma, 400 * density, 200 * density);
 		iv1.setImageBitmap(bitmap1);
-
+ 
 		bitmap2 = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.amuleto_cli, (int) Math.ceil(50 * density), (int) Math.ceil(25));
+				R.drawable.amuleto_cli, (int) Math.ceil(50 * density),
+				(int) Math.ceil(25 * density));
 
 		ivClickable.setImageBitmap(bitmap2);
 
 		bitmap3 = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.talisma, (int) Math.ceil(252),(int) Math.ceil(252 * density));
+				R.drawable.talisma, (int) Math.ceil(198* density),
+				(int) Math.ceil(198 * density));
 
 		ivTalisman.setImageBitmap(bitmap3);
+
+		Log.d("Frg Bed Room amulet", "after loadImages()");
 	}
 
 	private Handler mHandler = new Handler();
@@ -93,14 +103,18 @@ public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener,
 				if (BookActivity.bitmap2 == null) {
 					BookActivity.bitmap2 = Utils
 							.decodeSampledBitmapFromResource(getResources(),
-									R.drawable.quarto_cli, (int) Math.ceil(50 * density),
+									R.drawable.quarto_cli,
+									(int) Math.ceil(50 * density),
 									(int) Math.ceil(25 * density));
 
+				}
+				if (BookActivity.bitmapTalisma == null) {
 					BookActivity.bitmapTalisma = Utils
 							.decodeSampledBitmapFromResource(getResources(),
-									R.drawable.talisma, 104, 104);
+									R.drawable.talisma,
+									128 * (int) Math.ceil(density),
+									128 * (int) Math.ceil(density));
 				}
-
 				// amuleto.setImageBitmap(BookActivity.bitmapTalisma);
 			}
 			long endTime = System.currentTimeMillis();
@@ -155,9 +169,10 @@ public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener,
 		buttonNext.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				PagFindPortalFrg fb = new PagFindPortalFrg();
-
+				WeakReference<Fragment> weakFgr = new WeakReference<Fragment>(fb);
+				
 				if (isAmuletAcknoledged) {
-					onChoice.onChoiceMade(fb, PagFindPortalFrg.NAME,
+					onChoice.onChoiceMade(weakFgr, PagFindPortalFrg.NAME,
 							PagFindPortalFrg.icon);
 					onChoice.onChoiceMadeCommit(NAME, true);
 				} else {
@@ -177,7 +192,9 @@ public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener,
 
 				PagBedRoomfrg fb = new PagBedRoomfrg();
 
-				onChoice.onChoiceMade(fb, PagBedRoomfrg.NAME,
+				WeakReference<Fragment> weakFgr = new WeakReference<Fragment>(fb);
+				
+				onChoice.onChoiceMade(weakFgr, PagBedRoomfrg.NAME,
 						PagBedRoomfrg.icon);
 				onChoice.onChoiceMadeCommit(NAME, false);
 			}
@@ -205,13 +222,17 @@ public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener,
 
 		RelativeLayout.LayoutParams rl = (LayoutParams) tv1.getLayoutParams();
 		rl.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
-		rl.setMargins((int) Math.ceil(16 * density), (int) Math.ceil(16 * density), (int) Math.ceil(16 * density), (int) Math.ceil(16 * density));
+		rl.setMargins((int) Math.ceil(16 * density),
+				(int) Math.ceil(16 * density), (int) Math.ceil(16 * density),
+				(int) Math.ceil(16 * density));
 		// rl.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		Utils.removeRule(rl, RelativeLayout.ALIGN_PARENT_LEFT);
 
 		RelativeLayout.LayoutParams rl2 = (LayoutParams) tv2.getLayoutParams();
 		rl2.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-		rl2.setMargins((int) Math.ceil(60 * density), (int) Math.ceil(16 * density), (int) Math.ceil(16), (int) Math.ceil(16 * density));
+		rl2.setMargins((int) Math.ceil(60 * density),
+				(int) Math.ceil(16 * density), (int) Math.ceil(16),
+				(int) Math.ceil(16 * density));
 		// rl2.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		Utils.removeRule(rl2, RelativeLayout.ALIGN_PARENT_RIGHT);
 
@@ -275,9 +296,20 @@ public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener,
 		Log.d("BedRoom ", "BedRoom onDetach()");
 		super.onDetach();
 
+		// if (bitmap1 != null) {
 		// bitmap1.recycle();
 		// bitmap1 = null;
-
+		// }
+		//
+		// if (bitmap2 != null) {
+		// bitmap2.recycle();
+		// bitmap2 = null;
+		// }
+		//
+		// if (bitmap3 != null) {
+		// bitmap3.recycle();
+		// bitmap3 = null;
+		// }
 	}
 
 	@Override
@@ -299,6 +331,11 @@ public class PagBedRoomfAmuletfrg extends Fragment implements OnTouchListener,
 			int tolerance = 25;
 			if (Utils.closeMatch(Color.RED, touchColor, tolerance)) {
 
+				if(!isAmuletAcknoledged){
+					//Found object
+					//BookActivity.playMusicOnce(R.raw.picked_item);
+				}
+				
 				ivTalisman.setVisibility(View.VISIBLE);
 
 				onChoice.objectFoundPersist(oi);

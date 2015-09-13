@@ -4,21 +4,29 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dipeca.item.DialogBox;
+import com.dipeca.item.IMainActivity;
+import com.dipeca.item.ObjectItem;
+import com.dipeca.item.Utils;
 import com.dipeca.prototype.R;
 
 public class PagLakeToCrossFindObjects extends Fragment implements
@@ -28,20 +36,22 @@ public class PagLakeToCrossFindObjects extends Fragment implements
 	public static int NAME = R.string.theLakeToCross;
 	public static int icon = R.drawable.lago_icon;
 	private TextView tv1 = null;
-	private TextView tv3 = null;
-	private boolean isTextHide = false;
 
-	private static Bitmap bitmap1;
-	private static Bitmap bitmap2;
-	private static Bitmap bitmap3;
+	private Bitmap bitmap1;
+	private Bitmap bitmap2;
+	private Bitmap bitmap3;
 
-	private static DialogBox dialog = null;
-	ImageButton button = null;
+	private DialogBox dialog = null;
+	ImageButton buttonNext = null;
 	ImageButton buttonPrev = null;
 
-	private static ObjectItem oi = null;
+	private ImageView ivMoving;
+	private ImageView iv1;
+	private ImageView iv3;
+
+	private ObjectItem oi = null;
 	private static boolean isObjectsFound = false;
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -53,119 +63,182 @@ public class PagLakeToCrossFindObjects extends Fragment implements
 		}
 	}
 
-	private ImageView image1;
-	private ImageView image2;
+	private ImageView ivObjectFound;
 	private ImageView ivClickable;
 	private ImageView icon1;
 	private ImageView icon2;
-	private float density = 1;
-	
+	private int density = 1;
+
+	private void loadText() {
+		dialog = new DialogBox(getActivity());
+
+		tv1 = (TextView) view.findViewById(R.id.textPag1);
+		tv1.setText(R.string.pagLake);
+
+		RelativeLayout.LayoutParams rl = new RelativeLayout.LayoutParams(
+				280 * density, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		// rl.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+		rl.addRule(RelativeLayout.ALIGN_RIGHT, buttonNext.getId());
+		rl.addRule(RelativeLayout.ABOVE, buttonNext.getId());
+
+		dialog.setLayoutParams(rl);
+		dialog.setBottom(48 * density);
+
+		((RelativeLayout) view.getRootView()).addView(dialog, rl);
+		dialog.setTextDialog(getString(R.string.pagLakeGuiDialog));
+		dialog.setImg2Id(getResources().getDrawable(R.anim.gui_anim));
+		dialog.setImg1Id(getResources().getDrawable(R.anim.friend_dialog));
+	}
+
 	private void loadImages() {
-		
-		// Add button to screen
-		onChoice.addMapButtonToScreen((RelativeLayout) view);
-		
-		
-		Log.d("KingDom ", "loadImages()");
-		image1 = (ImageView) view.findViewById(R.id.pag1ImageView);
-		ivClickable = (ImageView) view.findViewById(R.id.clickable);
 
-		bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.lagozoomout, 600, 300);
-		image1.setImageBitmap(bitmap1);
-
-		bitmap3 = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.lagoteste2todrop, 300, 150);
-		ivClickable = (ImageView) view.findViewById(R.id.clickable);
-		ivClickable.setImageBitmap(bitmap3);
-
-		image2 = (ImageView) view.findViewById(R.id.pag1Amuleto);
-
-		icon1 = (ImageView) view.findViewById(R.id.icon1);
+		icon1 = (ImageView) view.findViewById(R.id.iconToShow);
 		icon2 = (ImageView) view.findViewById(R.id.icon2);
-		
+
 		icon1.setVisibility(View.VISIBLE);
 		icon2.setVisibility(View.VISIBLE);
+
+		ivClickable = (ImageView) view.findViewById(R.id.ivClickable);
+		ivObjectFound = (ImageView) view.findViewById(R.id.pag1Object);
+
+		Display display = getActivity().getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		int width = size.x;
+		int height = size.y;
+		Log.d("size:", "w: " + width + " h: " + height + " density: " + density);
+
+		Log.d(getString(NAME), "loadImages()");
+		iv1 = (ImageView) view.findViewById(R.id.bg);
+		iv3 = (ImageView) view.findViewById(R.id.fg);
+
+		final ImageView ivGuiWalking = (ImageView) view
+				.findViewById(R.id.ivWalk);
+		ivGuiWalking.setVisibility(View.GONE);
+
+		ivMoving = new ImageView(getActivity());
+
+		Bitmap bg = onChoice.decodeSampledBitmapFromResourceBG(getResources(),
+				R.drawable.pantano, 600 * density, 300 * density);
+		// Bitmap mg = Utils.decodeSampledBitmapFromResource(getResources(),
+		// R.drawable.p, 600 * density, 300 * density);
+		Bitmap fg = onChoice.decodeSampledBitmapFromResourceFG(getResources(),
+				R.drawable.pant_foreground2, 600 * density, 300 * density);
+		Bitmap bmVibrate = Utils.decodeSampledBitmapFromResource(
+				getResources(), R.drawable.pant_objecto, 180 * density,
+				120 * density);
+		Bitmap bmClickable = Utils.decodeSampledBitmapFromResource(
+				getResources(), R.drawable.lagoteste2todrop,
+				(int) Math.ceil(50 * density), (int) Math.ceil(25 * density));
+
+		iv1.setImageBitmap(bg);
+		iv3.setImageBitmap(fg);
+		ivClickable.setImageBitmap(bmClickable);
+
+		// Mist
+		RelativeLayout.LayoutParams paramsLayoutMist = new RelativeLayout.LayoutParams(
+				2000 * density, 1000 * density);
+
+		paramsLayoutMist.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+
+		int mGrassWidth = 160;
+		int mGrassHeight = 200;
+
+		if (height >= 800) {
+			mGrassWidth = 260;
+			mGrassHeight = 360;
+		}
+
+		// grass vibrating
+		RelativeLayout.LayoutParams paramsLayout = new RelativeLayout.LayoutParams(
+				mGrassWidth * density, mGrassHeight * density);
+		paramsLayout.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+		paramsLayout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+
+		ivMoving.setImageBitmap(bmVibrate);
+		ivMoving.setY(-48 * density);
+
+		((RelativeLayout) view.getRootView())
+				.addView(ivMoving, 4, paramsLayout);
+
+		// Build moving animation
+		final Animation animationRotate = new RotateAnimation(-10, 25,
+				Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+				0f);
+		animationRotate.setRepeatMode(Animation.REVERSE);
+		// animationRotate.setInterpolator(new AccelerateInterpolator());
+		animationRotate.setRepeatCount(50);
+		animationRotate.setDuration(8000);
+
+		ivMoving.setAnimation(animationRotate);
+		animationRotate.start();
+
+		view.setOnTouchListener(this);
+		ivMoving.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				// Do the action associated with the white region
+				bitmap2 = Utils.decodeSampledBitmapFromResource(getResources(),
+						R.drawable.pant_objecto, 180, 90);
+				ivObjectFound.setImageBitmap(bitmap2);
+ 
+				ivObjectFound.setVisibility(View.VISIBLE);
+
+				// Persist object
+				oi = new ObjectItem();
+				oi.setObjectImageType(ObjectItem.TYPE_ROPE);
+				oi.setTitle(getString(R.string.rope));
+
+				onChoice.objectFoundPersist(oi);
+
+				icon1.setImageBitmap(Utils.decodeSampledBitmapFromResource(
+						getResources(), R.drawable.pant_objecto, 48, 48));
+
+				checkObjectsAlreadyFound();
+				
+			}
+		});
+		
+		//set listener to remove popup with object found
+		ivObjectFound.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				ivObjectFound.setVisibility(View.GONE);
+
+			}
+		});
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		long startTime = System.currentTimeMillis();
-		view = inflater
-				.inflate(R.layout.pag_one_image_dialog, container, false);
-		long endTime = System.currentTimeMillis();
-		long totalTime = endTime - startTime;
+		view = inflater.inflate(R.layout.pag_3_images, container, false);
 
-		density = (float) getResources().getDisplayMetrics().density;
+		//Play music
+		BookActivity.playMusic(R.raw.swamp);
 		
-		tv1 = (TextView) view.findViewById(R.id.textPag1);
-		tv1.setText(R.string.pagLake);
+		density = (int) Math.ceil(getResources().getDisplayMetrics().density);
 
-		tv3 = (TextView) view.findViewById(R.id.textPag1_2); 
-		tv3.setVisibility(View.GONE);
+		buttonNext = (ImageButton) view.findViewById(R.id.goToNextPage);
+		buttonNext.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) { 
 
-		dialog = (DialogBox) view.findViewById(R.id.dialog);
-		dialog.setTextDialog(getString(R.string.pagLakeGuiDialog));
-		dialog.setImg2Id(getResources().getDrawable(R.anim.gui_anim));
-		dialog.setImg1Id(getResources().getDrawable(R.anim.friend_dialog));
-		 
-		// loadImages
-		loadImages();
-
-		//check if we already found the objects so we can cross the lake
-		checkObjectsAlreadyFound();
-		
-		image2.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				image2.setVisibility(View.INVISIBLE);
-
-			}
-		});
-
-		tv1.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				float density = (float) getResources().getDisplayMetrics().density;
-				int height1 = 0;
-				int width3 = 0;
-				int multiplier = 7;
-				if (isTextHide) {
-					height1 = tv1.getHeight() * multiplier - ((int)Math.ceil(8 * density));
-					width3 = tv3.getWidth() * multiplier - ((int)Math.ceil(8 * density));
-					isTextHide = false;
-				} else {
-					height1 = tv1.getHeight() / multiplier + ((int)Math.ceil(8 * density));
-					width3 = tv3.getWidth() / multiplier + ((int)Math.ceil(8 * density));
-					isTextHide = true;
-				}
-
-				RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(
-						tv1.getWidth(), height1);
-				tv1.setLayoutParams(params1);
-
-				ViewGroup.LayoutParams params3 = tv3.getLayoutParams();
-				params3.width = width3;
-				params3.height = tv3.getHeight();
-				tv3.setLayoutParams(params3);
-			}
-		});
-
-		button = (ImageButton) view.findViewById(R.id.goToNextPage);
-		button.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-
-				if(checkObjectsAlreadyFound()){
+				if (checkObjectsAlreadyFound()) {
 					PagChest fb = new PagChest();
 					onChoice.onChoiceMade(fb, PagChest.NAME, PagChest.icon);
-	
+
 					onChoice.onChoiceMadeCommit(NAME, true);
-				}else{
-					
-					Toast t = Toast.makeText(getActivity(), getString(R.string.findTwoObjects), Toast.LENGTH_SHORT);
-					t.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL, 80 * Math.round(density), 0);
+				} else {
+
+					Toast t = Toast.makeText(getActivity(),
+							getString(R.string.findTwoObjects),
+							Toast.LENGTH_SHORT);
+					t.setGravity(Gravity.CENTER_HORIZONTAL
+							| Gravity.CENTER_VERTICAL,
+							80 * Math.round(density), 0);
 					t.show();
 				}
 			}
@@ -175,43 +248,47 @@ public class PagLakeToCrossFindObjects extends Fragment implements
 		buttonPrev.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				PagLakeToCross fb = new PagLakeToCross();
+				PagSwamp fb = new PagSwamp();
 
-				onChoice.onChoiceMade(fb, PagLakeToCross.NAME);
+				onChoice.onChoiceMade(fb, PagSwamp.NAME);
 				onChoice.onChoiceMadeCommit(NAME, true);
 			}
 		});
 
-		view.setOnTouchListener(this);
+		// loadImages
+		loadImages();
+		// check if we already found the objects so we can cross the lake
+		checkObjectsAlreadyFound();
 
-		// BookActivity.playMusic(R.raw.village);
+		loadText();
+
 		return view;
 	}
-	
-	private boolean checkObjectsAlreadyFound(){
-		ObjectItem oiRope  = new ObjectItem();
+
+	private boolean checkObjectsAlreadyFound() {
+		ObjectItem oiRope = new ObjectItem();
 		ObjectItem oiPlank = new ObjectItem();
-		
+
 		oiRope.setObjectImageType(ObjectItem.TYPE_ROPE);
 		oiPlank.setObjectImageType(ObjectItem.TYPE_PLANK);
-		
+
 		boolean isRopeOK = onChoice.isInObjects(oiRope);
 		boolean isPlankOK = onChoice.isInObjects(oiPlank);
-		
-		if (isRopeOK && isPlankOK){
+
+		if (isRopeOK && isPlankOK) {
 			isObjectsFound = true;
 		}
-		
-		if(isRopeOK){
-			icon1.setImageBitmap(Utils.decodeSampledBitmapFromResource(getResources(),
-					R.drawable.rope, 48, 48));
+
+		if (isRopeOK) {
+			icon1.setImageBitmap(Utils.decodeSampledBitmapFromResource(
+					getResources(), R.drawable.pant_objecto, 48, 48));
 		}
 
-		if(isPlankOK){
-			icon2.setImageBitmap(Utils.decodeSampledBitmapFromResource(getResources(),
-					R.drawable.plank, 48, 48));
+		if (isPlankOK) {
+			icon2.setImageBitmap(Utils.decodeSampledBitmapFromResource(
+					getResources(), R.drawable.plank, 48, 48));
 		}
-		
+
 		return isObjectsFound;
 	}
 
@@ -220,8 +297,25 @@ public class PagLakeToCrossFindObjects extends Fragment implements
 		Log.d("Kingdom ", "Kingdom  onDetach()");
 		super.onDetach();
 
-		bitmap1.recycle();
-		bitmap1 = null;
+		//remove listener
+		view.setOnTouchListener(null);
+		
+		// image1.setImageBitmap(null);
+		ivObjectFound.setImageBitmap(null);
+		ivClickable.setImageBitmap(null);
+
+		if (bitmap1 != null) {
+			bitmap1.recycle();
+			bitmap1 = null;
+		}
+		if (bitmap2 != null) {
+			bitmap2.recycle();
+			bitmap2 = null;
+		}
+		if (bitmap3 != null) {
+			bitmap3.recycle();
+			bitmap3 = null;
+		}
 
 	}
 
@@ -241,43 +335,24 @@ public class PagLakeToCrossFindObjects extends Fragment implements
 				// Do the action associated with the white region
 				bitmap2 = Utils.decodeSampledBitmapFromResource(getResources(),
 						R.drawable.plank, 180, 90);
-				image2.setImageBitmap(bitmap2);
-				
-				image2.setVisibility(View.VISIBLE);
-				
-				//Persist object
+				ivObjectFound.setImageBitmap(bitmap2);
+
+				ivObjectFound.setVisibility(View.VISIBLE);
+
+				// Persist object
 				oi = new ObjectItem();
 				oi.setObjectImageType(ObjectItem.TYPE_PLANK);
-				oi.setName(getString(R.string.wood));
-				
+				oi.setTitle(getString(R.string.wood));
+
 				onChoice.objectFoundPersist(oi);
-				
-				icon2.setImageBitmap(Utils.decodeSampledBitmapFromResource(getResources(),
-						R.drawable.plank, 48, 48));
+
+				icon2.setImageBitmap(Utils.decodeSampledBitmapFromResource(
+				 getResources(), R.drawable.plank, 48, 48));
 				checkObjectsAlreadyFound();
 
-				
-			}if (Utils.closeMatch(Color.RED, touchColor, tolerance)) {
-				// Do the action associated with the white region
-				bitmap2 = Utils.decodeSampledBitmapFromResource(getResources(),
-						R.drawable.rope, 180, 90);
-				image2.setImageBitmap(bitmap2);
-				
-				image2.setVisibility(View.VISIBLE);
-				
-				//Persist object
-				oi = new ObjectItem();
-				oi.setObjectImageType(ObjectItem.TYPE_ROPE);
-				oi.setName(getString(R.string.rope));
-				
-				onChoice.objectFoundPersist(oi);
-				
-				icon1.setImageBitmap(Utils.decodeSampledBitmapFromResource(getResources(),
-						R.drawable.rope, 48, 48));
-				
-				checkObjectsAlreadyFound();
+			
 			} else {
-				Log.d("PagFindFriend", "Resto da imagem clicada");
+				Log.d("PagSwamp Find obj", "Resto da imagem clicada");
 			}
 			break;
 		}

@@ -2,7 +2,6 @@ package com.dipeca.bookactivity;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -18,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.dipeca.item.IMainActivity;
+import com.dipeca.item.Utils;
 import com.dipeca.prototype.R;
 
 public class PagFindFriend extends Fragment implements OnTouchListener,
@@ -29,8 +30,8 @@ public class PagFindFriend extends Fragment implements OnTouchListener,
 	private TextView tv1 = null;
 	private boolean isTextHide = false;
 
-	private static Bitmap bitmap1;
-	private static Bitmap bitmap2;
+	private Bitmap bitmap1;
+	private Bitmap bitmap2;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -46,29 +47,28 @@ public class PagFindFriend extends Fragment implements OnTouchListener,
 	private ImageView iv1;
 	private ImageView iv2;
 
-	private float density;
+	private int density;
 
 	private void loadImages() {
-		Log.d(getString(NAME), "loadImages()");
+		Log.d("tag:dalvikvm- " + getString(NAME), "loadImages()");
 		iv1 = (ImageView) view.findViewById(R.id.page3Image);
 		iv2 = (ImageView) view.findViewById(R.id.page3ImageClick);
 
-		density = (int) getResources().getDisplayMetrics().density;
-		// bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
-		// R.drawable.companheira_presa, 600, 300);
-		// iv1.setImageBitmap(bitmap1);
+		density = (int) Math.ceil(getResources().getDisplayMetrics().density);
 
 		iv1.setImageDrawable(getResources().getDrawable(R.anim.friend_cry));
 		((AnimationDrawable) iv1.getDrawable()).start();
+		Log.d("tag:dalvikvm- " + getString(NAME), "friend_cry");
 		// iv2.setVisibility(View.VISIBLE);
 
 		bitmap2 = Utils.decodeSampledBitmapFromResource(getResources(),
 				R.drawable.encontrar_companheira_cli, 50, 25);
 		iv2.setImageBitmap(bitmap2);
 
+		Log.d("tag:dalvikvm- " + getString(NAME), "encontrar_companheira_cli");
 		// set current mapImage
 		onChoice.setCurrentMapPosition(R.drawable.mapa_friend);
-		// Add button to screen
+		// Add buttonNext to screen
 		onChoice.addMapButtonToScreen((RelativeLayout) view);
 	}
 
@@ -93,11 +93,11 @@ public class PagFindFriend extends Fragment implements OnTouchListener,
 		view.setOnTouchListener(this);
 
 		// Set image and text to share intent
-		onChoice.setShareIntent(onChoice.createShareIntent(
+		onChoice.setShareIntent(onChoice.createShareIntent( 
 				getString(R.string.social_action_desc),
-				getString(R.string.pagSomethingMoving), Utils
-						.decodeSampledBitmapFromResource(getResources(),
-								R.drawable.companheira_presa, 600, 300)));
+				getString(R.string.pagSomethingMoving), onChoice
+						.decodeSampledBitmapFromResourceBG(getResources(),
+								R.drawable.companheira_presa_lock_bg, 400 * density, 200 * density)));
 		return view;
 	}
 
@@ -124,7 +124,7 @@ public class PagFindFriend extends Fragment implements OnTouchListener,
 		final int evX = (int) ev.getX();
 		final int evY = (int) ev.getY();
 		switch (action) {
-
+ 
 		case MotionEvent.ACTION_UP:
 
 			int touchColor = Utils.getHotspotColor(ev, iv2);

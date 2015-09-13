@@ -20,9 +20,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.dipeca.item.IMainActivity;
+import com.dipeca.item.Utils;
 import com.dipeca.prototype.R;
 
-public class PagKingDomfrg extends Fragment implements IFragmentBook{
+public class PagKingDomfrg extends Fragment implements IFragmentBook {
 	View view = null;
 	private IMainActivity onChoice;
 	public static int NAME = R.string.semgiKingDom;
@@ -31,8 +33,7 @@ public class PagKingDomfrg extends Fragment implements IFragmentBook{
 	private TextView tv3 = null;
 	private boolean isTextHide = false;
 
-	private static Bitmap bitmap1;
-	private static Bitmap bitmap2;
+	private Bitmap bitmap1;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -47,42 +48,43 @@ public class PagKingDomfrg extends Fragment implements IFragmentBook{
 
 	private ImageView image1;
 	private ImageView image2;
- 
+
 	private void loadImages() {
 		Log.d("KingDom ", "loadImages()");
 		image1 = (ImageView) view.findViewById(R.id.pag1ImageView);
 		image2 = (ImageView) view.findViewById(R.id.pag1ImageViewBirds);
 
-		bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.kingdom, 600, 300);
+		int density = (int) Math.ceil(getResources().getDisplayMetrics().density);
+		bitmap1 = onChoice.decodeSampledBitmapFromResourceBG(getResources(),
+				R.drawable.kingdom, 400 * density, 200 * density);
 		image1.setImageBitmap(bitmap1);
 
 		image2.setImageResource(R.anim.crow);
-		
-		float density = (float) getResources().getDisplayMetrics().density;
+
 		Animation animation = new TranslateAnimation(1000 * density, -400
-				* density, density * 200, density * 64); 
-		animation.setDuration(6000); 
+				* density, density * 200, density * 64);
+		animation.setDuration(6000);
 		animation.setRepeatCount(Animation.INFINITE);
 
-		Animation scaleAnimation = new ScaleAnimation(0.3f, 0.0f, 0.3f, 0.0f, 0.5f, 0.5f);
+		Animation scaleAnimation = new ScaleAnimation(0.3f, 0.0f, 0.3f, 0.0f,
+				0.5f, 0.5f);
 		scaleAnimation.setDuration(6000);
-		//scaleAnimation.setStartOffset(1000);
+		// scaleAnimation.setStartOffset(1000);
 		animation.setRepeatCount(Animation.INFINITE);
-		
+
 		Animation alphaAnim = new AlphaAnimation(1f, 0f);
 		alphaAnim.setDuration(200);
 		alphaAnim.setStartOffset(5000);
-		animation.setRepeatCount(Animation.INFINITE);
-		
+		animation.setRepeatCount(10);
+
 		AnimationSet set = new AnimationSet(false);
 		set.addAnimation(scaleAnimation);
 		set.addAnimation(animation);
 		set.addAnimation(alphaAnim);
-		
+
 		set.setInterpolator(new BounceInterpolator());
-		
-		image2.setAnimation(set); 
+
+		image2.setAnimation(set);
 
 		image2.getAnimation().setAnimationListener(
 				new Animation.AnimationListener() {
@@ -101,11 +103,13 @@ public class PagKingDomfrg extends Fragment implements IFragmentBook{
 
 					@Override
 					public void onAnimationEnd(Animation animation) {
-						image2.getAnimation().start();
 						Log.d(NAME + " animation", "end");
+						animation.setRepeatCount(0);
+						image2.setAnimation(null);
+						image2.setImageResource(0);
 					}
 				});
-
+ 
 		image2.getAnimation().start();
 		AnimationDrawable backGroundChangeAnimJake = (AnimationDrawable) image2
 				.getDrawable();
@@ -119,8 +123,8 @@ public class PagKingDomfrg extends Fragment implements IFragmentBook{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		BookActivity.playMusic(R.raw.village);
-		
+		BookActivity.playMusic(R.raw.wind);
+
 		long startTime = System.currentTimeMillis();
 		view = inflater.inflate(R.layout.pag_one_image, container, false);
 		long endTime = System.currentTimeMillis();
@@ -144,12 +148,16 @@ public class PagKingDomfrg extends Fragment implements IFragmentBook{
 				int width3 = 0;
 				int multiplier = 7;
 				if (isTextHide) {
-					height1 = tv1.getHeight() * multiplier - ((int)Math.ceil(8 * density));
-					width3 = tv3.getWidth() * multiplier - ((int)Math.ceil(8 * density));
+					height1 = tv1.getHeight() * multiplier
+							- ((int) Math.ceil(8 * density));
+					width3 = tv3.getWidth() * multiplier
+							- ((int) Math.ceil(8 * density));
 					isTextHide = false;
 				} else {
-					height1 = tv1.getHeight() / multiplier + ((int)Math.ceil(8 * density));
-					width3 = tv3.getWidth() / multiplier + ((int)Math.ceil(8 * density));
+					height1 = tv1.getHeight() / multiplier
+							+ ((int) Math.ceil(8 * density));
+					width3 = tv3.getWidth() / multiplier
+							+ ((int) Math.ceil(8 * density));
 					isTextHide = true;
 				}
 
@@ -170,18 +178,20 @@ public class PagKingDomfrg extends Fragment implements IFragmentBook{
 
 				PagVillageFrg fb = new PagVillageFrg();
 
-				onChoice.onChoiceMade(fb, PagVillageFrg.NAME, PagVillageFrg.icon);
+				onChoice.onChoiceMade(fb, PagVillageFrg.NAME,
+						PagVillageFrg.icon);
 				onChoice.onChoiceMadeCommit(NAME, true);
 			}
 		});
-		
+
 		buttonPrev = (ImageButton) view.findViewById(R.id.goToPrevPage);
 		buttonPrev.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
 				PagFindPortalFrg fb = new PagFindPortalFrg();
 
-				onChoice.onChoiceMade(fb, PagFindPortalFrg.NAME, PagFindPortalFrg.icon);
+				onChoice.onChoiceMade(fb, PagFindPortalFrg.NAME,
+						PagFindPortalFrg.icon);
 				onChoice.onChoiceMadeCommit(NAME, false);
 			}
 		});
@@ -190,7 +200,7 @@ public class PagKingDomfrg extends Fragment implements IFragmentBook{
 		onChoice.setShareIntent(onChoice.createShareIntent(
 				getString(R.string.social_action_desc),
 				getString(R.string.pag2_1), bitmap1));
-		
+
 		return view;
 	}
 
@@ -198,10 +208,11 @@ public class PagKingDomfrg extends Fragment implements IFragmentBook{
 	public void onDetach() {
 		Log.d("Kingdom ", "Kingdom  onDetach()");
 		super.onDetach();
-
-		bitmap1.recycle();
-		bitmap1 = null;
-
+//
+//		if (bitmap1 != null) {
+//			bitmap1.recycle();
+//			bitmap1 = null;
+//		}
 	}
 
 	AnimationDrawable backGroundChangeAnim;

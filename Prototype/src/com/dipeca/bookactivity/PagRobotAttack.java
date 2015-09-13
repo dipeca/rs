@@ -25,6 +25,8 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.dipeca.item.IMainActivity;
+import com.dipeca.item.Utils;
 import com.dipeca.prototype.R;
 
 public class PagRobotAttack extends Fragment implements IFragmentBook {
@@ -39,17 +41,14 @@ public class PagRobotAttack extends Fragment implements IFragmentBook {
 	private ImageView iv2;
 	private ImageView ivBattery;
 	private ImageView ivTalisman;
-	private float density;
+	private int density;
 
-	private boolean isTextHide = false;
-
-	private static Bitmap bitmap1;
-	private static Bitmap bitmap2;
+	private Bitmap bitmap1;
 
 	private ImageButton btnOpenPopup = null;
 	private PopupWindow popupWindow = null;
-	private static ImageButton btnFacebookHelp = null;
-	private static ImageButton btnGPlusHelp = null;
+	private ImageButton btnFacebookHelp = null;
+	private ImageButton btnGPlusHelp = null;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -77,32 +76,30 @@ public class PagRobotAttack extends Fragment implements IFragmentBook {
 		iv2 = (ImageView) view.findViewById(R.id.clickable);
 		ivBattery = (ImageView) view.findViewById(R.id.porta);
 		ivTalisman = (ImageView) view.findViewById(R.id.talisma);
-
-		density = (int) getResources().getDisplayMetrics().density;
-
+ 
 		iv1.setImageDrawable(getResources().getDrawable(R.anim.robot_atack));
 		((AnimationDrawable) iv1.getDrawable()).start();
 
 		// battery highlighted
-		if (BookActivity.bitmap1 == null) {
-			BookActivity.bitmap1 = Utils.decodeSampledBitmapFromResource(
-					getResources(), R.drawable.robot3, 600, 300);
-		}
+		BookActivity.bitmap1 = onChoice
+				.decodeSampledBitmapFromResourceBG(getResources(),
+						R.drawable.robot3, 400 * density, 200 * density);
+		Log.d("dalvikvm-heap robot:", "robot3");
 
 		ivBattery.setImageBitmap(BookActivity.bitmap1);
 
-		if (BookActivity.bitmap2 == null) {
-			BookActivity.bitmap2 = Utils.decodeSampledBitmapFromResource(
-					getResources(), R.drawable.robot_click_scal, 50, 25);
-
-		}
+		BookActivity.bitmap2 = Utils.decodeSampledBitmapFromResource(
+				getResources(), R.drawable.robot_click_scal, 50, 25);
+		Log.d("dalvikvm-heap robot:", "robot_click_scal");
 
 		iv2.setImageBitmap(BookActivity.bitmap2);
 
 		if (BookActivity.bitmapTalisma == null) {
 
-			BookActivity.bitmapTalisma = Utils.decodeSampledBitmapFromResource(
-					getResources(), R.drawable.talisma, 104, 104);
+			BookActivity.bitmapTalisma = Utils
+					.decodeSampledBitmapFromResource(getResources(),
+							R.drawable.talisma, 128 *(int) Math.ceil(density), 128 * (int)Math.ceil(density));
+			Log.d("dalvikvm-heap robot:", "talisma");
 		}
 
 		ivTalisman.setImageBitmap(BookActivity.bitmapTalisma);
@@ -115,6 +112,7 @@ public class PagRobotAttack extends Fragment implements IFragmentBook {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
+		density = (int) Math.ceil(getResources().getDisplayMetrics().density);
 		long startTime = System.currentTimeMillis();
 		view = inflater.inflate(R.layout.pag_drag_object, container, false);
 		long endTime = System.currentTimeMillis();
@@ -125,7 +123,7 @@ public class PagRobotAttack extends Fragment implements IFragmentBook {
 		loadText();
 
 		BookActivity.playMusic(R.raw.robot_walk);
-
+		Log.d("dalvikvm-heap robot music:", "robot_walk");
 		ivTalisman.setOnTouchListener(new MyTouchListener());
 		view.setOnDragListener(new MyDragListener());
 
@@ -172,7 +170,7 @@ public class PagRobotAttack extends Fragment implements IFragmentBook {
 							-(int) Math.ceil(32 * density),
 							(int) Math.ceil(0 * density));
 
-					// FaceBook button
+					// FaceBook buttonNext
 					btnFacebookHelp = (ImageButton) popupView
 							.findViewById(R.id.facebook_button);
 					btnFacebookHelp.setOnClickListener(new OnClickListener() {
@@ -187,7 +185,7 @@ public class PagRobotAttack extends Fragment implements IFragmentBook {
 						}
 					});
 
-					// Google Plus button
+					// Google Plus buttonNext
 					btnGPlusHelp = (ImageButton) popupView
 							.findViewById(R.id.gplus_button);
 					btnGPlusHelp.setOnClickListener(new OnClickListener() {
@@ -215,6 +213,12 @@ public class PagRobotAttack extends Fragment implements IFragmentBook {
 
 			}
 		});
+		
+		// Set image and text to share intent
+		onChoice.setShareIntent(onChoice.createShareIntent(
+				getString(R.string.social_action_desc),
+				getString(R.string.pagrobotAttack), bitmap1));
+		
 		return view;
 	}
 
@@ -223,37 +227,11 @@ public class PagRobotAttack extends Fragment implements IFragmentBook {
 		Log.d(getString(NAME), " onDetach()");
 		super.onDetach();
 
-		if (bitmap1 != null) {
-			bitmap1.recycle();
-			bitmap1 = null;
-		}
-
-		if (bitmap2 != null) {
-			bitmap2.recycle();
-			bitmap2 = null;
-		}
-
-		if (BookActivity.bitmap1 != null) {
-			BookActivity.bitmap1.recycle();
-			BookActivity.bitmap1 = null;
-		}
-
-		if (BookActivity.bitmap2 != null) {
-			BookActivity.bitmap2.recycle();
-			BookActivity.bitmap2 = null;
-		}
-
-		if (BookActivity.bitmapInitial != null) {
-			BookActivity.bitmapInitial.recycle();
-			BookActivity.bitmapInitial = null;
-		}
-
-		if (BookActivity.bitmapTalisma != null) {
-			BookActivity.bitmapTalisma.recycle();
-			BookActivity.bitmapTalisma = null;
-		}
+		ivBattery.setImageBitmap(null);
+		ivTalisman.setImageBitmap(null);
+		iv2.setImageBitmap(null);
 	}
-
+ 
 	private final class MyTouchListener implements OnTouchListener {
 		public boolean onTouch(View view, MotionEvent motionEvent) {
 			if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {

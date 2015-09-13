@@ -445,7 +445,7 @@ public class PrototypeProvider extends ContentProvider {
 	private static class SchemaHelper extends SQLiteOpenHelper {
 
 		public static final String DATABASE_NAME = "reading_project.db";
-		public static final int DATABASE_VERSION = 4;
+		public static final int DATABASE_VERSION = 5;
 
 		public SchemaHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -500,6 +500,7 @@ public class PrototypeProvider extends ContentProvider {
 					+ " TEXT," + Objects.GAME_ID + " INTEGER,"
 					+ Objects.IMAGE_PATH + " TEXT," + Objects.TYPE
 					+ " INTEGER," + Objects.IS_SHOW + " INTEGER,"
+					+ " UNIQUE (" + Objects.NAME +"), "
 					+ " FOREIGN KEY (" + Objects.GAME_ID + ") REFERENCES "
 					+ Game.TABLE_NAME + " (" + Game.ID + "));");
 

@@ -33,9 +33,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dipeca.item.IMainActivity;
 import com.dipeca.prototype.R;
 
-public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmentBook {
+public class PagEnigmaFish extends Fragment implements OnTouchListener,
+		IFragmentBook {
 
 	private IMainActivity onChoice;
 	ImageView imageView = null;
@@ -45,21 +47,21 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 	Canvas canvas = null;
 	Bitmap bitmap = null;
 
-	private static ImageButton btn = null;
-	private static ImageButton btnHelp = null;
-	private static int marginLeftMenu = 0;
+	private ImageButton btn = null;
+	private ImageButton btnHelp = null;
+	private int marginLeftMenu = 0;
 
 	private ImageButton btnOpenPopup = null;
 	private PopupWindow popupWindow = null;
-	private static ImageButton btnFacebookHelp = null;
-	private static ImageButton btnGPlusHelp = null;
+	private ImageButton btnFacebookHelp = null;
+	private ImageButton btnGPlusHelp = null;
 
 	private boolean isMazeSolved = false;
 
 	public static int NAME = R.string.enigma;
 	public static int icon = R.drawable.enigma_icon;
 
-	private static Toast toastObject = null;
+	private Toast toastObject = null;
 
 	// We'll be creating an image that is 400 pixels wide and 400 pixels
 	// tall.
@@ -78,6 +80,11 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 	private final List<LineSegment> firstFish = new ArrayList<LineSegment>();
 	private final List<LineSegment> secondFishLines = new ArrayList<LineSegment>();
 
+	private final List<LineSegment> forbiddenDrawLines1 = new ArrayList<LineSegment>();
+	private final List<LineSegment> forbiddenDrawLines2 = new ArrayList<LineSegment>();
+	private final List<LineSegment> forbiddenDrawLines3 = new ArrayList<LineSegment>();
+	private final List<LineSegment> forbiddenDrawLines4 = new ArrayList<LineSegment>();
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -95,9 +102,9 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 
 		density = (float) getResources().getDisplayMetrics().density;
 
-		fingerTouchMargin = 15 * density;
-		float widthPx = 400 * density;
-		float heightPx = 400 * density;
+		fingerTouchMargin = 15 * (int) Math.ceil(density);
+		float widthPx = 400 * (int) Math.ceil(density);
+		float heightPx = 400 * (int) Math.ceil(density);
 
 		width = (int) widthPx;
 		height = (int) heightPx;
@@ -113,7 +120,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 		paintFill = new Paint();
 
 		paintStroke.setColor(0xffd2c38f);
-		paintStroke.setStrokeWidth(2 * density);
+		paintStroke.setStrokeWidth(2 * (int) Math.ceil(density));
 		paintStroke.setStyle(Paint.Style.STROKE);
 		paintFill.setColor(0xFFb0a16e);
 
@@ -147,6 +154,10 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 		drawFirstFish();
 		drawSecondFish();
 
+		drawFirstBadDrawing();
+		drawFirstBadDrawing2();
+		drawFirstBadDrawing3();
+		drawFirstBadDrawing4();
 		// clear lines and add the other lines of the board
 		// lines.clear();
 		lines.addAll(0, firstFish);
@@ -176,7 +187,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 		paramsSocialBtn.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		// paramsSocialBtn.addRule(RelativeLayout.LEFT_OF, btnHelp.getId());
 		paramsSocialBtn.setMargins(0, (int) Math.ceil(12 * density),
-				(int) Math.ceil(72 * density), 0);
+				(int) Math.ceil(84 * density), 0);
 
 		layout.addView(btnOpenPopup, paramsSocialBtn);
 
@@ -208,7 +219,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 							-(int) Math.ceil(32 * density),
 							(int) Math.ceil(0 * density));
 
-					// FaceBook button
+					// FaceBook buttonNext
 					btnFacebookHelp = (ImageButton) popupView
 							.findViewById(R.id.facebook_button);
 					btnFacebookHelp.setOnClickListener(new OnClickListener() {
@@ -216,7 +227,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 						@Override
 						public void onClick(View v) {
 							onChoice.askForHelpOnFacebook();
-							
+
 							if (popupWindow != null && popupWindow.isShowing()) {
 								popupWindow.dismiss();
 							}
@@ -224,7 +235,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 						}
 					});
 
-					// Google Plus button
+					// Google Plus buttonNext
 					btnGPlusHelp = (ImageButton) popupView
 							.findViewById(R.id.gplus_button);
 					btnGPlusHelp.setOnClickListener(new OnClickListener() {
@@ -232,7 +243,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 						@Override
 						public void onClick(View v) {
 							onChoice.askForHelpOnGooglePlus();
-							
+
 							if (popupWindow != null && popupWindow.isShowing()) {
 								popupWindow.dismiss();
 							}
@@ -264,11 +275,11 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 			@Override
 			public void onClick(View v) {
 				if (isMazeSolved) {
-					
+
 					if (popupWindow != null && popupWindow.isShowing()) {
 						popupWindow.dismiss();
 					}
-					
+
 					PagEnterGateThiefsLand fb = new PagEnterGateThiefsLand();
 					stopTimer();
 
@@ -427,30 +438,442 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 		addListeners();
 	}
 
+	private void drawFirstBadDrawing() {
+		LineSegment lg = new LineSegment();
+		int x1, y1, x2, y2;
+
+		paintStroke.setColor(Color.RED);
+		// Second correct line
+		// /
+		x1 = 160 * (int) Math.ceil(density);
+		y1 = 160 * (int) Math.ceil(density);
+		x2 = 240 * (int) Math.ceil(density);
+		y2 = 80 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines1.add(lg);
+		// /
+		// /
+		x1 = 320 * (int) Math.ceil(density);
+		y1 = 320 * (int) Math.ceil(density);
+		x2 = 240 * (int) Math.ceil(density);
+		y2 = 400 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines1.add(lg);
+
+		// /
+		// /\
+		x1 = 160 * (int) Math.ceil(density);
+		y1 = 160 * (int) Math.ceil(density);
+		x2 = 240 * (int) Math.ceil(density);
+		y2 = 240 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines1.add(lg);
+
+		// /
+		// /\
+		// \
+		x1 = 80 * (int) Math.ceil(density);
+		y1 = 240 * (int) Math.ceil(density);
+		x2 = 160 * (int) Math.ceil(density);
+		y2 = 320 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines1.add(lg);
+
+		// /
+		// /\
+		// \/
+		x1 = 160 * (int) Math.ceil(density);
+		y1 = 320 * (int) Math.ceil(density);
+		x2 = 240 * (int) Math.ceil(density);
+		y2 = 240 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines1.add(lg);
+
+		// /
+		// /\
+		// \/
+		// \
+		x1 = 320 * (int) Math.ceil(density);
+		y1 = 160 * (int) Math.ceil(density);
+		x2 = 400 * (int) Math.ceil(density);
+		y2 = 240 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines1.add(lg);
+
+		// /
+		// /\/
+		// \/
+		// \
+		x1 = 240 * (int) Math.ceil(density);
+		y1 = 240 * (int) Math.ceil(density);
+		x2 = 320 * (int) Math.ceil(density);
+		y2 = 160 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines1.add(lg);
+
+		// /
+		// /\/
+		// \/\
+		// \
+		x1 = 240 * (int) Math.ceil(density);
+		y1 = 240 * (int) Math.ceil(density);
+		x2 = 320 * (int) Math.ceil(density);
+		y2 = 320 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines1.add(lg);
+
+		paintStroke.setColor(0xffd2c38f);
+	}
+
+	private void drawFirstBadDrawing2() {
+		LineSegment lg = new LineSegment();
+		int x1, y1, x2, y2;
+
+		paintStroke.setColor(Color.BLUE);
+		// Second correct line
+		// /
+		x1 = 0 * (int) Math.ceil(density);
+		y1 = 160 * (int) Math.ceil(density);
+		x2 = 80 * (int) Math.ceil(density);
+		y2 = 240 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines2.add(lg);
+		// /
+		// /
+		x1 = 80 * (int) Math.ceil(density);
+		y1 = 80 * (int) Math.ceil(density);
+		x2 = 160 * (int) Math.ceil(density);
+		y2 = 160 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines2.add(lg);
+
+		// /
+		// /\
+		x1 = 160 * (int) Math.ceil(density);
+		y1 = 160 * (int) Math.ceil(density);
+		x2 = 240 * (int) Math.ceil(density);
+		y2 = 240 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines2.add(lg);
+
+		// /
+		// /\
+		// \
+		x1 = 80 * (int) Math.ceil(density);
+		y1 = 80 * (int) Math.ceil(density);
+		x2 = 160 * (int) Math.ceil(density);
+		y2 = 0 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines2.add(lg);
+
+		// /
+		// /\
+		// \/
+		x1 = 160 * (int) Math.ceil(density);
+		y1 = 320 * (int) Math.ceil(density);
+		x2 = 240 * (int) Math.ceil(density);
+		y2 = 240 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines2.add(lg);
+
+		// /
+		// /\
+		// \/
+		// \
+		x1 = 160 * (int) Math.ceil(density);
+		y1 = 160 * (int) Math.ceil(density);
+		x2 = 80 * (int) Math.ceil(density);
+		y2 = 240 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines2.add(lg);
+
+		// /
+		// /\/
+		// \/
+		// \
+		x1 = 160 * (int) Math.ceil(density);
+		y1 = 160 * (int) Math.ceil(density);
+		x2 = 240 * (int) Math.ceil(density);
+		y2 = 80 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines2.add(lg);
+
+		// /
+		// /\/
+		// \/\
+		// \
+		x1 = 320 * (int) Math.ceil(density);
+		y1 = 160 * (int) Math.ceil(density);
+		x2 = 240 * (int) Math.ceil(density);
+		y2 = 80 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines2.add(lg);
+
+		paintStroke.setColor(0xffd2c38f);
+	}
+
+	private void drawFirstBadDrawing3() {
+		LineSegment lg = new LineSegment();
+		int x1, y1, x2, y2;
+
+		paintStroke.setColor(Color.RED);
+		// Second correct line
+		// /
+		x1 = 160 * (int) Math.ceil(density);
+		y1 = 160 * (int) Math.ceil(density);
+		x2 = 240 * (int) Math.ceil(density);
+		y2 = 240 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines3.add(lg);
+		// /
+		// /
+		x1 = 320 * (int) Math.ceil(density);
+		y1 = 320 * (int) Math.ceil(density);
+		x2 = 400 * (int) Math.ceil(density);
+		y2 = 240 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines3.add(lg);
+
+		// /
+		// /\
+		x1 = 160 * (int) Math.ceil(density);
+		y1 = 160 * (int) Math.ceil(density);
+		x2 = 80 * (int) Math.ceil(density);
+		y2 = 240 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines3.add(lg);
+
+		// /
+		// /\
+		// \
+		x1 = 240 * (int) Math.ceil(density);
+		y1 = 240 * (int) Math.ceil(density);
+		x2 = 160 * (int) Math.ceil(density);
+		y2 = 320 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines3.add(lg);
+
+		// /
+		// /\
+		// \/
+		x1 = 320 * (int) Math.ceil(density);
+		y1 = 320 * (int) Math.ceil(density);
+		x2 = 240 * (int) Math.ceil(density);
+		y2 = 240 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines3.add(lg);
+
+		// /
+		// /\
+		// \/
+		// \
+		x1 = 160 * (int) Math.ceil(density);
+		y1 = 320 * (int) Math.ceil(density);
+		x2 = 240 * (int) Math.ceil(density);
+		y2 = 400 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines3.add(lg);
+
+		// /
+		// /\/
+		// \/
+		// \
+		x1 = 240 * (int) Math.ceil(density);
+		y1 = 80 * (int) Math.ceil(density);
+		x2 = 320 * (int) Math.ceil(density);
+		y2 = 160 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines3.add(lg);
+
+		// /
+		// /\/
+		// \/\
+		// \
+		x1 = 240 * (int) Math.ceil(density);
+		y1 = 240 * (int) Math.ceil(density);
+		x2 = 320 * (int) Math.ceil(density);
+		y2 = 160 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines3.add(lg);
+
+		paintStroke.setColor(0xffd2c38f);
+	}
+
+	private void drawFirstBadDrawing4() {
+		LineSegment lg = new LineSegment();
+		int x1, y1, x2, y2;
+
+		paintStroke.setColor(Color.YELLOW);
+		// Second correct line
+		// /
+		x1 = 160 * (int) Math.ceil(density);
+		y1 = 0 * (int) Math.ceil(density);
+		x2 = 240 * (int) Math.ceil(density);
+		y2 = 80 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines4.add(lg);
+		// /
+		// /
+		x1 = 240 * (int) Math.ceil(density);
+		y1 = 80 * (int) Math.ceil(density);
+		x2 = 160 * (int) Math.ceil(density);
+		y2 = 160 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines4.add(lg);
+
+		// /
+		// /\
+		x1 = 160 * (int) Math.ceil(density);
+		y1 = 160 * (int) Math.ceil(density);
+		x2 = 80 * (int) Math.ceil(density);
+		y2 = 80 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines4.add(lg);
+
+		// /
+		// /\
+		// \
+		x1 = 160 * (int) Math.ceil(density);
+		y1 = 160 * (int) Math.ceil(density);
+		x2 = 80 * (int) Math.ceil(density);
+		y2 = 240 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines4.add(lg);
+
+		// /
+		// /\
+		// \/
+		x1 = 160 * (int) Math.ceil(density);
+		y1 = 160 * (int) Math.ceil(density);
+		x2 = 240 * (int) Math.ceil(density);
+		y2 = 240 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines4.add(lg);
+
+		// /
+		// /\
+		// \/
+		// \
+		x1 = 0 * (int) Math.ceil(density);
+		y1 = 160 * (int) Math.ceil(density);
+		x2 = 80 * (int) Math.ceil(density);
+		y2 = 80 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines4.add(lg);
+
+		// /
+		// /\/
+		// \/
+		// \
+		x1 = 80 * (int) Math.ceil(density);
+		y1 = 240 * (int) Math.ceil(density);
+		x2 = 160 * (int) Math.ceil(density);
+		y2 = 320 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines4.add(lg);
+
+		// /
+		// /\/
+		// \/\
+		// \
+		x1 = 240 * (int) Math.ceil(density);
+		y1 = 240 * (int) Math.ceil(density);
+		x2 = 320 * (int) Math.ceil(density);
+		y2 = 160 * (int) Math.ceil(density);
+		// canvas.drawLine(x1, y1, x2, y2, paintStroke);
+		lg = new LineSegment();
+		lg.setLineEquationFromPoints(x1, y1, x2, y2);
+		forbiddenDrawLines4.add(lg);
+
+		paintStroke.setColor(0xffd2c38f);
+	}
+
 	private void drawFirstFish() {
 		LineSegment lg = new LineSegment();
 		int x1, y1, x2, y2;
 
+		paintStroke.setColor(Color.RED);
 		paintStroke.setColor(Color.BLACK);
 		// Second correct line
 		// /
-		x1 = (int) (80 * density);
-		y1 = (int) (240 * density);
-		x2 = (int) (160 * density);
-		y2 = (int) (160 * density);
+		x1 = 80 * (int) Math.ceil(density);
+		y1 = 240 * (int) Math.ceil(density);
+		x2 = 160 * (int) Math.ceil(density);
+		y2 = 160 * (int) Math.ceil(density);
 		canvas.drawLine(x1, y1, x2, y2, paintStroke);
 		lg = new LineSegment();
 		lg.setLineEquationFromPoints(x1, y1, x2, y2);
 		lg.setDrawn(true);
 		secondFishLines.add(lg);
 		firstFish.add(lg);
-
 		// /
 		// /
-		x1 = (int) (160 * density);
-		y1 = (int) (160 * density);
-		x2 = (int) (240 * density);
-		y2 = (int) (80 * density);
+		x1 = 160 * (int) Math.ceil(density);
+		y1 = 160 * (int) Math.ceil(density);
+		x2 = 240 * (int) Math.ceil(density);
+		y2 = 80 * (int) Math.ceil(density);
 		canvas.drawLine(x1, y1, x2, y2, paintStroke);
 		lg = new LineSegment();
 		lg.setLineEquationFromPoints(x1, y1, x2, y2);
@@ -460,10 +883,10 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 
 		// /
 		// /\
-		x1 = (int) (160 * density);
-		y1 = (int) (160 * density);
-		x2 = (int) (240 * density);
-		y2 = (int) (240 * density);
+		x1 = 160 * (int) Math.ceil(density);
+		y1 = 160 * (int) Math.ceil(density);
+		x2 = 240 * (int) Math.ceil(density);
+		y2 = 240 * (int) Math.ceil(density);
 		canvas.drawLine(x1, y1, x2, y2, paintStroke);
 		lg = new LineSegment();
 		lg.setLineEquationFromPoints(x1, y1, x2, y2);
@@ -474,10 +897,10 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 		// /
 		// /\
 		// \
-		x1 = (int) (80 * density);
-		y1 = (int) (240 * density);
-		x2 = (int) (160 * density);
-		y2 = (int) (320 * density);
+		x1 = 80 * (int) Math.ceil(density);
+		y1 = 240 * (int) Math.ceil(density);
+		x2 = 160 * (int) Math.ceil(density);
+		y2 = 320 * (int) Math.ceil(density);
 		canvas.drawLine(x1, y1, x2, y2, paintStroke);
 		lg = new LineSegment();
 		lg.setLineEquationFromPoints(x1, y1, x2, y2);
@@ -488,10 +911,10 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 		// /
 		// /\
 		// \/
-		x1 = (int) (160 * density);
-		y1 = (int) (320 * density);
-		x2 = (int) (240 * density);
-		y2 = (int) (240 * density);
+		x1 = 160 * (int) Math.ceil(density);
+		y1 = 320 * (int) Math.ceil(density);
+		x2 = 240 * (int) Math.ceil(density);
+		y2 = 240 * (int) Math.ceil(density);
 		canvas.drawLine(x1, y1, x2, y2, paintStroke);
 		lg = new LineSegment();
 		lg.setLineEquationFromPoints(x1, y1, x2, y2);
@@ -503,10 +926,10 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 		// /\
 		// \/
 		// \
-		x1 = (int) (160 * density);
-		y1 = (int) (320 * density);
-		x2 = (int) (240 * density);
-		y2 = (int) (400 * density);
+		x1 = 160 * (int) Math.ceil(density);
+		y1 = 320 * (int) Math.ceil(density);
+		x2 = 240 * (int) Math.ceil(density);
+		y2 = 400 * (int) Math.ceil(density);
 		canvas.drawLine(x1, y1, x2, y2, paintStroke);
 		lg = new LineSegment();
 		lg.setLineEquationFromPoints(x1, y1, x2, y2);
@@ -519,10 +942,10 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 		// /\/
 		// \/
 		// \
-		x1 = (int) (240 * density);
-		y1 = (int) (240 * density);
-		x2 = (int) (320 * density);
-		y2 = (int) (160 * density);
+		x1 = 240 * (int) Math.ceil(density);
+		y1 = 240 * (int) Math.ceil(density);
+		x2 = 320 * (int) Math.ceil(density);
+		y2 = 160 * (int) Math.ceil(density);
 		canvas.drawLine(x1, y1, x2, y2, paintStroke);
 		lg = new LineSegment();
 		lg.setLineEquationFromPoints(x1, y1, x2, y2);
@@ -534,10 +957,10 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 		// /\/
 		// \/\
 		// \
-		x1 = (int) (240 * density);
-		y1 = (int) (240 * density);
-		x2 = (int) (320 * density);
-		y2 = (int) (320 * density);
+		x1 = 240 * (int) Math.ceil(density);
+		y1 = 240 * (int) Math.ceil(density);
+		x2 = 320 * (int) Math.ceil(density);
+		y2 = 320 * (int) Math.ceil(density);
 		canvas.drawLine(x1, y1, x2, y2, paintStroke);
 		lg = new LineSegment();
 		lg.setLineEquationFromPoints(x1, y1, x2, y2);
@@ -573,10 +996,10 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 			x1 = i * 80;
 			x2 = (i * 80) + 80;
 
-			y1 *= density;
-			y2 *= density;
-			x1 *= density;
-			x2 *= density;
+			y1 *= Math.ceil(density);
+			y2 *= Math.ceil(density);
+			x1 *= Math.ceil(density);
+			x2 *= Math.ceil(density);
 
 			canvas.drawLine(x1, y1, x2, y2, paintStroke);
 			lg = new LineSegment();
@@ -594,10 +1017,10 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 			x1 = 400 - (i * 80 + 80);
 			x2 = 400 - (i * 80 + 160);
 
-			y1 *= density;
-			y2 *= density;
-			x1 *= density;
-			x2 *= density;
+			y1 *= Math.ceil(density);
+			y2 *= Math.ceil(density);
+			x1 *= Math.ceil(density);
+			x2 *= Math.ceil(density);
 
 			canvas.drawLine(x1, y1, x2, y2, paintStroke);
 			lg = new LineSegment();
@@ -612,10 +1035,10 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 			x1 = i * 80;
 			x2 = (i * 80) + 80;
 
-			y1 *= density;
-			y2 *= density;
-			x1 *= density;
-			x2 *= density;
+			y1 *= Math.ceil(density);
+			y2 *= Math.ceil(density);
+			x1 *= Math.ceil(density);
+			x2 *= Math.ceil(density);
 
 			canvas.drawLine(x1, y1, x2, y2, paintStroke);
 			lg = new LineSegment();
@@ -632,10 +1055,10 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 			x1 = 400 - (i * 80 + 240);
 			x2 = 400 - ((i * 80) + 320);
 
-			y1 *= density;
-			y2 *= density;
-			x1 *= density;
-			x2 *= density;
+			y1 *= Math.ceil(density);
+			y2 *= Math.ceil(density);
+			x1 *= Math.ceil(density);
+			x2 *= Math.ceil(density);
 
 			canvas.drawLine(x1, y1, x2, y2, paintStroke);
 			lg = new LineSegment();
@@ -652,10 +1075,10 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 			y2 = i * 80 + 160;
 			x2 = 400 - (i * 80 + 80);
 
-			y1 *= density;
-			y2 *= density;
-			x1 *= density;
-			x2 *= density;
+			y1 *= Math.ceil(density);
+			y2 *= Math.ceil(density);
+			x1 *= Math.ceil(density);
+			x2 *= Math.ceil(density);
 
 			canvas.drawLine(x1, y1, x2, y2, paintStroke);
 			lg = new LineSegment();
@@ -670,10 +1093,10 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 			y2 = (i * 80) + 80;
 			x2 = (i * 80) + 240;
 
-			y1 *= density;
-			y2 *= density;
-			x1 *= density;
-			x2 *= density;
+			y1 *= Math.ceil(density);
+			y2 *= Math.ceil(density);
+			x1 *= Math.ceil(density);
+			x2 *= Math.ceil(density);
 
 			canvas.drawLine(x1, y1, x2, y2, paintStroke);
 			lg = new LineSegment();
@@ -690,10 +1113,10 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 			y2 = i * 80 + 320;
 			x2 = 400 - (i * 80 + 80);
 
-			y1 *= density;
-			y2 *= density;
-			x1 *= density;
-			x2 *= density;
+			y1 *= Math.ceil(density);
+			y2 *= Math.ceil(density);
+			x1 *= Math.ceil(density);
+			x2 *= Math.ceil(density);
 
 			canvas.drawLine(x1, y1, x2, y2, paintStroke);
 			lg = new LineSegment();
@@ -714,10 +1137,10 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 		x2 = 320;
 		y2 = 160;
 
-		y1 *= density;
-		y2 *= density;
-		x1 *= density;
-		x2 *= density;
+		y1 *= Math.ceil(density);
+		y2 *= Math.ceil(density);
+		x1 *= Math.ceil(density);
+		x2 *= Math.ceil(density);
 
 		canvas.drawLine(x1, y1, x2, y2, paintStroke);
 		lg = new LineSegment();
@@ -731,10 +1154,10 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 		x2 = 240;
 		y2 = 80;
 
-		y1 *= density;
-		y2 *= density;
-		x1 *= density;
-		x2 *= density;
+		y1 *= Math.ceil(density);
+		y2 *= Math.ceil(density);
+		x1 *= Math.ceil(density);
+		x2 *= Math.ceil(density);
 
 		canvas.drawLine(x1, y1, x2, y2, paintStroke);
 		lg = new LineSegment();
@@ -748,10 +1171,10 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 		x2 = 160;
 		y2 = 160;
 
-		y1 *= density;
-		y2 *= density;
-		x1 *= density;
-		x2 *= density;
+		y1 *= Math.ceil(density);
+		y2 *= Math.ceil(density);
+		x1 *= Math.ceil(density);
+		x2 *= Math.ceil(density);
 
 		canvas.drawLine(x1, y1, x2, y2, paintStroke);
 		lg = new LineSegment();
@@ -764,69 +1187,46 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 		int[] baseCoordinates = { 0, 0 };
 
 		Log.d("OnTouch", "onTouchEvent ");
+		if (totalMoves < 3) {
+			// We only want to perform the action once
+			if (!isMazeSolved && event.getAction() == MotionEvent.ACTION_DOWN) {
+				imageView.getLocationOnScreen(baseCoordinates);
 
-		// We only want to perform the action once
-		if (!isMazeSolved && event.getAction() == MotionEvent.ACTION_DOWN) {
-			imageView.getLocationOnScreen(baseCoordinates);
+				float x = event.getX();// - baseCoordinates[0];
+				float y = event.getY();// - baseCoordinates[1];
 
-			float x = event.getX();// - baseCoordinates[0];
-			float y = event.getY();// - baseCoordinates[1];
+				Log.d("OnTouch", "x: " + x + " y:" + y);
 
-			Log.d("OnTouch", "x: " + x + " y:" + y);
+				// Bad, bad move but I have to do this because when we user the
+				// drawer layout we have to
+				// account for the 240dp = 320 px from the menu hided
+				if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) <= Configuration.SCREENLAYOUT_SIZE_LARGE) {
+					// x = x - (240 * density);
 
-			// Bad, bad move but I have to do this because when we user the
-			// drawer layout we have to
-			// account for the 240dp = 320 px from the menu hided
-			if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) <= Configuration.SCREENLAYOUT_SIZE_LARGE) {
-				// x = x - (240 * density);
+				}
 
-			}
+				// Add the space occupied by the menus
+				// x = x + (240 * density);
 
-			// Add the space occupied by the menus
-			// x = x + (240 * density);
+				// y += (80 * density);
 
-			// y += (80 * density);
+				Log.d("OnTouch after correction", "x: " + x + " y:" + y);
 
-			Log.d("OnTouch after correction", "x: " + x + " y:" + y);
+				Point p = new Point((int) x, (int) y);
+				LineSegment lg2 = null;
 
-			Point p = new Point((int) x, (int) y);
-			LineSegment lg2 = null;
-
-			// Check if we have moves allowed
-			if (movesAllowed > 0) {
-				Log.d("OnTouch", "MovesAlowed  > 0. =" + movesAllowed);
-				paintStroke.setColor(Color.BLACK);
-				lg2 = getClosestLine(p);
-				if (lg2 != null && !lg2.isDrawn()) {
-					int x1 = lg2.getX1();
-					int y1 = lg2.getY1();
-					int x2 = lg2.getX2();
-					int y2 = lg2.getY2();
-
-					Log.d("OnTouch", "lg2 correct line OK.");
-
-					// If the line is not black then we draw it and lose
-					Log.d("OnTouch", "before isDrawn() " + x1 + ", " + y1
-							+ ", " + x2 + "," + y2);
-					int pixel = bitmap.getPixel(lg2.getX3(), lg2.getY3());
-					if (!lg2.isDrawn()) {
-						canvas.drawLine(x1, y1, x2, y2, paintStroke);
-						lg2.setDrawn(true);
-						movesAllowed--;
-						totalMoves++;
-						Log.d("OnTouch",
-								"lg2.isDrawn() = false. MovesAlowed  ++. ma ="
-										+ movesAllowed);
-					}
-				} else {
+				// Check if we have moves allowed
+				if (movesAllowed > 0) {
 					Log.d("OnTouch", "MovesAlowed  > 0. =" + movesAllowed);
-					lg2 = getBoardLines(p);
-					if (lg2 != null) {
-						Log.d("OnTouch", "lg2 cIncorrect line OK.");
+					paintStroke.setColor(Color.BLACK);
+					lg2 = getClosestLine(p);
+					if (lg2 != null && !lg2.isDrawn()) {
 						int x1 = lg2.getX1();
 						int y1 = lg2.getY1();
 						int x2 = lg2.getX2();
 						int y2 = lg2.getY2();
+
+						Log.d("OnTouch", "lg2 correct line OK.");
 
 						// If the line is not black then we draw it and lose
 						Log.d("OnTouch", "before isDrawn() " + x1 + ", " + y1
@@ -841,72 +1241,117 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 									"lg2.isDrawn() = false. MovesAlowed  ++. ma ="
 											+ movesAllowed);
 						}
+					} else {
+						Log.d("OnTouch", "MovesAlowed  > 0. =" + movesAllowed);
+						lg2 = getBoardLines(p);
+						if (lg2 != null) {
+							Log.d("OnTouch", "lg2 cIncorrect line OK.");
+							int x1 = lg2.getX1();
+							int y1 = lg2.getY1();
+							int x2 = lg2.getX2();
+							int y2 = lg2.getY2();
+
+							// If the line is not black then we draw it and lose
+							Log.d("OnTouch", "before isDrawn() " + x1 + ", "
+									+ y1 + ", " + x2 + "," + y2);
+							int pixel = bitmap.getPixel(lg2.getX3(),
+									lg2.getY3());
+							if (!lg2.isDrawn()) {
+								canvas.drawLine(x1, y1, x2, y2, paintStroke);
+								lg2.setDrawn(true);
+								movesAllowed--;
+								totalMoves++;
+								Log.d("OnTouch",
+										"lg2.isDrawn() = false. MovesAlowed  ++. ma ="
+												+ movesAllowed);
+							}
+						}
+
 					}
 
+				} else if (movesAllowed == 0) {
+					Log.d("OnTouch", "MovesAlowed  = 0.");
+					// We don't have any moves so we must erase a line segment
+					// to
+					// earn moves
+					paintStroke.setColor(0xffd2c38f);
+					lg2 = getBoardLines(p);
+
+					if (lg2 != null) {
+						int x1 = lg2.getX1();
+						int y1 = lg2.getY1();
+						int x2 = lg2.getX2();
+						int y2 = lg2.getY2();
+
+						Log.d("OnTouch", "lg2 cIncorrect line OK.");
+						Log.d("OnTouch", "lg2.getX3(): " + lg2.getX3()
+								+ " lg2.getY3() : " + lg2.getY3());
+
+						// If the line is black then it was drawn so we erase it
+						// and
+						// earn a move
+						int pixel = bitmap.getPixel(lg2.getX3(), lg2.getY3());
+						Log.d("OnTouch", "before isDrawn() " + x1 + ", " + y1
+								+ ", " + x2 + "," + y2);
+						if (lg2.isDrawn()) {
+
+							canvas.drawLine(x1, y1, x2, y2, paintStroke);
+
+							lg2.setDrawn(false);
+							movesAllowed++;
+							Log.d("OnTouch", "inside isDrawn() movesAllowed "
+									+ movesAllowed);
+						} else {
+							cancelToast();
+							toastObject = Toast.makeText(this.getActivity(),
+									getString(R.string.removeLineFirst),
+									Toast.LENGTH_SHORT);
+							toastObject.setGravity(Gravity.CENTER_HORIZONTAL
+									| Gravity.CENTER_VERTICAL, marginLeftMenu
+									* Math.round(density), 0);
+							toastObject.show();
+						}
+					}
 				}
 
-			} else if (movesAllowed == 0) {
-				Log.d("OnTouch", "MovesAlowed  = 0.");
-				// We don't have any moves so we must erase a line segment to
-				// earn moves
-				paintStroke.setColor(0xffd2c38f);
-				lg2 = getBoardLines(p);
+				imageView.invalidate();
+				isMazeSolved = checkMazeDone();
 
-				if (lg2 != null) {
-					int x1 = lg2.getX1();
-					int y1 = lg2.getY1();
-					int x2 = lg2.getX2();
-					int y2 = lg2.getY2();
+				// remove 2 points for each move
+				onChoice.addPoints(-2);
 
-					Log.d("OnTouch", "lg2 cIncorrect line OK.");
-					Log.d("OnTouch", "lg2.getX3(): " + lg2.getX3()
-							+ " lg2.getY3() : " + lg2.getY3());
+				if (isMazeSolved) {
+					cancelToast();
 
-					// If the line is black then it was drawn so we erase it and
-					// earn a move
-					int pixel = bitmap.getPixel(lg2.getX3(), lg2.getY3());
-					Log.d("OnTouch", "before isDrawn() " + x1 + ", " + y1
-							+ ", " + x2 + "," + y2);
-					if (lg2.isDrawn()) {
+					//Success sound
+					BookActivity.playMusicOnce(R.raw.success);
+					
+					toastObject = Toast.makeText(this.getActivity(),
+							getString(R.string.youHaveDoneIt),
+							Toast.LENGTH_LONG);
+					toastObject.setGravity(Gravity.CENTER_HORIZONTAL
+							| Gravity.CENTER_VERTICAL,
+							marginLeftMenu * Math.round(density), 0);
+					toastObject.show();
 
-						canvas.drawLine(x1, y1, x2, y2, paintStroke);
-
-						lg2.setDrawn(false);
-						movesAllowed++;
-						Log.d("OnTouch", "inside isDrawn() movesAllowed "
-								+ movesAllowed);
-					} else {
-						cancelToast();
-						toastObject = Toast.makeText(this.getActivity(),
-								getString(R.string.removeLineFirst),
-								Toast.LENGTH_SHORT);
-						toastObject.setGravity(Gravity.CENTER_HORIZONTAL
-								| Gravity.CENTER_VERTICAL, marginLeftMenu
-								* Math.round(density), 0);
-						toastObject.show();
-					}
 				}
 			}
-
-			imageView.invalidate();
-			isMazeSolved = checkMazeDone();
-
-			// remove 2 points for each move
-			onChoice.addPoints(-2);
-
-			if (isMazeSolved) {
-				cancelToast();
-
-				toastObject = Toast.makeText(this.getActivity(),
-						getString(R.string.youHaveDoneIt), Toast.LENGTH_LONG);
+		} else {
+			if (!isMazeSolved) {
+				if (toastObject == null) {
+					toastObject = Toast.makeText(getActivity(),
+							getString(R.string.thirdlineplayed),
+							Toast.LENGTH_LONG);
+				}else{
+					toastObject.setText(getString(R.string.thirdlineplayed));
+				}
+				
 				toastObject.setGravity(Gravity.CENTER_HORIZONTAL
 						| Gravity.CENTER_VERTICAL,
 						marginLeftMenu * Math.round(density), 0);
 				toastObject.show();
-
 			}
 		}
-
 		return true;
 	}
 
@@ -1026,7 +1471,7 @@ public class PagEnigmaFish extends Fragment implements OnTouchListener, IFragmen
 
 	@Override
 	public String getPrevPage() {
-		
+
 		return PagRobotDestroyedEnigmafrg.class.getName();
 	}
 

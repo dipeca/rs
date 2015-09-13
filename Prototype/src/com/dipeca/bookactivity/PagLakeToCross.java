@@ -13,20 +13,23 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.dipeca.item.IMainActivity;
+import com.dipeca.item.ObjectItem;
+import com.dipeca.item.Utils;
 import com.dipeca.prototype.R;
 
-public class PagLakeToCross extends Fragment implements IFragmentBook{
+public class PagLakeToCross extends Fragment implements IFragmentBook {
 	View view = null;
 	private IMainActivity onChoice;
-	public static int NAME = R.string.theLake;
+	public static int NAME = R.string.theSwamp;
 	public static int icon = R.drawable.lago_icon;
 	private TextView tv1 = null;
 	private TextView tv3 = null;
 	private boolean isTextHide = false;
 
-	private static Bitmap bitmap1;
-	private static Bitmap bitmap2;
-	
+	private Bitmap bitmap1;
+	private Bitmap bitmap2;
+
 	ImageButton button = null;
 	ImageButton buttonPrev = null;
 
@@ -46,8 +49,8 @@ public class PagLakeToCross extends Fragment implements IFragmentBook{
 	private ImageView ivClickable;
 
 	private void loadImages() {
-		
-		//Check if we already have traveled to the lake
+
+		// Check if we already have traveled to the lake
 		ObjectItem oi = new ObjectItem();
 		oi.setObjectImageType(ObjectItem.TYPE_BOTTLE);
 
@@ -58,22 +61,23 @@ public class PagLakeToCross extends Fragment implements IFragmentBook{
 			// set current mapImage
 			onChoice.setCurrentMapPosition(R.drawable.mapa_lago);
 		}
-		// Add button to screen
+		// Add buttonNext to screen
 		onChoice.addMapButtonToScreen((RelativeLayout) view);
-		
-		Log.d("KingDom ", "loadImages()");
+
+		Log.d("KingDom ", "loadImages()"); 
 		image1 = (ImageView) view.findViewById(R.id.ivMain);
 		image2 = (ImageView) view.findViewById(R.id.ivSmall);
 		ivClickable = (ImageView) view.findViewById(R.id.clickable);
 
-		bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.lagozoomout, 600, 300);
-		image1.setImageBitmap(bitmap1);
-		
-		bitmap2 = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.lagoteste3, 400, 200);
-		image2.setImageBitmap(bitmap2);
-		
+//		int density = (int) Math.ceil(getResources().getDisplayMetrics().density);
+//		bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
+//				R.drawable.lagozoomout, 400 * density, 200 * density);
+//		image1.setImageBitmap(bitmap1);
+//
+//		bitmap2 = Utils.decodeSampledBitmapFromResource(getResources(),
+//				R.drawable.lagoteste3, 400, 200);
+//		image2.setImageBitmap(bitmap2);
+
 	}
 
 	@Override
@@ -82,7 +86,7 @@ public class PagLakeToCross extends Fragment implements IFragmentBook{
 
 		long startTime = System.currentTimeMillis();
 		view = inflater.inflate(R.layout.pag_sub_image, container, false);
-		long endTime = System.currentTimeMillis();
+		long endTime = System.currentTimeMillis(); 
 		long totalTime = endTime - startTime;
 		Log.d("Total time kingdom", "onCreateView after inflate time ="
 				+ totalTime);
@@ -103,12 +107,16 @@ public class PagLakeToCross extends Fragment implements IFragmentBook{
 				int width3 = 0;
 				int multiplier = 7;
 				if (isTextHide) {
-					height1 = tv1.getHeight() * multiplier - ((int)Math.ceil(8 * density));
-					width3 = tv3.getWidth() * multiplier - ((int)Math.ceil(8 * density));
+					height1 = tv1.getHeight() * multiplier
+							- ((int) Math.ceil(8 * density));
+					width3 = tv3.getWidth() * multiplier
+							- ((int) Math.ceil(8 * density));
 					isTextHide = false;
 				} else {
-					height1 = tv1.getHeight() / multiplier + ((int)Math.ceil(8 * density));
-					width3 = tv3.getWidth() / multiplier + ((int)Math.ceil(8 * density));
+					height1 = tv1.getHeight() / multiplier
+							+ ((int) Math.ceil(8 * density));
+					width3 = tv3.getWidth() / multiplier
+							+ ((int) Math.ceil(8 * density));
 					isTextHide = true;
 				}
 
@@ -128,7 +136,8 @@ public class PagLakeToCross extends Fragment implements IFragmentBook{
 			public void onClick(View v) {
 
 				PagLakeToCrossFindObjects fb = new PagLakeToCrossFindObjects();
-				onChoice.onChoiceMade(fb, PagLakeToCrossFindObjects.NAME, PagLakeToCrossFindObjects.icon);
+				onChoice.onChoiceMade(fb, PagLakeToCrossFindObjects.NAME,
+						PagLakeToCrossFindObjects.icon);
 
 				onChoice.onChoiceMadeCommit(NAME, true);
 			}
@@ -144,8 +153,8 @@ public class PagLakeToCross extends Fragment implements IFragmentBook{
 				onChoice.onChoiceMadeCommit(NAME, true);
 			}
 		});
-		
-		//BookActivity.playMusic(R.raw.village);
+
+		// BookActivity.playMusic(R.raw.village);
 		return view;
 	}
 
@@ -154,12 +163,18 @@ public class PagLakeToCross extends Fragment implements IFragmentBook{
 		Log.d("PagLateToCross ", "PagLateToCross  onDetach()");
 		super.onDetach();
 
-		bitmap1.recycle();
-		bitmap1 = null;
-
-		bitmap2.recycle();
-		bitmap2 = null;
-		
+//		image1.setImageBitmap(null);
+//		image2.setImageBitmap(null);
+//
+//		if (bitmap1 != null) {
+//			bitmap1.recycle();
+//			bitmap1 = null;
+//		}
+//
+//		if (bitmap1 != null) {
+//			bitmap2.recycle();
+//			bitmap2 = null;
+//		}
 	}
 
 	@Override

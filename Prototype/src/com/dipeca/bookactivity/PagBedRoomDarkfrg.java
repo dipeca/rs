@@ -12,6 +12,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.dipeca.item.DialogBox;
+import com.dipeca.item.IMainActivity;
+import com.dipeca.item.Utils;
 import com.dipeca.prototype.R;
 
 public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook {
@@ -23,7 +26,7 @@ public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook {
 	private DialogBox tv2 = null;
 	private TextView tv3 = null;
 	private boolean isTextHide = false;
-	private static Bitmap bitmap1;
+	private Bitmap bitmap1;
 
 	public static String nextPage = PagBedRoomfrg.class.getName();
 	public static String prevPage = "";
@@ -40,7 +43,7 @@ public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook {
 	}
 
 	private ImageView iv1;
-	private float density = 1;
+	private int density = 1;
 
 	private int tv1OriginalSize;
 	private int tv2OriginalSize;
@@ -101,33 +104,32 @@ public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook {
 				tv3.setLayoutParams(params3);
 			}
 		});
-
 	}
 
 	private void loadImages() {
 		Log.d("Frg Bed Room ", "loadImages()");
 		iv1 = (ImageView) view.findViewById(R.id.pag1ImageView);
 
-		density = (int) getResources().getDisplayMetrics().density;
-
-		bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.quarto_vazio_escuro, 600, 300);
+		density = (int) Math.ceil(getResources().getDisplayMetrics().density);
+		 
+		bitmap1 = onChoice.decodeSampledBitmapFromResourceBG(getResources(),
+				R.drawable.quarto_vazio_escuro, 400 * density, 200 * density);
 		iv1.setImageBitmap(bitmap1);
-
-	}
-
+   
+	}  
+  
 	private Runnable mUpdateTimeTask = new Runnable() {
 		public void run() {
 			long startTime = System.currentTimeMillis();
 
 			if (isAdded()) {
 				// if we the bitmap was not loaded; If we came from the back
-				// button
+				// buttonNext
 				// we do not load again
 				if (BookActivity.bitmapInitial == null) {
 					BookActivity.bitmapInitial = Utils
 							.decodeSampledBitmapFromResource(getResources(),
-									R.drawable.quarto_vazio, 600, 300);
+									R.drawable.quarto_vazio, 400 * density, 200 * density);
 
 				}
 			}
@@ -145,20 +147,22 @@ public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
+ 
 		long startTime = System.currentTimeMillis();
-		view = inflater
+		view = inflater 
 				.inflate(R.layout.pag_one_image_dialog, container, false);
 		long endTime = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
 		Log.d("Total time onCreateView", "onCreateView after inflate time ="
 				+ totalTime);
 
+		BookActivity.playMusic(R.raw.boxes2);
+		
 		loadImages();
 		loadText();
 
 		button = (ImageButton) view.findViewById(R.id.goToNextPage);
-		// button.setVisibility(View.INVISIBLE);
+		// buttonNext.setVisibility(View.INVISIBLE);
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
@@ -201,7 +205,7 @@ public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook {
 		view.postDelayed(mUpdateTimeTask, 1000);
 
 		// BookActivity.playMusic(R.raw.boxes_moving);
-
+ 
 		// Set image and text to share intent
 		onChoice.setShareIntent(onChoice.createShareIntent(
 				getString(R.string.social_action_desc),
@@ -215,10 +219,12 @@ public class PagBedRoomDarkfrg extends Fragment implements IFragmentBook {
 		Log.d("BedRoom ", "BedRoom onDetach()");
 		super.onDetach();
 
-		if (bitmap1 != null) {
-			bitmap1.recycle();
-			bitmap1 = null;
-		}
+		iv1.setImageBitmap(null);
+		
+//		if (bitmap1 != null) {
+//			bitmap1.recycle();
+//			bitmap1 = null;
+//		}
 
 	}
 

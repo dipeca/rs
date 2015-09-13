@@ -18,14 +18,21 @@
     <uses-feature
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
-
+  
+    <supports-screens
+        android:largeScreens="true"
+        android:normalScreens="false"
+        android:requiresSmallestWidthDp="600"
+        android:smallScreens="false"
+        android:xlargeScreens="true" />
+        
     <application
         android:allowBackup="true"
         android:icon="@drawable/app_icon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.dipeca.bookactivity.BookActivity"
+            android:name="com.dipeca.bookactivity.StartActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape" >
             <intent-filter>
@@ -34,7 +41,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name="com.dipeca.bookactivity.BookActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape" >
+        </activity>
         <provider
             android:name="com.dipeca.bookactivity.PrototypeProvider"
             android:authorities="com.dipeca.adventurestoriesprovider" />
@@ -49,9 +60,11 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name="com.dipeca.buildstoryactivity.BuildPageActivity" >
+        <activity android:name="com.dipeca.buildstoryactivity.BuildPageActivity" 
+        android:screenOrientation="landscape">
         </activity>
-        <activity android:name="com.dipeca.buildstoryactivity.ReadStoryActivity" >
+        <activity android:name="com.dipeca.buildstoryactivity.ReadStoryActivity" 
+        android:screenOrientation="landscape">
         </activity>
 
         <meta-data

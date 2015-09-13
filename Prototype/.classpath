@@ -4,7 +4,7 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="lib" path="/Users/dipeca/Downloads/adt-bundle-mac-x86_64-20130729/sdk/platforms/android-16/android.jar" sourcepath="/Users/dipeca/Downloads/adt-bundle-mac-x86_64-20130729/sdk/sources/android-18"/>
+	<classpathentry kind="lib" path="/Users/dipeca/Documents/adt-bundle-mac-x86_64-20140702/sdk/platforms/android-16/android.jar" sourcepath="/Users/dipeca/Downloads/adt-bundle-mac-x86_64-20130729/sdk/sources/android-18"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="/Applications/adt-bundle-mac-x86_64-20140702/facebook-android-sdk-3.16/libs/android-support-v4.jar"/>
 	<classpathentry exported="true" kind="lib" path="/google-play-services_lib/libs/google-play-services.jar"/>

@@ -13,6 +13,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.dipeca.item.IMainActivity;
+import com.dipeca.item.ObjectItem;
+import com.dipeca.item.Utils;
 import com.dipeca.prototype.R;
 
 public class PagChestOpen extends Fragment implements IFragmentBook {
@@ -24,13 +27,13 @@ public class PagChestOpen extends Fragment implements IFragmentBook {
 	private TextView tv3 = null;
 	private boolean isTextHide = false;
 
-	private static Bitmap bitmap1;
-	
-	private static ImageButton button = null;
-	private static ImageButton buttonPrev = null;
+	private Bitmap bitmap1;
 
-	private static ObjectItem oi = null;
-	
+	private ImageButton button = null;
+	private ImageButton buttonPrev = null;
+
+	private ObjectItem oi = null;
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -47,20 +50,25 @@ public class PagChestOpen extends Fragment implements IFragmentBook {
 	private void loadImages() {
 		Log.d("KingDom ", "loadImages()");
 		image1 = (ImageView) view.findViewById(R.id.pag1ImageView);
-
-		bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.cofre_aberto, 600, 300);
+		int density = (int) Math.ceil(getResources().getDisplayMetrics().density);
+		bitmap1 = onChoice.decodeSampledBitmapFromResourceBG(getResources(),
+				R.drawable.cofre_aberto, 400 * density, 200 * density);
 		image1.setImageBitmap(bitmap1);
-		
-		// Add button to screen
-		onChoice.addMapButtonToScreen((RelativeLayout) view);
-		
-	}
 
+		// Add buttonNext to screen
+		onChoice.addMapButtonToScreen((RelativeLayout) view);
+
+	}
+ 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
+		// Found object sound
+		if(!onChoice.isInJourney(getString(PagAfterChestOpen.NAME))){
+			//BookActivity.playMusicOnce(R.raw.picked_item);
+		}
+		
 		long startTime = System.currentTimeMillis();
 		view = inflater.inflate(R.layout.pag_one_image, container, false);
 		long endTime = System.currentTimeMillis();
@@ -84,12 +92,16 @@ public class PagChestOpen extends Fragment implements IFragmentBook {
 				int width3 = 0;
 				int multiplier = 7;
 				if (isTextHide) {
-					height1 = tv1.getHeight() * multiplier - ((int)Math.ceil(8 * density));
-					width3 = tv3.getWidth() * multiplier - ((int)Math.ceil(8 * density));
+					height1 = tv1.getHeight() * multiplier
+							- ((int) Math.ceil(8 * density));
+					width3 = tv3.getWidth() * multiplier
+							- ((int) Math.ceil(8 * density));
 					isTextHide = false;
 				} else {
-					height1 = tv1.getHeight() / multiplier + ((int)Math.ceil(8 * density));
-					width3 = tv3.getWidth() / multiplier + ((int)Math.ceil(8 * density));
+					height1 = tv1.getHeight() / multiplier
+							+ ((int) Math.ceil(8 * density));
+					width3 = tv3.getWidth() / multiplier
+							+ ((int) Math.ceil(8 * density));
 					isTextHide = true;
 				}
 
@@ -108,15 +120,16 @@ public class PagChestOpen extends Fragment implements IFragmentBook {
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				//Persist object
+				// Persist object
 				oi = new ObjectItem();
 				oi.setObjectImageType(ObjectItem.TYPE_KEY);
-				oi.setName(getString(R.string.key));
-				
+				oi.setTitle(getString(R.string.key));
+
 				onChoice.objectFoundPersist(oi);
-				
+
 				PagAfterChestOpen fb = new PagAfterChestOpen();
-				onChoice.onChoiceMade(fb, PagAfterChestOpen.NAME, PagAfterChestOpen.icon);
+				onChoice.onChoiceMade(fb, PagAfterChestOpen.NAME,
+						PagAfterChestOpen.icon);
 
 				onChoice.onChoiceMadeCommit(NAME, true);
 			}
@@ -132,8 +145,12 @@ public class PagChestOpen extends Fragment implements IFragmentBook {
 				onChoice.onChoiceMadeCommit(NAME, true);
 			}
 		});
+
+		// Set image and text to share intent
+		onChoice.setShareIntent(onChoice.createShareIntent(
+				getString(R.string.social_action_desc),
+				getString(R.string.pagChestOpen), bitmap1));
 		
-		//BookActivity.playMusic(R.raw.village);
 		return view;
 	}
 
@@ -142,8 +159,8 @@ public class PagChestOpen extends Fragment implements IFragmentBook {
 		Log.d("PagLateToCross ", "PagLateToCross  onDetach()");
 		super.onDetach();
 
-		bitmap1.recycle();
-		bitmap1 = null;
+		image1.setImageBitmap(null);
+
 
 	}
 

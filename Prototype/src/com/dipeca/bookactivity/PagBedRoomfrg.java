@@ -16,6 +16,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.dipeca.item.DialogBox;
+import com.dipeca.item.IMainActivity;
+import com.dipeca.item.Utils;
 import com.dipeca.prototype.R;
 
 public class PagBedRoomfrg extends Fragment implements IFragmentBook {
@@ -28,8 +31,8 @@ public class PagBedRoomfrg extends Fragment implements IFragmentBook {
 	private TextView tv3 = null;
 	private boolean isTextHide = false;
 	ImageView amuleto = null;
-	private static Bitmap bitmap1;
-	private static Bitmap bitmap2;
+	private Bitmap bitmap1;
+	private Bitmap bitmap2;
 
 	public static String nextPage = PagBedRoomfAmuletfrg.class.getName();
 	public static String prevPage = PagBedRoomDarkfrg.class.getName();
@@ -47,7 +50,7 @@ public class PagBedRoomfrg extends Fragment implements IFragmentBook {
 
 	private ImageView iv1;
 	private ImageView iv2;
-	private float density = 1;
+	private int density = 1;
 
 	private int tv1OriginalSize;
 	private int tv2OriginalSize;
@@ -83,11 +86,11 @@ public class PagBedRoomfrg extends Fragment implements IFragmentBook {
 					tv3OriginalSize = tv3.getWidth();
 
 					height1 = Math.max(tv1.getHeight() / multiplier,
-							((int)Math.ceil(10 * density)));
+							((int) Math.ceil(10 * density)));
 					height2 = Math.max(tv2.getHeight() / multiplier,
-							((int)Math.ceil(10 * density)));
+							((int) Math.ceil(10 * density)));
 					width3 = Math.max(tv3.getWidth() / multiplier,
-							((int)Math.ceil(10 * density)));
+							((int) Math.ceil(10 * density)));
 					isTextHide = true;
 				}
 
@@ -114,35 +117,36 @@ public class PagBedRoomfrg extends Fragment implements IFragmentBook {
 		Log.d("Frg Bed Room ", "loadImages()");
 		iv1 = (ImageView) view.findViewById(R.id.pag1ImageView);
 		iv2 = (ImageView) view.findViewById(R.id.pag1ImageViewAmuleto);
-
-		density = (int) getResources().getDisplayMetrics().density;
+          
+		density = (int) Math.ceil(getResources().getDisplayMetrics().density);
 		Log.d(getString(NAME), "Density: " + density);
-		bitmap1 = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.quarto, 600, 300);
+		bitmap1 = onChoice.decodeSampledBitmapFromResourceBG(getResources(),
+				R.drawable.quarto, 400 * density, 200 * density);
 		iv1.setImageBitmap(bitmap1);
 
 		tv2.setImg1Id(getResources().getDrawable(R.anim.rocket));
 		tv2.setImg2Id(getResources().getDrawable(R.anim.gui_quarto_anim));
-	}
+		Log.d("Frg Bed Room ", "after loadImages()");
+	} 
 
 	private Runnable mUpdateTimeTask = new Runnable() {
 		public void run() {
 			long startTime = System.currentTimeMillis();
 			if (isAdded()) {
 				// if we the bitmap was not loaded; If we came from the back
-				// button
+				// buttonNext
 				// we do not load again
 				if (BookActivity.bitmap1 == null) {
 
 					BookActivity.bitmap1 = Utils
 							.decodeSampledBitmapFromResource(getResources(),
-									R.drawable.quarto_portal, 600, 300);
+									R.drawable.quarto_portal, 400 * density, 200 * density);
 				}
 			}
 			long endTime = System.currentTimeMillis();
 			long totalTime = endTime - startTime;
 			Log.d("Total time", "mUpdateTimeTask time =" + totalTime);
-			// button.setVisibility(View.VISIBLE);
+			// buttonNext.setVisibility(View.VISIBLE);
 		}
 	};
 
@@ -178,10 +182,10 @@ public class PagBedRoomfrg extends Fragment implements IFragmentBook {
 		// loadImages()
 		loadImages();
 
-		//BookActivity.playMusic(R.raw.bedroom);
+		// BookActivity.playMusic(R.raw.bedroom);
 
 		button = (ImageButton) view.findViewById(R.id.goToNextPage);
-		// button.setVisibility(View.INVISIBLE);
+		// buttonNext.setVisibility(View.INVISIBLE);
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
@@ -238,10 +242,13 @@ public class PagBedRoomfrg extends Fragment implements IFragmentBook {
 	public void onDetach() {
 		Log.d("BedRoom ", "BedRoom onDetach()");
 		super.onDetach();
-
-		bitmap1.recycle();
-		bitmap1 = null;
-
+		
+		iv1.setImageBitmap(null);
+		
+//		if (bitmap1 != null) {
+//			bitmap1.recycle();
+//			bitmap1 = null;
+//		}
 	}
 
 	ImageView jakeImage;

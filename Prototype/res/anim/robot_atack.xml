@@ -5,4 +5,4 @@
     <item android:drawable="@drawable/robot_attack1_scal" android:duration="300" />
     <item android:drawable="@drawable/robot_attack2_scal" android:duration="300" />
     <item android:drawable="@drawable/robot_attack3_scal" android:duration="300" />
- </animation-list>
+ </animation-list> 

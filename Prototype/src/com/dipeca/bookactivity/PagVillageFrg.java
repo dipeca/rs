@@ -14,6 +14,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.dipeca.item.DialogBox;
+import com.dipeca.item.IMainActivity;
+import com.dipeca.item.ObjectItem;
+import com.dipeca.item.Utils;
 import com.dipeca.prototype.R;
 
 public class PagVillageFrg extends Fragment implements IFragmentBook {
@@ -76,6 +80,12 @@ public class PagVillageFrg extends Fragment implements IFragmentBook {
 				onChoice.onChoiceMade(fb, PageHelp.NAME,
 						PageHelp.icon);
 				onChoice.onChoiceMadeCommit(NAME, true);
+				
+//				PagEnigmaMoveRocksFrg fb = new PagEnigmaMoveRocksFrg();
+//
+//				onChoice.onChoiceMade(fb, PagEnigmaMoveRocksFrg.NAME,
+//						PagEnigmaMoveRocksFrg.icon);
+//				onChoice.onChoiceMadeCommit(NAME, true);
 			}
 		});
 		
@@ -130,18 +140,18 @@ public class PagVillageFrg extends Fragment implements IFragmentBook {
 		dialogB.setImg1Id(getResources().getDrawable(R.anim.anciao_anim));
 		dialogB.setImg2Id(getResources().getDrawable(R.anim.gui_anim));
 	}
-
+ 
 	private void loadImages() {
 
 		long startTime = System.currentTimeMillis();
 
 		iv1 = (ImageView) view.findViewById(R.id.pag1ImageView);
 
-		float density = (float) getResources().getDisplayMetrics().density;
+		int density = (int) Math.ceil(getResources().getDisplayMetrics().density);
 
 		Log.d(getString(NAME), "density: " + density);
-		villageBitmap = Utils.decodeSampledBitmapFromResource(getResources(),
-				R.drawable.village, 600, 300);
+		villageBitmap = onChoice.decodeSampledBitmapFromResourceBG(getResources(),
+				R.drawable.village, 400 * density, 200 * density);
 		iv1.setImageBitmap(villageBitmap);
 		long endTime = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
@@ -157,6 +167,20 @@ public class PagVillageFrg extends Fragment implements IFragmentBook {
 	public String getNextPage() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public void onDetach() {
+		Log.d("BedRoom ", "BedRoom onDetach()");
+		super.onDetach();
+
+		iv1.setImageBitmap(null);
+		
+//		if (villageBitmap != null) {
+//			villageBitmap.recycle();
+//			villageBitmap = null;
+//		}
+
 	}
 
 }
