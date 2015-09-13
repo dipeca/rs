@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-  <declare-styleable name="DialogBox">
-    <attr name="textDialog" format="string" />
-    <attr name="img1Dialog" format="reference" />
-    <attr name="img2Dialog" format="reference" />
-  </declare-styleable>
-</resources>
