@@ -263,7 +263,7 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 		btn.setBackgroundResource(R.drawable.next_bt);
 
 		RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(
-				98 * density, 64 * density);
+				98 * density, 98 * density);
 		params1.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		params1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		params1.setMargins(0, 0,
@@ -274,11 +274,10 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 
 		// Buttons Helps and Social Media help
 		btnHelp = new ImageButton(getActivity());
-		btnHelp.setImageResource(R.drawable.ic_action_help);
-		btnHelp.setBackgroundResource(R.drawable.button_back);
+		btnHelp.setBackgroundResource(R.drawable.ic_action_help);
 
 		RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+				98 * density, 98 * density);
 		params2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		params2.setMargins(0, (int) Math.ceil(12 * (int) Math.ceil(density)),
@@ -287,17 +286,16 @@ public class PagEnigmaFrg extends Fragment implements OnTouchListener,
 		layout.addView(btnHelp, params2);
 
 		btnOpenPopup = new ImageButton(getActivity());
-		btnOpenPopup.setImageResource(R.drawable.ic_action_social_help);
-		btnOpenPopup.setBackgroundResource(R.drawable.button_back);
+		btnOpenPopup.setBackgroundResource(R.drawable.ic_action_social_help);
 
 		RelativeLayout.LayoutParams paramsSocialBtn = new RelativeLayout.LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+				98 * density, 98 * density);
 		paramsSocialBtn.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		paramsSocialBtn.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		// paramsSocialBtn.addRule(RelativeLayout.LEFT_OF, btnHelp.getId());
 		paramsSocialBtn.setMargins(0,
 				(int) Math.ceil(12 * (int) Math.ceil(density)),
-				(int) Math.ceil(84 * (int) Math.ceil(density)), 0);
+				(int) Math.ceil(98 * (int) Math.ceil(density)), 0);
 
 		layout.addView(btnOpenPopup, paramsSocialBtn);
 
